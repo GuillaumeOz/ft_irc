@@ -1,0 +1,1 @@
+Simple implementation of a IRC server in C++98.
