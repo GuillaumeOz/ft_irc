@@ -26,8 +26,8 @@
   - dest : channel
   - src : user.socket
 
-	map<map<command, list<role>>, function>
+	map<command>, function>
 
-
-
-
+- command
+  - value : enum
+  - role : role(enum)
