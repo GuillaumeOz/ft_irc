@@ -4,18 +4,23 @@
 #
 # #############################################################################
 
+# Project name
+NAME		=	ircserv
+
+CC			=	c++
+
 # CPP files
 
 SRC_DIR		=	$(shell find srcs -type d)
+INC_DIR		=	$(shell find includes -type d)
+TEM_DIR		=	$(shell find templates -type d)
+OBJ_DIR		=	bin/obj
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
-FILENAME_LIST_SRCS=\
-	$(foreach dir, \
-	$(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.cpp), $(notdir $(file))))
+SRC			=	$(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.cpp), $(notdir $(file))))
 
-# FILENAME_LIST_SRCS=\
-# 	main.cpp
+OBJ			=	$(addprefix $(OBJ_DIR)/, $(FILENAME_LIST_SRCS:%.cpp=%.opp))
 
 # #############################################################################
 #
@@ -23,7 +28,14 @@ FILENAME_LIST_SRCS=\
 #
 # #############################################################################
 
-COMPILER_EXECUTABLE=c++
+CFLAGS		=	-Wall -Wextra -Werror -lpthread -std=c++98 #-g3 #-fsanitize=address #-Wshadow -Wno-shadow
+
+IFLAGS		=	$(foreach dir, $(INC_DIR), -I $(dir))
+
+TFLAGS		=	$(foreach dir, $(TEM_DIR), -I $(dir))
+
+# FILENAME_LIST_SRCS=\
+# 	main.cpp
 
 COMPILER_LIBS= \
 	-lpthread \
@@ -42,32 +54,29 @@ COMPILER_WARNING_FLAGS= \
 #
 # #############################################################################
 
-# Project name
-NAME		=	ircserv
-
 # Directories names
-DIRNAME_BIN=bin
-DIRNAME_OBJ=obj
-DIRNAME_SRC=srcs
-DIRNAME_INC=includes
-DIRNAME_TEM=templates
+# DIRNAME_BIN=bin
+# DIRNAME_OBJ=obj
+# DIRNAME_SRC=srcs
+# DIRNAME_INC=includes
+# DIRNAME_TEM=templates
 
 # Directory paths
-DIRPATH_OBJ=$(DIRNAME_BIN)/$(DIRNAME_OBJ)
+# DIRPATH_OBJ=$(DIRNAME_BIN)/$(DIRNAME_OBJ)
 
 # File path lists
-FILEPATHLIST_SRCS=$(addprefix $(DIRNAME_SRC)/, $(FILENAME_LIST_SRCS))
+# FILEPATHLIST_SRCS=$(addprefix $(DIRNAME_SRC)/, $(FILENAME_LIST_SRCS))
 
 # Merge all CPP lists in one
-FILEPATHLIST_CPP= \
-	$(FILEPATHLIST_SRCS) \
+# FILEPATHLIST_CPP= \
+# 	$(FILEPATHLIST_SRCS) \
 
-FILEPATHLIST_OPP= \
-	$(subst  \
-		$(DIRNAME_SRC), \
-		$(DIRPATH_OBJ), \
-		$(FILEPATHLIST_CPP:.cpp=.opp) \
-	)
+# FILEPATHLIST_OPP= \
+# 	$(subst  \
+# 		$(DIRNAME_SRC), \
+# 		$(DIRPATH_OBJ), \
+# 		$(FILEPATHLIST_CPP:.cpp=.opp) \
+# 	)
 
 # #############################################################################
 #
@@ -81,41 +90,41 @@ FILEPATHLIST_OPP= \
 all: $(NAME)
 
 # Build target
-$(NAME): $(FILEPATHLIST_OPP)
+$(NAME): $(OBJ)
 	@mkdir -p $$(dirname $@)
 	@printf "$(COMPILING) $(WHITE) Creating Binary File $(YELLOW) $@ $(YELLOW)"
-	@$(COMPILER_EXECUTABLE) -o $(DIRNAME_BIN)/$@ \
-		-I $(DIRNAME_INC) \
-		-I $(DIRNAME_TEM) \
+	@$(COMPILER_EXECUTABLE) -o OBJ_DIR$@ \
+		$(IFLAGS) \
+		$(TFLAGS) \
 		$(COMPILER_LIBS) \
 		$(COMPILER_WARNING_FLAGS) \
-		$(FILEPATHLIST_OPP) \
+		$(OBJ) \
 		$(COMPILER_A) \
 			&& printf "$(SUCCESS)\n"
 
 # Build obj binaries
-$(DIRPATH_OBJ)/%.opp: $(DIRNAME_SRC)/%.cpp
+$(OBJ_DIR)/%.opp: $(DIRNAME_SRC)/%.cpp
 	@mkdir -p $$(dirname $@)
 	@printf "$(COMPILING) $(YELLOW) $< $(NC) "
 	@$(COMPILER_EXECUTABLE) -c $< -o $@ \
-		-I $(DIRNAME_INC) \
-		-I $(DIRNAME_TEM) \
+		$(IFLAGS) \
+		$(TFLAGS) \
 		$(COMPILER_WARNING_FLAGS) \
 			&& printf "$(SUCCESS)\n"
 
 # Show macro details
 show:
 	@printf "$(BLUE)SRCS LIST :\n$(YELLOW)$(FILENAME_LIST_SRCS)\n"
-	@printf "$(BLUE)OBJS LIST :\n$(YELLOW)$(FILEPATHLIST_OPP)$(WHITE)\n"
+	@printf "$(BLUE)OBJS LIST :\n$(YELLOW)$(OBJ)$(WHITE)\n"
 	@printf "\n-----\n\n"
 	@printf "$(BLUE)COMPILING :\n  $(YELLOW)$(COMPILER_EXECUTABLE) \
-	-o $(DIRNAME_BIN)/$(FILEPATHLIST_OPP) -I $(DIRNAME_INC) -I $(DIRNAME_TEM) \
+	-o $(OBJ) $(IFLAGS) $(TFLAGS) \
 	$(COMPILER_LIBS) $(COMPILER_WARNING_FLAGS) \
 	$(FILEPATHLIST_OPP) $(COMPILER_A)\n"
 	@printf "$(BLUE)CFLAGS :\n  $(YELLOW)$(COMPILER_LIBS) \
 	$(COMPILER_WARNING_FLAGS)\n"
-	@printf "$(BLUE)IFLAGS :\n$(YELLOW)  -I $(DIRNAME_INC)\n"
-	@printf "$(BLUE)TFLAGS :\n$(YELLOW)  -I $(DIRNAME_TEM)$(NC)\n"
+	@printf "$(BLUE)IFLAGS :\n$(YELLOW)  $(IFLAGS)\n"
+	@printf "$(BLUE)TFLAGS :\n$(YELLOW)  $(TFLAGS)$(NC)\n"
 
 # Remove objects
 clean:
@@ -123,7 +132,7 @@ clean:
 
 # Remove every built binary
 fclean:
-	@rm -rf $(DIRNAME_BIN)
+	@rm -rf $(OBJ)
 
 # Remove and rebuild everything
 re: fclean all
