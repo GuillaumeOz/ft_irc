@@ -5,8 +5,17 @@
 # #############################################################################
 
 # CPP files
-FILENAME_LIST_SRCS= \
-	main.cpp \
+
+SRC_DIR		=	$(shell find srcs -type d)
+
+vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
+
+FILENAME_LIST_SRCS=\
+	$(foreach dir, \
+	$(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.cpp), $(notdir $(file))))
+
+# FILENAME_LIST_SRCS=\
+# 	main.cpp
 
 # #############################################################################
 #
@@ -25,7 +34,7 @@ COMPILER_WARNING_FLAGS= \
 	-Wall \
 	-Wextra \
 	-Werror \
-	# -std=c++17 \
+	# -std=c++98 \
 
 # #############################################################################
 #
@@ -33,15 +42,15 @@ COMPILER_WARNING_FLAGS= \
 #
 # #############################################################################
 
-# Targets
-FILENAMELIST_TARGET= \
-	my_irc_server \
+# Project name
+NAME		=	ircserv
 
 # Directories names
 DIRNAME_BIN=bin
 DIRNAME_OBJ=obj
-DIRNAME_SRC=src
+DIRNAME_SRC=srcs
 DIRNAME_INC=includes
+DIRNAME_TEM=templates
 
 # Directory paths
 DIRPATH_OBJ=$(DIRNAME_BIN)/$(DIRNAME_OBJ)
@@ -68,12 +77,16 @@ FILEPATHLIST_OPP= \
 
 .DEFAULT_GOAL = all
 
+# Build all targets
+all: $(NAME)
+
 # Build target
-my_irc_server: $(FILEPATHLIST_OPP)
+$(NAME): $(FILEPATHLIST_OPP)
 	@mkdir -p $$(dirname $@)
-	@printf "$(COMPILING) TARGET --> $@ "
+	@printf "$(COMPILING) $(WHITE) Creating Binary File $(YELLOW) $@ $(YELLOW)"
 	@$(COMPILER_EXECUTABLE) -o $(DIRNAME_BIN)/$@ \
 		-I $(DIRNAME_INC) \
+		-I $(DIRNAME_TEM) \
 		$(COMPILER_LIBS) \
 		$(COMPILER_WARNING_FLAGS) \
 		$(FILEPATHLIST_OPP) \
@@ -83,14 +96,26 @@ my_irc_server: $(FILEPATHLIST_OPP)
 # Build obj binaries
 $(DIRPATH_OBJ)/%.opp: $(DIRNAME_SRC)/%.cpp
 	@mkdir -p $$(dirname $@)
-	@printf "$(COMPILING) $< "
+	@printf "$(COMPILING) $(YELLOW) $< $(NC) "
 	@$(COMPILER_EXECUTABLE) -c $< -o $@ \
 		-I $(DIRNAME_INC) \
+		-I $(DIRNAME_TEM) \
 		$(COMPILER_WARNING_FLAGS) \
 			&& printf "$(SUCCESS)\n"
 
-# Build all targets
-all: $(FILENAMELIST_TARGET)
+# Show macro details
+show:
+	@printf "$(BLUE)SRCS LIST :\n$(YELLOW)$(FILENAME_LIST_SRCS)\n"
+	@printf "$(BLUE)OBJS LIST :\n$(YELLOW)$(FILEPATHLIST_OPP)$(WHITE)\n"
+	@printf "\n-----\n\n"
+	@printf "$(BLUE)COMPILING :\n  $(YELLOW)$(COMPILER_EXECUTABLE) \
+	-o $(DIRNAME_BIN)/$(FILEPATHLIST_OPP) -I $(DIRNAME_INC) -I $(DIRNAME_TEM) \
+	$(COMPILER_LIBS) $(COMPILER_WARNING_FLAGS) \
+	$(FILEPATHLIST_OPP) $(COMPILER_A)\n"
+	@printf "$(BLUE)CFLAGS :\n  $(YELLOW)$(COMPILER_LIBS) \
+	$(COMPILER_WARNING_FLAGS)\n"
+	@printf "$(BLUE)IFLAGS :\n$(YELLOW)  -I $(DIRNAME_INC)\n"
+	@printf "$(BLUE)TFLAGS :\n$(YELLOW)  -I $(DIRNAME_TEM)$(NC)\n"
 
 # Remove objects
 clean:
@@ -103,7 +128,7 @@ fclean:
 # Remove and rebuild everything
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all show clean fclean re
 
 .ONESHELL:
 
@@ -114,10 +139,15 @@ re: fclean all
 # #############################################################################
 
 # Colors
-RED=\033[1;31m
-GREEN=\033[1;32m
-BLUE=\033[1;34m
-NC=\033[0m
+GREY=	\033[1;30m
+RED=	\033[1;31m
+GREEN=	\033[1;32m
+YELLOW=	\033[1;33m
+BLUE=	\033[1;34m
+PURPLE=	\033[1;35m
+CYAN=	\033[1;36m
+WHITE=	\033[1;37m
+NC=		\033[1;0m
 
 # Colored messages
 SUCCESS=$(GREEN)SUCCESS$(NC)
