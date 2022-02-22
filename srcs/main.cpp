@@ -1,6 +1,11 @@
-#include <iostream>
+#include "ft_irc.hpp"
 
-int	main() {
-	std::cout << "toto" << std::endl;
+int	main(int ac, char **av) {
+	Error error;
+
+	(void)av;
+	if (ac != 3)
+		error.type = ARGUMENT;
+	error.displayError();
 	return (0);
 }

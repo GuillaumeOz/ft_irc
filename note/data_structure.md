@@ -3,7 +3,13 @@
 - server
   - channel[] : [channel]
   - user[] : [user]
+  - config
+  - error
   - message ?
+
+- config
+  - server_socket
+  - address_server
 
 - user
   - socket : int
@@ -31,3 +37,6 @@
 - command
   - command: enum
   - roles: set<role(enum)>
+
+- error
+  - type (enum)
