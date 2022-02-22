@@ -6,7 +6,7 @@ class Config {
     public:
 
 	int					sock;
-	struct sockaddr_in 	address;
+	struct sockaddr_in 	addr;
 
 	Config(int port);
 	~Config();

@@ -12,6 +12,9 @@
 /* ----------------------------- Common headers ----------------------------- */
 
 #include <iostream>
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdlib.h>
 #include <map>
 
 /* ----------------------------- Socket headers ----------------------------- */
@@ -26,6 +29,7 @@
 
 #include "class.config.hpp"
 #include "class.error.hpp"
+#include "class.user.hpp"
 #include "class.server.hpp"
 
 #endif

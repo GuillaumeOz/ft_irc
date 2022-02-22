@@ -4,11 +4,22 @@
 #
 # #############################################################################
 
+# Project name
+NAME		=	ircserv
+
+CC			=	c++
+
 # CPP files
-FILENAME_LIST_SRCS= \
-	main.cpp \
-	class/class.config.cpp \
-	class/class.error.cpp \
+SRC_DIR		=	$(shell find srcs -type d)
+INC_DIR		=	$(shell find includes -type d)
+TEM_DIR		=	$(shell find templates -type d)
+OBJ_DIR		=	bin/obj
+
+vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
+
+SRC			=	$(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.cpp), $(notdir $(file))))
+
+OBJ			=	$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.opp))
 
 # #############################################################################
 #
@@ -16,52 +27,11 @@ FILENAME_LIST_SRCS= \
 #
 # #############################################################################
 
-COMPILER_EXECUTABLE=c++
+CFLAGS		=	-Wall -Wextra -Werror -lpthread -std=c++98 #-g3 #-fsanitize=address #-Wshadow -Wno-shadow
 
-COMPILER_LIBS= \
-	-lpthread \
+IFLAGS		=	$(foreach dir, $(INC_DIR), -I $(dir))
 
-COMPILER_A = \
-
-COMPILER_WARNING_FLAGS= \
-	-Wall \
-	-Wextra \
-	-Werror \
-	# -std=c++17 \
-
-# #############################################################################
-#
-# Project configuration
-#
-# #############################################################################
-
-# Targets
-FILENAMELIST_TARGET= \
-	my_irc_server \
-
-# Directories names
-DIRNAME_BIN=bin
-DIRNAME_OBJ=obj
-DIRNAME_SRC=srcs
-DIRNAME_INC=includes \
-	-I includes/class/ \
-
-# Directory paths
-DIRPATH_OBJ=$(DIRNAME_BIN)/$(DIRNAME_OBJ)
-
-# File path lists
-FILEPATHLIST_SRCS=$(addprefix $(DIRNAME_SRC)/, $(FILENAME_LIST_SRCS))
-
-# Merge all CPP lists in one
-FILEPATHLIST_CPP= \
-	$(FILEPATHLIST_SRCS) \
-
-FILEPATHLIST_OPP= \
-	$(subst  \
-		$(DIRNAME_SRC), \
-		$(DIRPATH_OBJ), \
-		$(FILEPATHLIST_CPP:.cpp=.opp) \
-	)
+TFLAGS		=	$(foreach dir, $(TEM_DIR), -I $(dir))
 
 # #############################################################################
 #
@@ -72,41 +42,49 @@ FILEPATHLIST_OPP= \
 .DEFAULT_GOAL = all
 
 # Build target
-my_irc_server: $(FILEPATHLIST_OPP)
-	@mkdir -p $$(dirname $@)
-	@printf "$(COMPILING) TARGET --> $@ "
-	@$(COMPILER_EXECUTABLE) -o $(DIRNAME_BIN)/$@ \
-		-I $(DIRNAME_INC) \
-		$(COMPILER_LIBS) \
-		$(COMPILER_WARNING_FLAGS) \
-		$(FILEPATHLIST_OPP) \
-		$(COMPILER_A) \
-			&& printf "$(SUCCESS)\n"
+$(NAME): $(OBJ)
+	@echo "-----\nCreating Binary File $(_YELLOW)$@$(_WHITE) ... \c"
+	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
+	@mv ircserv bin
+	@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 # Build obj binaries
-$(DIRPATH_OBJ)/%.opp: $(DIRNAME_SRC)/%.cpp
-	@mkdir -p $$(dirname $@)
-	@printf "$(COMPILING) $< "
-	@$(COMPILER_EXECUTABLE) -c $< -o $@ \
-		-I $(DIRNAME_INC) \
-		$(COMPILER_WARNING_FLAGS) \
-			&& printf "$(SUCCESS)\n"
+$(OBJ_DIR)/%.opp: %.cpp
+	@echo "Compiling $(_YELLOW)$@$(_WHITE) ... \c"
+	@mkdir -p $(OBJ_DIR)
+	@$(CC) $(CFLAGS) $(IFLAGS) -o $@ -c $<
+	@echo "$(_GREEN)DONE$(_WHITE)"
 
 # Build all targets
-all: $(FILENAMELIST_TARGET)
+all: $(NAME)
+
+# Show macro details
+show:
+	@echo "$(_BLUE)SRC :\n$(_YELLOW)$(SRC)$(_WHITE)"
+	@echo "$(_BLUE)OBJ :\n$(_YELLOW)$(OBJ)$(_WHITE)"
+	@echo "$(_BLUE)CFLAGS :\n$(_YELLOW)$(CFLAGS)$(_WHITE)"
+	@echo "$(_BLUE)IFLAGS :\n$(_YELLOW)$(IFLAGS)$(_WHITE)"
+	@echo "$(_BLUE)TFLAGS :\n$(_YELLOW)  $(TFLAGS)$(NC)\n"
+	@echo "\n-----\n"
+	@echo "$(_BLUE)Compiling : \n$(_YELLOW)$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(_WHITE)"
+
 
 # Remove objects
 clean:
-	@rm -rf $(DIRPATH_OBJ)
+	@echo "$(_WHITE)Deleting Objects Directory $(_YELLOW)$(OBJ_DIR)$(_WHITE) ... \c"
+	@$(foreach file, $(OBJ), rm -rf $(file))
+	@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 # Remove every built binary
-fclean:
-	@rm -rf $(DIRNAME_BIN)
+fclean: clean
+	@echo "Deleting Binary File $(_YELLOW)$(NAME)$(_WHITE) ... \c"
+	@rm -rf bin/
+	@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 # Remove and rebuild everything
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all show clean fclean re
 
 .ONESHELL:
 
@@ -117,13 +95,18 @@ re: fclean all
 # #############################################################################
 
 # Colors
-RED=\033[1;31m
-GREEN=\033[1;32m
-BLUE=\033[1;34m
-NC=\033[0m
+_GREY=	\033[1;30m
+_RED=	\033[1;31m
+_GREEN=	\033[1;32m
+_YELLOW=\033[1;33m
+_BLUE=	\033[1;34m
+_PURPLE=\033[1;35m
+_CYAN=	\033[1;36m
+_WHITE=	\033[1;37m
+_NC=	\033[0m
 
 # Colored messages
 SUCCESS=$(GREEN)SUCCESS$(NC)
-COMPILING=$(BLUE)COMPILING$(NC)
+COMPILING=$(_BLUE)COMPILING$(NC)
 
 # #############################################################################

@@ -40,3 +40,4 @@
 
 - error
   - type (enum)
+  - map<errorType, std::string> errorMessages
