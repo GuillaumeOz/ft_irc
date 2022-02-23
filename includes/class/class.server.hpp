@@ -10,6 +10,7 @@ class Server {
 	Config	_config;
 	Error	_error;
 	User	_user;
+	
 
 	public:
 

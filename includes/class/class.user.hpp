@@ -18,6 +18,7 @@ class User {
     void    usend(std::string &);
     void    uclose();
     void    urecv(std::string *);
+    void    setSocket(int &);
 };
 
 #endif

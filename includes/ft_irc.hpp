@@ -15,6 +15,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <string.h>
+#include <vector>
 #include <map>
 
 /* ----------------------------- Socket headers ----------------------------- */
@@ -24,6 +26,7 @@
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <poll.h>
 
 /* ----------------------------- Project headers ----------------------------- */
 

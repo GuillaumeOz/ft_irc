@@ -28,3 +28,6 @@ void    User::uclose() {
 	close(_sock);
 }
 
+void	User::setSocket(int &socket) {
+	_sock = socket;
+}
