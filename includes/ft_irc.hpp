@@ -32,7 +32,10 @@
 
 #include "class.config.hpp"
 #include "class.error.hpp"
-#include "class.user.hpp"
+#include "class.channel.hpp"
 #include "class.server.hpp"
+#include "class.user.hpp"
+
+#include "commands.hpp"
 
 #endif

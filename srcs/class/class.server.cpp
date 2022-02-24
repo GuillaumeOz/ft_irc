@@ -47,6 +47,30 @@ void    Server::saccept() {
 	addSockToPfds(user->getSocket());
 };
 
+//JOIN
+//Check if the channel doesnt exit
+void	Server::addChannel(std::string &name, std::string &topic, User *user) {
+	Channel *channel = new Channel(name, topic, user);
+
+	//add first user operator status
+	_channel.push_back(channel);
+};
+
+//PART
+void	Server::removeChannel(int &index) {
+	delete _channel[index];
+	_channel.erase(_channel.begin() + index);
+}
+
+std::vector<Channel *>::iterator Server::findChannel(std::string &name) {
+
+	for(std::vector<Channel *>::iterator it = _channel.begin(); it != _channel.end(); it++) {
+		if ((*it)->getChannelName() == name)
+			return (it);
+	}
+	return (_channel.end());
+}
+
 void	Server::spoll() {
 	poll(&_pfds[0], _pfds.size(), -1);
 };
@@ -89,6 +113,23 @@ int		Server::findClientSock(int socket) {
 	return (-1);
 };
 
+void	Server::setNick(int index, std::string &string) {
+	_user[index]->setNick(string);
+}
+
+std::string		&Server::getNick(int index) {
+	return (_user[index]->getNick());
+};
+
+
 int		Server::getPfdsSize() {
 	return (_pfds.size());
+}
+
+std::vector<User *>	Server::getUsers() {
+	return (_user);
+}
+
+std::vector<Channel *>	Server::getChannels() {
+	return (_channel);
 }

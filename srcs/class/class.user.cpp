@@ -1,6 +1,8 @@
 #include "ft_irc.hpp"
 
-User::User(): _csize(sizeof(_addr)) {};
+User::User(): _csize(sizeof(_addr)), _username(), _nick() {};
+
+User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _username(username), _nick(nick) {};
 
 User::~User() {
 	uclose();
@@ -38,3 +40,15 @@ void	User::setSocket(int &socket) {
 int		User::getSocket() {
 	return (_sock);
 };
+
+void	User::setNick(std::string &string) {
+	_nick = string;
+}
+
+std::string	&User::getNick() {
+	return _nick;
+}
+
+std::string	&User::getUsername() {
+	return _username;
+}
