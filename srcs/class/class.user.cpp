@@ -15,19 +15,26 @@ void	User::usend(std::string &string) {
 	send(_sock, string.c_str(), string.length(), 0);
 };
 
-void	User::urecv(std::string *string) {
+int	User::urecv(std::string *string) {
 	size_t	nbBytes;
 	char	tmpBuff[100];
 
-		nbBytes = recv(_sock, tmpBuff, 100, 0);
-		std::cout << nbBytes << std::endl;
+	do {
+		memset(tmpBuff, '\0', sizeof(tmpBuff));
+		nbBytes = recv(_sock, tmpBuff, sizeof(tmpBuff), 0);
 		*string += tmpBuff;
-}
+	} while (strchr(tmpBuff, '\0') == NULL);
+	return (nbBytes);
+};
 
 void    User::uclose() {
 	close(_sock);
-}
+};
 
 void	User::setSocket(int &socket) {
 	_sock = socket;
-}
+};
+
+int		User::getSocket() {
+	return (_sock);
+};
