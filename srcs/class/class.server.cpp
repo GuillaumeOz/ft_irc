@@ -49,26 +49,30 @@ void    Server::saccept() {
 
 //JOIN
 //Check if the channel doesnt exit
-void	Server::addChannel(std::string &name, std::string &topic, User *user) {
-	Channel *channel = new Channel(name, topic, user);
+void	Server::addChannel(std::string &name, std::string &topic, int index) {
+	Channel *new_channel = new Channel(name, topic, _user[index]);
 
 	//add first user operator status
-	_channel.push_back(channel);
+	channel.push_back(new_channel);
 };
+
+void	Server::joinChannel(int index, std::string &channelName) {
+	((*(findChannel(channelName)))->joinChannel(_user[index]));
+}
 
 //PART
 void	Server::removeChannel(int &index) {
-	delete _channel[index];
-	_channel.erase(_channel.begin() + index);
+	delete channel[index];
+	channel.erase(channel.begin() + index);
 }
 
 std::vector<Channel *>::iterator Server::findChannel(std::string &name) {
 
-	for(std::vector<Channel *>::iterator it = _channel.begin(); it != _channel.end(); it++) {
+	for(std::vector<Channel *>::iterator it = channel.begin(); it != channel.end(); it++) {
 		if ((*it)->getChannelName() == name)
 			return (it);
 	}
-	return (_channel.end());
+	return (channel.end());
 }
 
 void	Server::spoll() {
@@ -131,5 +135,5 @@ std::vector<User *>	Server::getUsers() {
 }
 
 std::vector<Channel *>	Server::getChannels() {
-	return (_channel);
+	return (channel);
 }

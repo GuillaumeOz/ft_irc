@@ -17,8 +17,9 @@ void	parseUserNick(std::string &string, int index, bool &newUser, Server &server
 				break;
 			i++;
 		}
-		tmp.assign(string.begin() + 12, string.begin() + i);
+		tmp.assign(string.begin() + 13, string.begin() + i);
 		server.setNick(index, tmp);
+		POUT("\nnick name:");
 		POUT(server.getNick(index));
 	}
 }
@@ -31,7 +32,9 @@ void 	parseClientInformations(std::string &string, int index, Server &server) {
 
 void	usersActionsLoop(Server &server) {
 	std::string string;
-	std::string str(":user42 JOIN #coco\n");
+	std::string str(" JOIN #coco\n");
+	std::string channelName("#coco");
+	std::string channelTopic("soso");
 	int res = {0};
 
 	for (int i = 1; i < server.getPfdsSize(); i++) {
@@ -42,16 +45,25 @@ void	usersActionsLoop(Server &server) {
 		if (res > 0) {
 			parseClientInformations(string, (i - 1), server);
 			if (strncmp(string.c_str(), "JOIN", 4) == 0) {
-				std::cout << "joining\n";
+				str.insert(0, ":");
+				str.insert(1, server.getNick(i - 1));
 				server.ssend(str, i - 1);
+				if (server.findChannel(channelName) == server.channel.end()) {
+					server.addChannel(channelName, channelTopic, (i -1));
+					POUT("NEW CHANNEL\n");
+				}
+				else {
+					server.joinChannel((i - 1), channelName);
+					POUT("NEW USER IN CHANNEL\n");
+				}
 			}
 			else if (strncmp(string.c_str(), "QUIT", 4) == 0) {
-				server.closeUser(i);
-				std::cout << "quit" << std::endl;
-				break;
+					server.closeUser(i);
+					std::cout << "quit" << std::endl;
+					break;
 			}
+			string.clear();
 		}
-		string.clear();
 	}
 }
 

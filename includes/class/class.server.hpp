@@ -10,11 +10,11 @@ class Server {
 	Config						_config;
 	Error						_error;
 	std::vector<User *>			_user;
-	std::vector<Channel *>		_channel;
 	std::vector<struct pollfd>	_pfds;
 	std::string					_password;
 
 	public:
+	std::vector<Channel *>		channel;
 
 	Server(int port);
 	Server(int port, Error error);
@@ -35,9 +35,10 @@ class Server {
     void setNick(int , std::string &);
 	
 	std::vector<Channel *>	getChannels();
-	void addChannel(std::string &name, std::string &topic, User *first);
+	void addChannel(std::string &name, std::string &topic, int index);
 	void removeChannel(int &);
 	std::vector<Channel *>::iterator findChannel(std::string &name);
+	void joinChannel(int index, std::string &channel);
 
 	void addSockToPfds(int);
 	void removeSockFromPfds(int socket);
