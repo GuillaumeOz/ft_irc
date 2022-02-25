@@ -2,10 +2,12 @@
 
 Server::Server(int port): _config(port), _error() {
 	addSockToPfds(_config.sock);
+	initCommands();
 };
 
 Server::Server(int port, Error error): _config(port), _error(error) {
 	addSockToPfds(_config.sock);
+	initCommands();
 };
 
 Server::~Server() {};
@@ -13,6 +15,16 @@ Server::~Server() {};
 void	Server::sbind()  {
 	bind(_config.sock, (const struct sockaddr *)&(_config.addr), sizeof(_config.addr));
 	std::cout << "[Bind] : " << _config.sock << "." << std::endl;
+}
+
+void	Server::initCommands() {
+	_commands["JOIN"] = &joinCmd;
+	_commands["PART"] = &partCmd;
+}
+
+void	Server::callCommand(std::string &command, Server &server, int &index, std::string &string) {
+	if (_commands.find(command) != _commands.end())
+		_commands.find(command)->second(server, _user[index], string);
 }
 
 void	Server::slisten(int num) {
@@ -35,6 +47,10 @@ void	Server::ssend(std::string &string, int index) {
 	_user[index]->usend(string);
 };
 
+void	Server::ssend(std::string &string, User &user) {
+	user.usend(string);
+};
+
 int		Server::srecv(std::string *string, int index) {
 	return (_user[index]->urecv(string));
 };
@@ -49,15 +65,15 @@ void    Server::saccept() {
 
 //JOIN
 //Check if the channel doesnt exit
-void	Server::addChannel(std::string &name, std::string &topic, int index) {
-	Channel *new_channel = new Channel(name, topic, _user[index]);
+void	Server::addChannel(std::string &name, std::string &topic, User *user) {
+	Channel *new_channel = new Channel(name, topic, user);
 
 	//add first user operator status
 	channel.push_back(new_channel);
 };
 
 void	Server::joinChannel(int index, std::string &channelName) {
-	((*(findChannel(channelName)))->joinChannel(_user[index]));
+	((*(findChannel(channelName)))->addUser(_user[index]));
 }
 
 //PART
@@ -124,7 +140,6 @@ void	Server::setNick(int index, std::string &string) {
 std::string		&Server::getNick(int index) {
 	return (_user[index]->getNick());
 };
-
 
 int		Server::getPfdsSize() {
 	return (_pfds.size());

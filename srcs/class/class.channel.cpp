@@ -6,13 +6,21 @@ Channel::Channel(std::string &name, std::string &topic, User *first) : _name(nam
 
 Channel::~Channel() {}
 
-const std::string   &Channel::getChannelName() const {
+std::string   &Channel::getChannelName() {
     return _name;
 }
 
-const std::string   &Channel::getChannelTopic() const {
+std::string   &Channel::getChannelTopic() {
     return _topic;
 }
+
+// int Channel::findUser(std::string &name) {
+//     for (int i = 0; i < _users.size(); i++) {
+//         if (_users[i].getNick() == name)
+//             return (i);
+//     }
+//     return (-1);
+// }
 
 std::vector<User *>::iterator Channel::findUser(std::string &name) {
     for (std::vector<User *>::iterator it = _users.begin(); it != _users.end(); it++) {
@@ -22,10 +30,17 @@ std::vector<User *>::iterator Channel::findUser(std::string &name) {
     return (_users.end());
 }
 
-void                Channel::joinChannel(User *user) {
+void                Channel::addUser(User *user) {
     _users.push_back(user);
 }
 
-void                Channel::leaveChannel(int index) {
+void                Channel::removeUser(int index) {
     _users.erase(_users.begin() + index);
 }
+
+// int                Channel::isInChannel(std::string &user) {
+//     if (findUser(user) == _users.end())
+//         return (false);
+//     return (true);
+// }
+
