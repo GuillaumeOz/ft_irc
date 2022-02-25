@@ -17,6 +17,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <vector>
+#include <algorithm>
+#include <string>
 #include <map>
 
 /* ----------------------------- Socket headers ----------------------------- */
@@ -37,5 +39,6 @@
 #include "class.user.hpp"
 
 #include "commands.hpp"
+#include "parse.hpp"
 
 #endif

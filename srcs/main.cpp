@@ -1,40 +1,20 @@
 #include "ft_irc.hpp"
 
-bool	isNewUser(std::string &string) {
-	if (strncmp(string.c_str(), "CAP LS", 6) == 0) {
-		return (true);
-	}
-	return (false);
+std::string		getFirstWord(std::string string) {
+	size_t i = string.find_first_of(" ");
+
+	return (string.erase(i, string.length()));
 }
 
-void	parseUserNick(std::string &string, int index, bool &newUser, Server &server) {
-	std::string tmp;
-	size_t		i = {13};
+void	handleActions(std::string &string, int index, Server server) {
+	std::string token;
 
-	if (newUser) {
-		while (i < string.length()) {
-			if (string[i] ==  '\n')
-				break;
-			i++;
-		}
-		tmp.assign(string.begin() + 13, string.begin() + i);
-		server.setNick(index, tmp);
-		POUT("\nnick name:");
-		POUT(server.getNick(index));
-	}
-}
-
-void 	parseClientInformations(std::string &string, int index, Server &server) {
-	bool newUser = {false};
-	newUser = isNewUser(string);
-	parseUserNick(string, index, newUser, server);
+	token = getFirstWord(string);
+	server.callCommand(token, server, index, string);
 }
 
 void	usersActionsLoop(Server &server) {
 	std::string string;
-	std::string str(" JOIN #coco\n");
-	std::string channelName("#coco");
-	std::string channelTopic("soso");
 	int res = {0};
 
 	for (int i = 1; i < server.getPfdsSize(); i++) {
@@ -44,28 +24,34 @@ void	usersActionsLoop(Server &server) {
 		}
 		if (res > 0) {
 			parseClientInformations(string, (i - 1), server);
-			if (strncmp(string.c_str(), "JOIN", 4) == 0) {
-				str.insert(0, ":");
-				str.insert(1, server.getNick(i - 1));
-				server.ssend(str, i - 1);
-				if (server.findChannel(channelName) == server.channel.end()) {
-					server.addChannel(channelName, channelTopic, (i -1));
-					POUT("NEW CHANNEL\n");
-				}
-				else {
-					server.joinChannel((i - 1), channelName);
-					POUT("NEW USER IN CHANNEL\n");
-				}
-			}
-			else if (strncmp(string.c_str(), "QUIT", 4) == 0) {
-					server.closeUser(i);
-					std::cout << "quit" << std::endl;
-					break;
-			}
+			handleActions(string, (i - 1), server);
 			string.clear();
 		}
 	}
 }
+	// std::string str(" JOIN #coco\n");
+	// std::string channelName("#coco");
+	// std::string channelTopic("soso");
+
+
+			// if (strncmp(string.c_str(), "JOIN", 4) == 0) {
+			// 	str.insert(0, ":");
+			// 	str.insert(1, server.getNick(i - 1));
+			// 	server.ssend(str, i - 1);
+			// 	if (server.findChannel(channelName) == server.channel.end()) {
+			// 		server.addChannel(channelName, channelTopic, (i -1));
+			// 		POUT("NEW CHANNEL\n");
+			// 	}
+			// 	else {
+			// 		server.joinChannel((i - 1), channelName);
+			// 		POUT("NEW USER IN CHANNEL\n");
+			// 	}
+			// }
+			// else if (strncmp(string.c_str(), "QUIT", 4) == 0) {
+			// 		server.closeUser(i);
+			// 		std::cout << "quit" << std::endl;
+			// 		break;
+			// }
 
 int	main(int ac, char **av) {
 	Error error;
@@ -75,9 +61,9 @@ int	main(int ac, char **av) {
 	error.displayError();
 	Server server(atoi(av[1]), error);
 	server.sbind();
-	server.slisten(4);
+	server.slisten(10);
 	int i = {0};
-	while (true){
+	while (true) {
 		server.spoll();
 		if (server.spollinCondition(i))
 			server.saccept();

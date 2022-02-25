@@ -19,7 +19,7 @@ void	User::usend(std::string &string) {
 
 int	User::urecv(std::string *string) {
 	size_t	nbBytes;
-	char	tmpBuff[100];
+	char	tmpBuff[1000];
 
 	do {
 		memset(tmpBuff, '\0', sizeof(tmpBuff));
