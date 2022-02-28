@@ -1,9 +1,5 @@
 #include "ft_irc.hpp"
 
-// "JOIN #toto"
-// ":user JOIN #toto\n"
-//channel name starts with # up to 50 characters
-
 void	findChannelName(std::string &string, std::string &channel) {
 	size_t i = string.find_first_of("#");
 	size_t j = {0};
@@ -13,30 +9,42 @@ void	findChannelName(std::string &string, std::string &channel) {
 				break;
 			j++;
 	}
-	if (j > 50)
-		PERR("ERROR: channel name too long.");//protect here
-	channel.assign(string.begin() + i, string.begin() + j);
+	// if (j > 50)
+	// 	server.sendError()
+	channel.assign(string.begin() + i, string.begin() + j - 1);
 	return;
 }
 
-void    joinCmd(Server &server, User *user, std::string &string) {
+std::string		getResponse(Server &server, int index, std::string &channelName) {
 	std::string str;
-	std::string channelName;
-	std::string channelTopic("topic not set");
-	(void)server;
 
-
-	findChannelName(string, channelName);
 	str.insert(0, ":");
-	str.insert(1, user->getNick().c_str());
+	str.insert(1, server.getNick(index).c_str());
 	str.insert(str.length() - 1, " JOIN ");
 	str.insert(str.length() - 1, channelName.c_str());
 	str.insert(str.length() - 1, "\n");
-	std::cout << str << std::endl;
-	user->usend(str);
-	if (server.findChannel((channelName)) == server.channel.end()) {
-		server.addChannel((channelName), channelTopic, user);
-	} else
-		(*(server.findChannel(channelName)))->addUser(user);
+	return (str);
+}
+
+void    joinCmd(Server &server, int index, std::string &string) {
+	std::string channelName;
+	std::string response;
+	std::string channelTopic("topic not set");
+
+	findChannelName(string, channelName);
+	response = getResponse(server, index, channelName);
+	if (server.isValidChannel(channelName) == true) {
+		server.joinChannel(index, channelName);
+		if (channelName.compare(" ") == 0)
+			server.sendError(string.c_str(), NULL, NULL, ERR_NEEDMOREPARAMS, index);
+
+	}
+	else {
+		server.addChannel(channelName, channelTopic, index);
+		if (channelName.find("#") == std::string::npos)
+			server.sendError(channelName.c_str(), NULL, NULL, ERR_NOSUCHCHANNEL, index);
+	}
+	server.sendToAllUsersInChannel(channelName, response);
+
     return ;
 }

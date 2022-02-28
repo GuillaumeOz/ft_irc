@@ -52,3 +52,18 @@ std::string	&User::getNick() {
 std::string	&User::getUsername() {
 	return _username;
 }
+
+void	User::leaveChannel(std::string &channelName) {
+	for (size_t i = 0; i < _uchannels.size(); i++) {
+		if (_uchannels[i] == channelName)
+			_uchannels.erase(_uchannels.begin() + i);
+	}
+}
+
+void	User::joinChannel(std::string &channelName) {
+	for (size_t i = 0; i < _uchannels.size(); i++) {
+		if (_uchannels[i] == channelName)
+			return ;
+	}
+	_uchannels.push_back(channelName);
+}

@@ -15,11 +15,13 @@ class Channel {
 		Channel(std::string &name, std::string &topic, User *first);
 		~Channel();
 
-		std::string				&getChannelName();
-		std::string				&getChannelTopic();
+		std::string						&getChannelName();
+		std::string						&getChannelTopic();
 		std::vector<User *>::iterator	findUser(std::string &name);
 		void							addUser(User *user);
-		void							removeUser(int index);
+		void							removeUser(User *);
+		void							sendToAllUsers(std::string &response);
+		bool							isEmpty();
 		// bool							isInChannel(std::string &);
 };
 

@@ -24,7 +24,7 @@ void	Server::initCommands() {
 
 void	Server::callCommand(std::string &command, Server &server, int &index, std::string &string) {
 	if (_commands.find(command) != _commands.end())
-		_commands.find(command)->second(server, _user[index], string);
+		_commands.find(command)->second(server, index, string);
 }
 
 void	Server::slisten(int num) {
@@ -33,7 +33,7 @@ void	Server::slisten(int num) {
 }
 
 void	Server::closeUser(int pfds_index) {
-	_user[pfds_index - 1]->uclose();
+	_users[pfds_index - 1]->uclose();
 	removeSockFromPfds(pfds_index);
 	removeUser(_pfds[pfds_index].fd);
 };
@@ -44,15 +44,19 @@ void	Server::closeServer() {
 };
 
 void	Server::ssend(std::string &string, int index) {
-	_user[index]->usend(string);
+	_users[index]->usend(string);
 };
 
 void	Server::ssend(std::string &string, User &user) {
 	user.usend(string);
 };
 
+void	Server::sendError(const char *arg1, const char *arg2, const char *arg3, errorType value, int index) {
+	_error.sendError(arg1, arg2, arg3, value, _users[index]);
+}
+
 int		Server::srecv(std::string *string, int index) {
-	return (_user[index]->urecv(string));
+	return (_users[index]->urecv(string));
 };
 
 void    Server::saccept() {
@@ -65,31 +69,52 @@ void    Server::saccept() {
 
 //JOIN
 //Check if the channel doesnt exit
-void	Server::addChannel(std::string &name, std::string &topic, User *user) {
-	Channel *new_channel = new Channel(name, topic, user);
-
+void	Server::addChannel(std::string &name, std::string &topic, int index) {
+	Channel *new_channel = new Channel(name, topic, _users[index]);
 	//add first user operator status
-	channel.push_back(new_channel);
+	channels.push_back(new_channel);
 };
 
 void	Server::joinChannel(int index, std::string &channelName) {
-	((*(findChannel(channelName)))->addUser(_user[index]));
-}
+	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
+		if ((*it)->getChannelName() == channelName)//add double join channel protection
+			(*it)->addUser(_users[index]);
+	}
+};
 
 //PART
 void	Server::removeChannel(int &index) {
-	delete channel[index];
-	channel.erase(channel.begin() + index);
-}
+	delete channels[index];
+	channels.erase(channels.begin() + index);
+};
 
-std::vector<Channel *>::iterator Server::findChannel(std::string &name) {
-
-	for(std::vector<Channel *>::iterator it = channel.begin(); it != channel.end(); it++) {
-		if ((*it)->getChannelName() == name)
-			return (it);
+bool	Server::isValidChannel(std::string &name) {
+	for (size_t i = 0; i < channels.size(); i++) {
+		if (channels[i]->getChannelName() == name)
+			return (true);
 	}
-	return (channel.end());
+	return (false);
 }
+
+void	Server::delUserFromChannel(std::string &channelName, int index) {
+	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
+		if ((*it)->getChannelName() == channelName)
+			(*it)->removeUser(_users[index]);
+	}
+};
+
+void	Server::delChannel(std::string &channelName) {
+	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
+		if ((*it)->getChannelName() == channelName) {
+			channels.erase(it);
+			break ;
+		}
+	}
+};
+
+void	Server::delChannelFromUser(std::string &channelName, int index) {
+	_users[index]->leaveChannel(channelName);
+};
 
 void	Server::spoll() {
 	poll(&_pfds[0], _pfds.size(), -1);
@@ -103,14 +128,14 @@ bool	Server::spolloutCondition(int &index) {
 	return (_pfds[index].revents == POLLOUT);
 };
 void	Server::addUser(User *user) {
-	_user.push_back(user);
+	_users.push_back(user);
 };
 
 void	Server::removeUser(int &socket) {
 	int index = findClientSock(socket);
 	if (index > 0) {
-		delete _user[index];
-		_user.erase(_user.begin() + index);
+		delete _users[index];
+		_users.erase(_users.begin() + index);
 	}
 }
 
@@ -126,19 +151,19 @@ void	Server::removeSockFromPfds(int index) {
 };
 
 int		Server::findClientSock(int socket) {
-	for (size_t i = 0; i < _user.size(); i++) {
-		if (_user[i]->getSocket() == socket)
+	for (size_t i = 0; i < _users.size(); i++) {
+		if (_users[i]->getSocket() == socket)
 			return (i);
 	}
 	return (-1);
 };
 
 void	Server::setNick(int index, std::string &string) {
-	_user[index]->setNick(string);
+	_users[index]->setNick(string);
 }
 
 std::string		&Server::getNick(int index) {
-	return (_user[index]->getNick());
+	return (_users[index]->getNick());
 };
 
 int		Server::getPfdsSize() {
@@ -146,9 +171,39 @@ int		Server::getPfdsSize() {
 }
 
 std::vector<User *>	Server::getUsers() {
-	return (_user);
+	return (_users);
 }
 
 std::vector<Channel *>	Server::getChannels() {
-	return (channel);
+	return (channels);
 }
+
+bool	Server::isChannelEmpty(std::string &channelName) {
+	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
+		if ((*it)->getChannelName() == channelName)
+			return ((*it)->isEmpty());
+	}
+	return (false);
+}
+
+std::vector<Channel *>::iterator Server::findChannel(std::string &channelName) {
+	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
+		if ((*it)->getChannelName() == channelName)
+			return (it);
+	}
+	return (channels.end());
+};
+
+void		Server::sendToAllUsersInChannel(std::string &channelName, std::string &response) {
+	std::vector<Channel *>::iterator	it = findChannel(channelName);
+
+	if (it != channels.end()) {
+		(*it)->sendToAllUsers(response);
+	}
+};
+
+void		Server::printChannels() {
+	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
+		std::cout << (*it)->getChannelName() << std::endl;
+	}
+};

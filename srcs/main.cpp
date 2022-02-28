@@ -1,12 +1,19 @@
 #include "ft_irc.hpp"
 
 std::string		getFirstWord(std::string string) {
+	POUT("c'est las string")
+	POUT(string)
 	size_t i = string.find_first_of(" ");
+	if (i != std::string::npos) {
+		std::string tmp;
 
-	return (string.erase(i, string.length()));
+		tmp.insert(tmp.begin(), string.begin(), string.begin() + i);
+		return (tmp);
+	}
+	return (string);
 }
 
-void	handleActions(std::string &string, int index, Server server) {
+void	handleActions(std::string &string, int index, Server &server) {
 	std::string token;
 
 	token = getFirstWord(string);
