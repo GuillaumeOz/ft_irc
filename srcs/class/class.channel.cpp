@@ -14,6 +14,10 @@ std::string   &Channel::getChannelTopic() {
 	return _topic;
 };
 
+size_t			Channel::getNumberofUsers() {
+	return (_users.size());
+}
+
 std::vector<User *>::iterator Channel::findUser(std::string &name) {
 	for (std::vector<User *>::iterator it = _users.begin(); it != _users.end(); it++) {
 		if ((*it)->getNick() == name)
