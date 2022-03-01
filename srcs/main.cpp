@@ -2,19 +2,20 @@
 
 std::string		getFirstWord(std::string string) {
 	size_t i = string.find_first_of(" ");
-	if (i != std::string::npos) {
-		std::string tmp;
+	std::string tmp;
 
+	if (i != std::string::npos)
 		tmp.insert(tmp.begin(), string.begin(), string.begin() + i);
-		return (tmp);
-	}
-	return (string);
+	else
+		tmp.insert(tmp.begin(), string.begin(), string.end() - 2);
+	return (tmp);
 }
 
 void	handleActions(std::string &string, int index, Server &server) {
 	std::string token;
 
 	token = getFirstWord(string);
+	POUT(token)
 	server.callCommand(token, server, index, string);
 }
 
