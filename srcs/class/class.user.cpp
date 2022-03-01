@@ -52,3 +52,38 @@ std::string	&User::getNick() {
 std::string	&User::getUsername() {
 	return _username;
 }
+
+void	User::leaveChannel(std::string &channelName) {
+	for (size_t i = 0; i < _uchannels.size(); i++) {
+		if (_uchannels[i] == channelName)
+			_uchannels.erase(_uchannels.begin() + i);
+	}
+}
+
+void	User::joinChannel(std::string &channelName) {
+	for (size_t i = 0; i < _uchannels.size(); i++) {
+		if (_uchannels[i] == channelName)
+			return ;
+	}
+	_uchannels.push_back(channelName);
+}
+
+void	User::assignMode(userMode mode) {
+	_userMode |= mode;
+}
+
+bool	User::isModeOn(userMode mode) {
+	if (_userMode & mode)
+		return (true);
+	return (false);
+}
+
+void	User::assignChannelUserMode(std::string &channel, channelUserMode mode) {
+	_channelUserMode[channel] |= mode;
+}
+
+bool	User::isChannelUserModeOn(std::string &channel, channelUserMode mode) {
+	if (_channelUserMode[channel] & mode)
+		return (true);
+	return (false);
+}

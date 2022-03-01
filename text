@@ -1,0 +1,70 @@
+- INVITE
+- JOIN //
+- KICK
+- LIST
+- NAMES
+- PART
+- TOPIC
+- MODE //
+- NICK
+- OPER //
+
+- QUIT //
+- USER
+- KILL
+- PING
+- PONG
+- AWAY
+- ISON
+- USERHOST
+- USERS (handled but disabled)
+
+- WALLOPS
+- NOTICE
+- PRIVMSG //
+- ADMIN
+- INFO
+- LUSERS
+- MOTD
+- TIME
+- VERSION
+- WHO
+- WHOIS
+- WHOWAS
+
+USER MODES :
+- a : away
+- i : invisible
+- w : wallops
+- r : restricted
+- o : operator
+a - user is flagged as away;
+i - marks a users as invisible;
+w - user receives wallops;
+r - restricted user connection;
+o - operator flag;
+
+
+CHANNEL MODES :
+
+for users :
+    # - O : channel creator
+    - o : channel operator
+    - v : voice
+
+for channels :
+    i - toggle the invite-only channel flag - new members are only accepted if they match invite-list or if an operator invites them. Restricts the usage of INVITE command.
+    m - toggle the moderated channel - only channel operators and voice privileged members can send messages.
+  D n - toggle the no messages to channel from clients on the outside - only members can send messages.
+    p - toggle the private channel flag - name of the channel cannot be acquired from the servers if not a member. Omitted from queries like WHOIS.
+  D t - toggle the topic settable by channel operator only flag - restricts the usage of TOPIC command to operators.
+    k - set/remove the channel key (password) - servers reject requests to join the channel unless the key is given. Key is given to members after a MODE query.
+    l - set/remove the user limit to channel - when the limit is reached, servers forbid their local users from joining. Limit is given to members after a MODE query
+
+
+    # Access control:
+    # b - set/remove ban mask to keep users out - if a user tries to join, his user checks whether his addresses the ban mask and if so forbids him from joining unless he is also on an exception mask.
+    # e - set/remove an exception mask to override a ban mask
+    # if a user has been banned, he can be reinvited by an operator and rejoin. Cannot speak on the channel unless he is an operator or has voice privilege.
+    # I - set/remove an invitation mask to automatically override the invite-only flag - users whose addresses match the mask can join the channel without invitation.
+

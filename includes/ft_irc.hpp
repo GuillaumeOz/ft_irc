@@ -30,6 +30,35 @@
 #include <netdb.h>
 #include <poll.h>
 
+/* ----------------------------- Project enums ----------------------------- */
+
+enum userMode {
+	NO_USER_MODE = 0,
+	MODE_USER_A = (1 << 0),
+	MODE_USER_I = (1 << 1),
+	MODE_USER_W = (1 << 2),
+	MODE_USER_R = (1 << 3),
+	MODE_USER_O = (1 << 4)
+};
+
+enum channelUserMode {
+	NO_CHANNEL_USER_MODE = 0,
+	MODE_CHANNEL_USER_O = (1 << 0),
+	MODE_CHANNEL_USER_V = (1 << 1)
+};
+
+enum channelMode {
+
+	NO_CHANNEL_MODE = 0,
+	MODE_CHANNEL_I = (1 << 0),
+	MODE_CHANNEL_M = (1 << 1),
+	MODE_CHANNEL_N = (1 << 2),
+	MODE_CHANNEL_P = (1 << 3),
+	MODE_CHANNEL_T = (1 << 4),
+	MODE_CHANNEL_K = (1 << 5),
+	MODE_CHANNEL_L = (1 << 6)
+};
+
 /* ----------------------------- Project headers ----------------------------- */
 
 #include "class.config.hpp"
@@ -40,5 +69,6 @@
 
 #include "commands.hpp"
 #include "parse.hpp"
+
 
 #endif

@@ -1,35 +1,43 @@
 #include "ft_irc.hpp"
 
-// recv(buf)
-// parse(buf)
-// if (command == part)
-// 	partcmd(name, channel, server)
+std::string		getChannelName(std::string &command) {
+	std::string tmp;
 
-// void	partCmd(Server &server, User *user, std::string &string) {
-// 	std::vector<Channel *>::iterator	channel = server.findChannel(string);
-// 	int	index = (*channel)->findUser(user->getNick());
-// 	if (channel == server.channel.end())
-// 		PERR("Channel not in server");
-// 	if (index == -1)
-// 		PERR("User not in channel");
-// 	if ((*channel)->findUser(user->getNick())) {
-// 		(*channel)->removeUser();
-// 		user->leaveChannel(string);
-// 	}
-// }
+	tmp.insert(tmp.begin(), command.begin() + command.find_first_of("#"), command.begin() + command.find_first_of(":") - 1);
+	return (tmp);
+}
 
-// int channel_in_server = server->findChannel(channel);
-// int user_in_channel = server->_channels[channel_in_server].findUser(user);
-// int channel_in_user = server->getChannels()[channel_in_server].[user_in_channel].findChannel(channel);
+std::string		getReason(std::string &command) {
+	std::string tmp;
 
-// server->getChannels()[channel_in_server].getUsers()
-// server->_user[channel_in_user]
-// server->_channel[channel_in_server]
+	tmp.insert(tmp.begin(), command.begin() + command.find_first_of(":"), command.end());
+	return (tmp);
+}
 
+std::string		getResponse(Server &server, int index, std::string &channelName, std::string &reason) {
+	std::string str;
 
-// Server
-// 	channel1
-// 		users
-// 	channel2
-// 		users - 1
-// 			channels
+	str.insert(0, ":");
+	str.insert(1, server.getNick(index).c_str());
+	str.insert(str.length() - 1, "!test");
+	str.insert(str.length() - 1, " PART ");
+	str.insert(str.length() - 1, channelName.c_str());
+	str.insert(str.length() - 1, " ");
+	str.insert(str.length() - 1, reason.c_str());
+	str.insert(str.length() - 1, "\n");
+    return (str);
+}
+
+void	partCmd(Server &server, int index, std::string &command) {
+	std::string channelName = getChannelName(command);
+	std::string reason = getReason(command);
+	std::string	response = getResponse(server, index, channelName, reason);
+    if (server.isValidChannel(channelName)) {
+        server.delUserFromChannel(channelName, index);
+		server.delChannelFromUser(channelName, index);
+		server.ssend(response, index);
+        if (server.isChannelEmpty(channelName) == true)
+            server.delChannel(channelName);
+    } else
+		server.sendError(channelName.c_str(), NULL, NULL, ERR_NOSUCHCHANNEL, index);
+}
