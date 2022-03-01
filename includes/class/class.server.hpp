@@ -49,6 +49,7 @@ class Server {
 	void delChannelFromUser(std::string &channelName, int user_index);
 	bool isUserModeOn(userMode mode, int index);
 	void assignUserMode(userMode mode, int index);
+	int findUserIndex(std::string &nick);
 
 	//Channels
 	std::vector<Channel *>	getChannels();

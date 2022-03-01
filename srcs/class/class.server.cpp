@@ -224,3 +224,15 @@ bool		Server::ischannelModeOn(channelMode mode, int index) {
 void		Server::assignchannelMode(channelMode mode, int index) {
 	return (channels[index]->assignMode(mode));
 }
+
+int			Server::findUserIndex(std::string &nick) {
+	for (size_t i = 0; i < _users.size(); i++) {
+		POUT("in the loop")
+		POUT(_users[i]->getNick())
+		POUT("nick:")
+		POUT(nick)
+		POUT("user:")
+		POUT(_users[i]->getNick())
+	}
+	return (-1);
+}

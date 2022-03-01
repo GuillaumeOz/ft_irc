@@ -47,16 +47,15 @@ void    privmsgCmd(Server &server, int index, std::string &command) {
     if (toChannel(command) == true) {
         std::string channelName = setChannelName(command);
         response = setResponse(server, index, channelName, message);
-        POUT("Sending to a channel:")
-        POUT(response)
         server.sendToAllUsersInChannel(channelName, response);
     }
     else {
         std::string user = getUser(command);
-        POUT(user)
         response = setResponse(server, index, user, message);
-        POUT("Sending to a user:")
-        POUT(response)        
-        server.ssend(response, index);
+        POUT(user)
+        int user_index = server.findUserIndex(user);
+        POUT("user index:")
+        POUT(user_index)
+        server.ssend(response, user_index);
     }
 }
