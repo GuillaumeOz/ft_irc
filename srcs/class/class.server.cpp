@@ -76,6 +76,11 @@ void	Server::addChannel(std::string &name, std::string &topic, int index) {
 	channels.push_back(new_channel);
 };
 
+void Server::addChannelToUser(int index, std::string channelName) {
+	_users[index]->joinChannel(channelName);
+}
+
+
 void	Server::joinChannel(int index, std::string &channelName) {
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
 		if ((*it)->getChannelName() == channelName)//add double join channel protection
