@@ -47,3 +47,13 @@ void				Channel::sendToAllUsers(std::string &response) {
 bool				Channel::isEmpty() {
 	return (_users.empty());
 };
+
+void				Channel::assignMode(enum channelMode mode) {
+	_channelMode |= mode;
+}
+
+bool				Channel::isModeOn(enum channelMode mode) {
+	if (_channelMode & mode)
+		return (true);
+	return (false);
+};

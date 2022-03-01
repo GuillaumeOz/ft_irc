@@ -33,12 +33,11 @@ void	partCmd(Server &server, int index, std::string &command) {
 	std::string reason = getReason(command);
 	std::string	response = getResponse(server, index, channelName, reason);
     if (server.isValidChannel(channelName)) {
-		std::cout << channelName << std::endl;
         server.delUserFromChannel(channelName, index);
 		server.delChannelFromUser(channelName, index);
-		std::cout << "Our Response :" << response << std::endl;
 		server.ssend(response, index);
         if (server.isChannelEmpty(channelName) == true)
             server.delChannel(channelName);
-    }
+    } else
+		server.sendError(channelName.c_str(), NULL, NULL, ERR_NOSUCHCHANNEL, index);
 }

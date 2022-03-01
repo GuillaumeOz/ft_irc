@@ -27,6 +27,20 @@ Error::Error(): type(NO_ERROR) {
 	errorMessages[ERR_NOOPERHOST] = ":No O-lines for your host";
 	errorMessages[ERR_UMODEUNKNOWNFLAG] = ":Unknown MODE flag";
 	errorMessages[ERR_USERSDONTMATCH] = ":Cannot change mode for other users";
+	errorMessages[ERR_NICKCOLLISION] = "place1 :Nickname collision KILL from place2@place3";
+	errorMessages[ERR_UNAVAILRESOURCE] = "place1 :Nick/channel is temporarily unavailable";
+	errorMessages[ERR_USERNOTINCHANNEL] = "place1 place2 :They aren't on that channel";
+	errorMessages[ERR_NOTONCHANNEL] = "place1 :You're not on that channel";
+	errorMessages[ERR_USERONCHANNEL] = "place1 place2 :is already on channel";
+	errorMessages[ERR_NOLOGIN] = "place1 :User not logged in";
+	errorMessages[ERR_SUMMONDISABLED] = ":SUMMON has been disabled";
+	errorMessages[ERR_USERSDISABLED] = ":USERS has been disabled";
+	errorMessages[ERR_NOTREGISTERED] = ":You have not registered";
+	errorMessages[ERR_ALREADYREGISTRED] = ":Unauthorized command (already registered)";
+	errorMessages[ERR_NOPERMFORHOST] = ":Your host isn't among the privileged";
+	errorMessages[ERR_PASSWDMISMATCH] = ":Password incorrect";
+	errorMessages[ERR_YOUREBANNEDCREEP] = ":You are banned from this server";
+	errorMessages[ERR_KEYSET] = "place1 :Channel key already set";
 };
 
 Error::Error(Error &instance) {
@@ -63,10 +77,9 @@ void	Error::sendError(const char *arg1, const char *arg2, const char *arg3, erro
 	std::string	message;
 
 	message = getMessageWithReplaceToken(arg1, arg2, arg3, value);
+	POUT("User nick:")
+	POUT(user->getNick())
 	POUT("Error sent: ")
 	POUT(message);
-	POUT("USer nick:")
-	POUT(user->getNick())
 	user->usend(message);
 };
-

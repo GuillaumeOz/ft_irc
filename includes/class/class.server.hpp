@@ -47,6 +47,8 @@ class Server {
 	std::string	&getNick(int);
 	std::string	&getNick(User *);
 	void delChannelFromUser(std::string &channelName, int user_index);
+	bool isUserModeOn(userMode mode, int index);
+	void assignUserMode(userMode mode, int index);
 
 	//Channels
 	std::vector<Channel *>	getChannels();
@@ -60,6 +62,8 @@ class Server {
 	void delChannel(std::string &channelName);
 	void sendToAllUsersInChannel(std::string &channelName, std::string &response);
 	void printChannels();
+	bool ischannelModeOn(channelMode mode, int index);
+	void assignchannelMode(channelMode mode, int index);
 
 	//Pfds
 	void addSockToPfds(int);

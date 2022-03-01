@@ -10,6 +10,7 @@ class Channel {
 		std::vector<User *>     _operators;
 		std::string             _name;
 		std::string             _topic;
+		int8_t					_channelMode;
 
 	public:
 		Channel(std::string &name, std::string &topic, User *first);
@@ -22,6 +23,8 @@ class Channel {
 		void							removeUser(User *);
 		void							sendToAllUsers(std::string &response);
 		bool							isEmpty();
+		bool							isModeOn(channelMode);
+		void							assignMode(channelMode);
 		// bool							isInChannel(std::string &);
 };
 

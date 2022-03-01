@@ -1,8 +1,6 @@
 #include "ft_irc.hpp"
 
 std::string		getFirstWord(std::string string) {
-	POUT("c'est las string")
-	POUT(string)
 	size_t i = string.find_first_of(" ");
 	if (i != std::string::npos) {
 		std::string tmp;

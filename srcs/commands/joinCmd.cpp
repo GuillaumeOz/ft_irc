@@ -37,7 +37,6 @@ void    joinCmd(Server &server, int index, std::string &string) {
 		server.joinChannel(index, channelName);
 		if (channelName.compare(" ") == 0)
 			server.sendError(string.c_str(), NULL, NULL, ERR_NEEDMOREPARAMS, index);
-
 	}
 	else {
 		server.addChannel(channelName, channelTopic, index);
@@ -45,6 +44,5 @@ void    joinCmd(Server &server, int index, std::string &string) {
 			server.sendError(channelName.c_str(), NULL, NULL, ERR_NOSUCHCHANNEL, index);
 	}
 	server.sendToAllUsersInChannel(channelName, response);
-
-    return ;
+	return ;
 }

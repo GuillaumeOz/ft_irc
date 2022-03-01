@@ -207,3 +207,19 @@ void		Server::printChannels() {
 		std::cout << (*it)->getChannelName() << std::endl;
 	}
 };
+
+bool		Server::isUserModeOn(userMode mode, int index) {
+	return (_users[index]->isModeOn(mode));
+}
+
+void		Server::assignUserMode(userMode mode, int index) {
+	return (_users[index]->assignMode(mode));
+}
+
+bool		Server::ischannelModeOn(channelMode mode, int index) {
+	return (channels[index]->isModeOn(mode));
+}
+
+void		Server::assignchannelMode(channelMode mode, int index) {
+	return (channels[index]->assignMode(mode));
+}
