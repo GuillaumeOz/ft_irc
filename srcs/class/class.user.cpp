@@ -41,6 +41,11 @@ int		User::getSocket() {
 	return (_sock);
 };
 
+std::vector<std::string>	User::getUchannels() {
+
+	return (_uchannels);
+}
+
 void	User::setNick(std::string &string) {
 	_nick = string;
 }
