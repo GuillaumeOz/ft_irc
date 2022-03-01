@@ -10,7 +10,7 @@ std::string		setChannelName(std::string &command) {
 std::string		getUser(std::string &command) {
 	std::string tmp;
 
-	tmp.insert(tmp.begin(), command.begin() + 9, command.begin() + command.find_first_of(":") - 1);
+	tmp.insert(tmp.begin(), command.begin() + 8, command.begin() + command.find_first_of(":") - 1);
 	return (tmp);
 }
 
@@ -53,6 +53,7 @@ void    privmsgCmd(Server &server, int index, std::string &command) {
     }
     else {
         std::string user = getUser(command);
+        POUT(user)
         response = setResponse(server, index, user, message);
         POUT("Sending to a user:")
         POUT(response)        
