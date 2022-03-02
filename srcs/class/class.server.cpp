@@ -20,6 +20,7 @@ void	Server::sbind()  {
 void	Server::initCommands() {
 	_commands["JOIN"] = &joinCmd;
 	_commands["PART"] = &partCmd;
+	_commands["PRIVMSG"] = &privmsgCmd;
 	_commands["LIST"] = &listCmd;
 	_commands["QUIT"] = &quitCmd;
 }
@@ -229,4 +230,13 @@ bool		Server::ischannelModeOn(channelMode mode, int index) {
 
 void		Server::assignchannelMode(channelMode mode, int index) {
 	return (channels[index]->assignMode(mode));
+}
+
+int			Server::findUserIndex(std::string &nick) {
+	for (size_t i = 0; i < _users.size(); i++) {
+		if (nick.compare(_users[i]->getNick()) == 0) {
+			return (i);
+		}
+	}
+	return (-1);
 }
