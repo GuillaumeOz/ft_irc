@@ -20,9 +20,10 @@ std::string		getResponse(Server &server, int index, std::string &channelName) {
 
 	str.insert(0, ":");
 	str.insert(1, server.getNick(index).c_str());
-	str.insert(str.length() - 1, " JOIN ");
-	str.insert(str.length() - 1, channelName.c_str());
-	str.insert(str.length() - 1, "\n");
+	str.insert(str.length(), " JOIN ");
+	str.insert(str.length(), channelName.c_str());
+	str.insert(str.length(), "\n");
+	POUT(str)
 	return (str);
 }
 

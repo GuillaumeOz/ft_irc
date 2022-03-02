@@ -19,12 +19,11 @@ std::string		getResponse(Server &server, int index, std::string &channelName, st
 
 	str.insert(0, ":");
 	str.insert(1, server.getNick(index).c_str());
-	str.insert(str.length() - 1, "!test");
-	str.insert(str.length() - 1, " PART ");
-	str.insert(str.length() - 1, channelName.c_str());
-	str.insert(str.length() - 1, " ");
-	str.insert(str.length() - 1, reason.c_str());
-	str.insert(str.length() - 1, "\n");
+	str.insert(str.length(), " PART ");
+	str.insert(str.length(), channelName.c_str());
+	str.insert(str.length(), " ");
+	str.insert(str.length(), reason.c_str());
+	str.insert(str.length(), "\n");
     return (str);
 }
 
