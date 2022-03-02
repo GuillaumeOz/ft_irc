@@ -66,6 +66,7 @@ class Server {
 	bool isChannelEmpty(std::string &channelName);
 	void delChannel(std::string &channelName);
 	void sendToAllUsersInChannel(std::string &channelName, std::string &response);
+	void sendToOtherUsersInChannel(std::string &channelName, std::string &response, int index);
 	void printChannels();
 	bool ischannelModeOn(channelMode mode, int index);
 	void assignchannelMode(channelMode mode, int index);
