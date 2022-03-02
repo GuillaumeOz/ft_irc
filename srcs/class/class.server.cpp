@@ -20,6 +20,7 @@ void	Server::sbind()  {
 void	Server::initCommands() {
 	_commands["JOIN"] = &joinCmd;
 	_commands["PART"] = &partCmd;
+	_commands["LIST"] = &listCmd;
 }
 
 void	Server::callCommand(std::string &command, Server &server, int &index, std::string &string) {
