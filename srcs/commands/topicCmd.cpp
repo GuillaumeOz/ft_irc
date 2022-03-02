@@ -22,27 +22,38 @@ bool	isDisplayTopic(std::string &command) {
 std::string getTopic(std::string &command) {
 	std::string tmp;
 
-	tmp.insert(tmp.begin(), command.begin() + command.find_first_of(":") - 1, command.end());
+	tmp.insert(tmp.begin(), command.begin() + command.find_first_of(":") , command.end());
 	return (tmp);
 }
 
-std::string		getTopicChannelName(std::string &command) {
+std::string		getDisplayTopic(Server &server, int index, std::string &channelName, std::string &reason) {
+	std::string str;
+
+	str.insert(0, ":");
+	str.insert(1, server.getNick(index).c_str());
+	str.insert(str.length(), "!test");
+	str.insert(str.length(), " PRIVMSG ");
+	str.insert(str.length(), channelName.c_str());
+	str.insert(str.length(), " ");
+	str.insert(str.length(), channelName.c_str());
+	str.insert(str.length(), " :");
+	str.insert(str.length(), reason.c_str());
+	str.insert(str.length(), "\n");
+    return (str);
+}
+
+std::string		getTopicDisplayChannelName(std::string &command) {
 	std::string tmp;
 
 	tmp.insert(tmp.begin(), command.begin() + command.find_first_of("#"), command.begin() + command.find_first_of("\n") - 1);
 	return (tmp);
 }
 
-std::string		getDisplayTopicResponse(Server &server, int index, std::string &channelName) {
-	std::string str;
+std::string		getTopicChannelName(std::string &command) {
+	std::string tmp;
 
-	str.insert(0, ":");
-	str.insert(1, server.getNick(index).c_str());
-	str.insert(str.length(), "!test");
-	str.insert(str.length(), " TOPIC ");
-	str.insert(str.length(), channelName.c_str());
-	str.insert(str.length(), "\n");
-    return (str);
+	tmp.insert(tmp.begin(), command.begin() + command.find_first_of("#"), command.begin() + command.find_first_of(":") - 1);
+	return (tmp);
 }
 
 std::string		getTopicResponse(Server &server, int index, std::string &channelName, std::string &reason) {
@@ -62,47 +73,38 @@ std::string		getTopicResponse(Server &server, int index, std::string &channelNam
 // :WiZ!jto@tolsun.oulu.fi TOPIC #test :New topic
 
 //INPUT = /topic    			CMD = TOPIC #test
-//INPUT = /topic				CMD = TOPIC #test ::
+//INPUT = /topic :				CMD = TOPIC #test ::
 //INPUT = /topic <lorem> 		CMD = TOPIC #test :lorem
 
 void	topicCmd(Server &server, int index, std::string &command) {
-	std::string channel = getTopicChannelName(command);
-	std::vector<Channel *>::iterator	it = server.findChannel(channel);
-	// return (string.find_first_of(" ") != std::string::npos);
-	// POUT(command)
-	// POUT(channel)
-	// POUT("TEST1")
-	// POUT((*it)->getChannelTopic())
+	POUT("ENTER INTO TOPIC CMD GESTION")
+	std::string response;
+	std::string channel;
+	std::vector<Channel *>::iterator	it;
 
 	if (isDisplayTopic(command) == true) {
-		std::string displayResponse = getDisplayTopicResponse(server, index, (*it)->getChannelTopic());
-		POUT("DISPLAYRESPNSE")
-		POUT(displayResponse)
-		server.ssend(displayResponse, index);
+		channel = getTopicDisplayChannelName(command);
+		it = server.findChannel(channel);
+		std::string displayTopic = getDisplayTopic(server, index, channel, (*it)->getChannelTopic());
+		server.ssend(displayTopic, index);
+		return ;
 	}
-	// server.getUsers()[index]->usend((*it)->getChannelTopic());
-	// if (topic.size() == std::string::npos) {
-
-	// 	POUT("TEST3")
-	// 	return ;
-	// }
-	// std::string topic = getTopic(command);
-	// else if (topic.compare("::")) {
-
-	// }
-	// else {
-
-	// }
-
-	// POUT("command")
-	// POUT(command)
-	// POUT("topic")
-	// POUT(topic)
-	// POUT("channel")
-	// POUT(channel)
-	// POUT("response")
-	// POUT(response)
-
-	(void)server;
-	(void)index;
+	//add user mode protection
+	std::string topic = getTopic(command);
+	POUT("NEW TOPIC")
+	POUT(topic)
+	channel = getTopicChannelName(command);
+	it = server.findChannel(channel);
+	if (topic.compare("::") == 0) {
+		std::string newTopic = "topic not set.";
+		(*it)->setChannelTopic(newTopic);
+		response = getTopicResponse(server, index, channel, (*it)->getChannelTopic());
+		server.ssend(response, index);
+	}
+	else {
+		POUT("COUCOUCOUCOCUC")
+		(*it)->setChannelTopic(topic.c_str() + 1);
+		response = getTopicResponse(server, index, channel, (*it)->getChannelTopic());
+		server.ssend(response, index);
+	}
 }

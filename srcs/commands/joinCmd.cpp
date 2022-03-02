@@ -30,7 +30,7 @@ std::string		getResponse(Server &server, int index, std::string &channelName) {
 void    joinCmd(Server &server, int index, std::string &string) {
 	std::string channelName;
 	std::string response;
-	std::string channelTopic("topic not set");
+	std::string channelTopic("topic not set.");
 
 	findChannelName(string, channelName);
 	response = getResponse(server, index, channelName);
