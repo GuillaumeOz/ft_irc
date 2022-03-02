@@ -10,7 +10,7 @@ std::string		setChannelName(std::string &command) {
 std::string		getUser(std::string &command) {
 	std::string tmp;
 
-	tmp.insert(tmp.begin(), command.begin() + 8, command.begin() + command.find_first_of(":") - 1);
+	tmp.insert(tmp.begin(), command.begin() + 8, command.begin() + command.find(":") - 1);
 	return (tmp);
 }
 
@@ -26,12 +26,12 @@ std::string		setResponse(Server &server, int index, std::string &destination, st
 
 	str.insert(0, ":");
 	str.insert(1, server.getNick(index).c_str());
-	str.insert(str.length() - 1, "!test");
-	str.insert(str.length() - 1, " PRIVMSG ");
-	str.insert(str.length() - 1, destination.c_str());
-	str.insert(str.length() - 1, " ");
-	str.insert(str.length() - 1, reason.c_str());
-	str.insert(str.length() - 1, "\n");
+	str.insert(str.length(), "!test");
+	str.insert(str.length(), " PRIVMSG ");
+	str.insert(str.length(), destination.c_str());
+	str.insert(str.length(), " ");
+	str.insert(str.length(), reason.c_str());
+	str.insert(str.length(), "\n");
     return (str);
 }
 
@@ -52,10 +52,10 @@ void    privmsgCmd(Server &server, int index, std::string &command) {
     else {
         std::string user = getUser(command);
         response = setResponse(server, index, user, message);
-        POUT(user)
         int user_index = server.findUserIndex(user);
-        POUT("user index:")
-        POUT(user_index)
-        server.ssend(response, user_index);
+        if (user_index == -1)
+            server.sendError(user.c_str(), NULL, NULL, ERR_NOSUCHNICK, index);
+        else
+            server.ssend(response, user_index);
     }
 }
