@@ -12,13 +12,13 @@ std::string		getLeaveResponse(Server &server, int index, std::string &channelNam
 
 	str.insert(0, ":");
 	str.insert(1, server.getNick(index).c_str());
-	str.insert(str.length() - 1, "!test");//test here ?
-	str.insert(str.length() - 1, " PRIVMSG ");
-	str.insert(str.length() - 1, channelName.c_str());
-	str.insert(str.length() - 1, " ");
-	str.insert(str.length() - 1, "has left the channel for the reason: ");
-	str.insert(str.length() - 1, reason.c_str());
-	str.insert(str.length() - 1, "\n");
+	str.insert(str.length(), "!test");//test here ?
+	str.insert(str.length(), " PRIVMSG ");
+	str.insert(str.length(), channelName.c_str());
+	str.insert(str.length(), " ");
+	str.insert(str.length(), "has left the channel for the reason: ");
+	str.insert(str.length(), reason.c_str());
+	str.insert(str.length(), "\n");
     return (str);
 }
 
@@ -31,6 +31,8 @@ void	quitCmd(Server &server, int index, std::string &command) {
 		std::string response = getLeaveResponse(server, index, uchannel[i], reason);
 		server.sendToAllUsersInChannel(uchannel[i], response);
 		server.delUserFromChannel(uchannel[i], index);
+		if (server.isChannelEmpty(uchannel[i]) == true)
+            server.delChannel(uchannel[i]);
 	}
 	server.closeUser(index);
 }
