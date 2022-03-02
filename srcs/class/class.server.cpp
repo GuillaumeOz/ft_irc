@@ -21,6 +21,7 @@ void	Server::initCommands() {
 	_commands["JOIN"] = &joinCmd;
 	_commands["PART"] = &partCmd;
 	_commands["LIST"] = &listCmd;
+	_commands["QUIT"] = &quitCmd;
 }
 
 void	Server::callCommand(std::string &command, Server &server, int &index, std::string &string) {
@@ -34,7 +35,7 @@ void	Server::slisten(int num) {
 }
 
 void	Server::closeUser(int pfds_index) {
-	_users[pfds_index - 1]->uclose();
+	_users[pfds_index]->uclose();
 	removeSockFromPfds(pfds_index);
 	removeUser(_pfds[pfds_index].fd);
 };
@@ -75,6 +76,11 @@ void	Server::addChannel(std::string &name, std::string &topic, int index) {
 	//add first user operator status
 	channels.push_back(new_channel);
 };
+
+void Server::addChannelToUser(int index, std::string channelName) {
+	_users[index]->joinChannel(channelName);
+}
+
 
 void	Server::joinChannel(int index, std::string &channelName) {
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {

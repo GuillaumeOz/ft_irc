@@ -44,6 +44,7 @@ void    joinCmd(Server &server, int index, std::string &string) {
 		if (channelName.find("#") == std::string::npos)
 			server.sendError(channelName.c_str(), NULL, NULL, ERR_NOSUCHCHANNEL, index);
 	}
+	server.addChannelToUser(index, channelName);
 	server.sendToAllUsersInChannel(channelName, response);
 	return ;
 }

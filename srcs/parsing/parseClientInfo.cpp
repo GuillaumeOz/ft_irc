@@ -27,12 +27,11 @@ void	parseUserNick(std::string &string, int index, bool &newUser, Server &server
 		size_t		i = {5};
 
 		while (i < string.length()) {
-			if (string[i] ==  '\n')
+			if (string[i] ==  '\r')
 				break;
 			i++;
 		}
-		tmp.insert(tmp.begin(), string.begin() + 5, string.begin() + i -1);
-		POUT(tmp);
+		tmp.insert(tmp.begin(), string.begin() + 5, string.begin() + i);
 		server.setNick(index, tmp);
 	}
 }
@@ -55,7 +54,6 @@ void 	parseClientInformations(std::string &string, int index, Server &server) {
 	std::string tmp = skipCap(string);
 	bool newUser = {false};
 
-	POUT(tmp);
 	newUser = isNewUser(tmp);
 	parseUserNick(tmp, index, newUser, server);
 	welcomeNewUser(string, index, server);
