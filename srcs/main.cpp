@@ -1,21 +1,20 @@
 #include "ft_irc.hpp"
 
 std::string		getFirstWord(std::string string) {
-	size_t i = string.find_first_of(" ");
-	std::string tmp;
+	size_t i = string.find_first_of(" \n\r");
+	if (i != std::string::npos) {
+		std::string tmp;
 
-	if (i != std::string::npos)
 		tmp.insert(tmp.begin(), string.begin(), string.begin() + i);
-	else
-		tmp.insert(tmp.begin(), string.begin(), string.end() - 2);
-	return (tmp);
+		return (tmp);
+	}
+	return (string);
 }
 
 void	handleActions(std::string &string, int index, Server &server) {
 	std::string token;
 
 	token = getFirstWord(string);
-	POUT(token)
 	server.callCommand(token, server, index, string);
 }
 
@@ -35,29 +34,6 @@ void	usersActionsLoop(Server &server) {
 		}
 	}
 }
-	// std::string str(" JOIN #coco\n");
-	// std::string channelName("#coco");
-	// std::string channelTopic("soso");
-
-
-			// if (strncmp(string.c_str(), "JOIN", 4) == 0) {
-			// 	str.insert(0, ":");
-			// 	str.insert(1, server.getNick(i - 1));
-			// 	server.ssend(str, i - 1);
-			// 	if (server.findChannel(channelName) == server.channel.end()) {
-			// 		server.addChannel(channelName, channelTopic, (i -1));
-			// 		POUT("NEW CHANNEL\n");
-			// 	}
-			// 	else {
-			// 		server.joinChannel((i - 1), channelName);
-			// 		POUT("NEW USER IN CHANNEL\n");
-			// 	}
-			// }
-			// else if (strncmp(string.c_str(), "QUIT", 4) == 0) {
-			// 		server.closeUser(i);
-			// 		std::cout << "quit" << std::endl;
-			// 		break;
-			// }
 
 int	main(int ac, char **av) {
 	Error error;
