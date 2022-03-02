@@ -23,6 +23,7 @@ void	Server::initCommands() {
 	_commands["PRIVMSG"] = &privmsgCmd;
 	_commands["LIST"] = &listCmd;
 	_commands["QUIT"] = &quitCmd;
+	_commands["TOPIC"] = &topicCmd;
 }
 
 void	Server::callCommand(std::string &command, Server &server, int &index, std::string &string) {
