@@ -19,7 +19,7 @@ std::string		getResponse(Server &server, int index, std::string &channelName, st
 
 	str.insert(0, ":");
 	str.insert(1, server.getNick(index).c_str());
-	str.insert(str.length() - 1, "!test");
+	str.insert(str.length() - 1, "!test");//test here ?
 	str.insert(str.length() - 1, " PART ");
 	str.insert(str.length() - 1, channelName.c_str());
 	str.insert(str.length() - 1, " ");

@@ -54,6 +54,7 @@ class Server {
 	//Channels
 	std::vector<Channel *>	getChannels();
 	void addChannel(std::string &name, std::string &topic, int index);
+	void addChannelToUser(int index, std::string channelName);
 	void removeChannel(int &);
 	std::vector<Channel *>::iterator findChannel(std::string &name);
 	void joinChannel(int index, std::string &channel);

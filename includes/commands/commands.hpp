@@ -4,5 +4,6 @@
 void	partCmd(Server &, int, std::string &);
 void    joinCmd(Server &, int, std::string &);
 void    privmsgCmd(Server &, int, std::string &);
+void	quitCmd(Server &, int, std::string &);
 
 #endif
