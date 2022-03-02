@@ -21,6 +21,7 @@ void	Server::initCommands() {
 	_commands["JOIN"] = &joinCmd;
 	_commands["PART"] = &partCmd;
 	_commands["PRIVMSG"] = &privmsgCmd;
+	_commands["LIST"] = &listCmd;
 	_commands["QUIT"] = &quitCmd;
 }
 
