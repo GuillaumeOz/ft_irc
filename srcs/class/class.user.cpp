@@ -1,6 +1,6 @@
 #include "ft_irc.hpp"
 
-User::User(): _csize(sizeof(_addr)), _username(), _nick() {};
+User::User(): _csize(sizeof(_addr)), _username(), _nick(), _awaymessage("") {};
 
 User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _username(username), _nick(nick) {};
 
@@ -91,4 +91,16 @@ bool	User::isChannelUserModeOn(std::string &channel, channelUserMode mode) {
 	if (_channelUserMode[channel] & mode)
 		return (true);
 	return (false);
+}
+
+std::string &User::getAwayMessage() {
+	return _awaymessage;
+}
+
+void		User::setAwayMessage(std::string &awayMessage) {
+	_awaymessage = awayMessage;
+}
+
+bool		User::isAway() {
+	return (_awaymessage != "");
 }

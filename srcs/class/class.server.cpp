@@ -23,6 +23,7 @@ void	Server::initCommands() {
 	_commands["PRIVMSG"] = &privmsgCmd;
 	_commands["LIST"] = &listCmd;
 	_commands["QUIT"] = &quitCmd;
+	_commands["AWAY"] = &awayCmd;
 }
 
 void	Server::callCommand(std::string &command, Server &server, int &index, std::string &string) {
@@ -239,4 +240,16 @@ int			Server::findUserIndex(std::string &nick) {
 		}
 	}
 	return (-1);
+}
+
+void		Server::setUserAwayMessage(int index, std::string &awayMessage) {
+	_users[index]->setAwayMessage(awayMessage);
+}
+
+bool		Server::isUserAway(int index) {
+	return (_users[index]->isAway());
+}
+
+std::string &Server::getUserAwayMessage(int index) {
+	return (_users[index]->getAwayMessage());
 }
