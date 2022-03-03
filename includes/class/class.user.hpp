@@ -14,6 +14,7 @@ class User {
 	std::vector<std::string>		_uchannels;
 	int8_t							_userMode;
 	std::map<std::string, int8_t>	_channelUserMode;
+	std::string						_awaymessage;
 
 	public:
 	User();
@@ -35,6 +36,9 @@ class User {
 	bool						isModeOn(userMode);
 	bool						isChannelUserModeOn(std::string &, channelUserMode);
 	void						assignChannelUserMode(std::string &, channelUserMode);
+	std::string					&getAwayMessage();
+	void						setAwayMessage(std::string &awayMessage);
+	bool						isAway();
 
 };
 
