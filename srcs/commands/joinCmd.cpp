@@ -9,8 +9,6 @@ void	findChannelName(std::string &string, std::string &channel) {
 				break;
 			j++;
 	}
-	// if (j > 50)
-	// 	server.sendError()
 	channel.assign(string.begin() + i, string.begin() + j - 1);
 	return;
 }
@@ -23,7 +21,6 @@ std::string		getResponse(Server &server, int index, std::string &channelName) {
 	str.insert(str.length(), " JOIN ");
 	str.insert(str.length(), channelName.c_str());
 	str.insert(str.length(), "\n");
-	POUT(str)
 	return (str);
 }
 
@@ -40,9 +37,10 @@ void    joinCmd(Server &server, int index, std::string &string) {
 			server.sendErrorServer(string.c_str(), NULL, NULL, ERR_NEEDMOREPARAMS);
 	}
 	else {
-		server.addChannel(channelName, channelTopic, index);
 		if (channelName.find("#") == std::string::npos)
 			server.sendErrorServer(channelName.c_str(), NULL, NULL, ERR_NOSUCHCHANNEL);
+		server.addChannel(channelName, channelTopic, index);
+		server.getUsers()[index]->assignChannelUserMode(channelName, MODE_CHANNEL_USER_O);
 	}
 	server.addChannelToUser(index, channelName);
 	server.sendToAllUsersInChannel(channelName, response);
