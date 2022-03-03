@@ -41,6 +41,7 @@ Error::Error(): type(NO_ERROR) {
 	errorMessages[ERR_PASSWDMISMATCH] = ":Password incorrect.\n";
 	errorMessages[ERR_YOUREBANNEDCREEP] = ":You are banned from this server.\n";
 	errorMessages[ERR_KEYSET] = "place1 :Channel key already set.\n";
+	errorMessages[ERR_ERRONEUSNICKNAME] = "place1 :Erroneous nickname\n";
 };
 
 Error::Error(Error &instance) {

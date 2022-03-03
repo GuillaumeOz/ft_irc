@@ -7,5 +7,7 @@ void	privmsgCmd(Server &, int, std::string &);
 void	listCmd(Server &, int , std::string &);
 void	quitCmd(Server &, int, std::string &);
 void	topicCmd(Server &, int, std::string &);
+void  awayCmd(Server &, int, std::string &);
+void  nickCmd(Server &, int, std::string &);
 
 #endif
