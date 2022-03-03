@@ -37,12 +37,12 @@ void    joinCmd(Server &server, int index, std::string &string) {
 	if (server.isValidChannel(channelName) == true) {
 		server.joinChannel(index, channelName);
 		if (channelName.compare(" ") == 0)
-			server.sendError(string.c_str(), NULL, NULL, ERR_NEEDMOREPARAMS, index);
+			server.sendErrorServer(string.c_str(), NULL, NULL, ERR_NEEDMOREPARAMS);
 	}
 	else {
 		server.addChannel(channelName, channelTopic, index);
 		if (channelName.find("#") == std::string::npos)
-			server.sendError(channelName.c_str(), NULL, NULL, ERR_NOSUCHCHANNEL, index);
+			server.sendErrorServer(channelName.c_str(), NULL, NULL, ERR_NOSUCHCHANNEL);
 	}
 	server.addChannelToUser(index, channelName);
 	server.sendToAllUsersInChannel(channelName, response);

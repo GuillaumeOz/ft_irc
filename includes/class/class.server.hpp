@@ -37,7 +37,9 @@ class Server {
 	bool spolloutCondition(int &);
 
 	//Error
-	void sendError(const char *, const char *, const char *, errorType, int);
+	void sendErrorServer(const char *, const char *, const char *, errorType);
+	void sendErrorUser(const char *, const char *, const char *, errorType, int);
+	void sendErrorServerUser(const char *, const char *, const char *, errorType, int);
 
 	//Users
 	std::vector<User *>	getUsers();

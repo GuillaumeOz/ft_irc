@@ -22,7 +22,7 @@ bool	isDisplayTopic(std::string &command) {
 std::string getTopic(std::string &command) {
 	std::string tmp;
 
-	tmp.insert(tmp.begin(), command.begin() + command.find_first_of(":") , command.end());
+	tmp.insert(tmp.begin(), command.begin() + command.find_first_of(":") , command.end() - 1);
 	return (tmp);
 }
 
@@ -82,6 +82,11 @@ void	topicCmd(Server &server, int index, std::string &command) {
 	std::string channel;
 	std::vector<Channel *>::iterator	it;
 
+	if (server.getChannels().size() == 0) {
+		server.sendErrorServerUser("IRC ", NULL, NULL, ERR_NOSUCHCHANNEL, index);
+		return ;
+	}
+
 	if (isDisplayTopic(command) == true) {
 		channel = getTopicDisplayChannelName(command);
 		it = server.findChannel(channel);
@@ -89,11 +94,12 @@ void	topicCmd(Server &server, int index, std::string &command) {
 		server.ssend(displayTopic, index);
 		return ;
 	}
+
 	//add user mode protection
 	std::string topic = getTopic(command);
-	POUT("NEW TOPIC")
-	POUT(topic)
 	channel = getTopicChannelName(command);
+	size_t n = topic.find(0xD);
+	topic.erase(topic.begin() + n);
 	it = server.findChannel(channel);
 	if (topic.compare("::") == 0) {
 		std::string newTopic = "topic not set.";
@@ -102,9 +108,17 @@ void	topicCmd(Server &server, int index, std::string &command) {
 		server.ssend(response, index);
 	}
 	else {
-		POUT("COUCOUCOUCOCUC")
-		(*it)->setChannelTopic(topic.c_str() + 1);
+		// POUT("COUCOUCOUCUOC")
+		// POUT(topic)
+		// topic.erase(topic.begin());
+		// POUT(topic)
+		(*it)->setChannelTopic(topic.c_str() + 2);
 		response = getTopicResponse(server, index, channel, (*it)->getChannelTopic());
 		server.ssend(response, index);
 	}
 }
+
+	// ERR_NOCHANMODES  = place1 :You're not on that channel
+	// ERR_NOTONCHANNEL = place1 :You're not on that channel
+	// ERR_CHANOPRIVSNEEDED  = place1 :Not enough parameter
+	// ERR_NEEDMOREPARAMS = place1 :Not enough parameter

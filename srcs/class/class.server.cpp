@@ -55,8 +55,16 @@ void	Server::ssend(std::string &string, User &user) {
 	user.usend(string);
 };
 
-void	Server::sendError(const char *arg1, const char *arg2, const char *arg3, errorType value, int index) {
-	_error.sendError(arg1, arg2, arg3, value, _users[index]);
+void	Server::sendErrorServer(const char *arg1, const char *arg2, const char *arg3, errorType value) {
+	_error.sendErrorServer(arg1, arg2, arg3, value);
+}
+
+void	Server::sendErrorUser(const char *arg1, const char *arg2, const char *arg3, errorType value, int index) {
+	_error.sendErrorUser(arg1, arg2, arg3, value, _users[index]);
+}
+
+void	Server::sendErrorServerUser(const char *arg1, const char *arg2, const char *arg3, errorType value, int index) {
+	_error.sendErrorServerUser(arg1, arg2, arg3, value, _users[index]);
 }
 
 int		Server::srecv(std::string *string, int index) {

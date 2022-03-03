@@ -54,7 +54,7 @@ void    privmsgCmd(Server &server, int index, std::string &command) {
         response = setResponse(server, index, user, message);
         int user_index = server.findUserIndex(user);
         if (user_index == -1)
-            server.sendError(user.c_str(), NULL, NULL, ERR_NOSUCHNICK, index);
+            server.sendErrorServer(user.c_str(), NULL, NULL, ERR_NOSUCHNICK);
         else
             server.ssend(response, user_index);
     }
