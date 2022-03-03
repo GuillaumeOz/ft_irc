@@ -1,8 +1,8 @@
 #include "ft_irc.hpp"
 
-User::User(): _csize(sizeof(_addr)), _username(), _nick() {};
+User::User(): _csize(sizeof(_addr)), _nick(), _username(), _realname() {};
 
-User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _username(username), _nick(nick) {};
+User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _nick(nick), _username(username), _realname() {};
 
 User::~User() {
 	uclose();
@@ -46,8 +46,24 @@ std::vector<std::string>	User::getUchannels() {
 	return (_uchannels);
 }
 
+void	User::setHost(std::string &string) {
+	_host = string;
+}
+
 void	User::setNick(std::string &string) {
 	_nick = string;
+}
+
+void	User::setUsername(std::string &string) {
+	_username = string;
+}
+
+void	User::setRealname(std::string &string) {
+	_realname = string;
+}
+
+std::string	&User::getHost() {
+	return _host;
 }
 
 std::string	&User::getNick() {
@@ -56,6 +72,10 @@ std::string	&User::getNick() {
 
 std::string	&User::getUsername() {
 	return _username;
+}
+
+std::string	&User::getRealname() {
+	return _realname;
 }
 
 void	User::leaveChannel(std::string &channelName) {

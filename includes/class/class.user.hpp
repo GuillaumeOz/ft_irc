@@ -9,8 +9,10 @@ class User {
 	int								_sock;
 	sockaddr_in						_addr;
 	socklen_t						_csize;
-	std::string						_username;
+	std::string						_host;
 	std::string						_nick;
+	std::string						_username;
+	std::string						_realname;
 	std::vector<std::string>		_uchannels;
 	int8_t							_userMode;
 	std::map<std::string, int8_t>	_channelUserMode;
@@ -26,10 +28,15 @@ class User {
 	void						setSocket(int &);
 	int							getSocket();
 	std::vector<std::string>	getUchannels();
+	void						setHost(std::string &);
 	void						setNick(std::string &);
+	void						setUsername(std::string &);
+	void						setRealname(std::string &);
 	void						leaveChannel(std::string &);
+	std::string					&getHost();
 	std::string					&getNick();
 	std::string 				&getUsername();
+	std::string 				&getRealname();
 	void						joinChannel(std::string &channelName);
 	void						assignMode(userMode);
 	bool						isModeOn(userMode);
