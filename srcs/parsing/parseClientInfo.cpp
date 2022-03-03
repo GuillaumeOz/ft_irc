@@ -39,7 +39,7 @@ void	parseUserNick(std::string &string, int index, bool &newUser, Server &server
 void	welcomeNewUser(std::string &string, int index, Server &server) {
 	std::string response;
 
-	POUT(server.getNick(index))	
+	// POUT(server.getNick(index))	
 	if (strncmp(string.c_str(), "CAP LS", 6) == 0) {
 		response += "001 ";
 		response += server.getNick(index);
@@ -57,5 +57,6 @@ void 	parseClientInformations(std::string &string, int index, Server &server) {
 	newUser = isNewUser(tmp);
 	parseUserNick(tmp, index, newUser, server);
 	welcomeNewUser(string, index, server);
+	userCmd(server, index, string);
 	//parseUserName
 }
