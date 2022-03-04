@@ -24,7 +24,6 @@ void	userCmd(Server &server, int index, std::string &command) {
 		while (ptr != NULL && i < 4) {
 			ptr = strtok(NULL, " :\r");
 			tmp = ptr;
-			POUT(tmp)
 			if (i == 0)
 				server.setUsername(index, tmp);
 			if (i == 2)
@@ -34,6 +33,6 @@ void	userCmd(Server &server, int index, std::string &command) {
 			i++;
 		}
 		if (i < 3)
-			server.sendError(command.c_str(), NULL, NULL, ERR_NEEDMOREPARAMS, index);
+			server.sendErrorUser(command.c_str(), NULL, NULL, ERR_NEEDMOREPARAMS, index);
 	}
 }

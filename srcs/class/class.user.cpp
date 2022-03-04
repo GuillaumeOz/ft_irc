@@ -1,6 +1,6 @@
 #include "ft_irc.hpp"
 
-User::User(): _csize(sizeof(_addr)), _username(), _nick(),_realname(),  _awaymessage("") {};
+User::User(): _csize(sizeof(_addr)), _nick(), _username(), _realname(),  _awaymessage("") {};
 
 User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _nick(nick), _username(username), _realname() {};
 
