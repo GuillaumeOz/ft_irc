@@ -1,106 +1,80 @@
 #include "ft_irc.hpp"
 
+bool	isTopicInLobby(std::string &string) {
+	if (string.find("#") == std::string::npos)
+		return (true);
+	return (false);
+}
+
+std::string parseChannelName(std::string &command) {
+	std::string ret;
+	char *str = const_cast<char *>(command.c_str() + command.find("#"));
+	char *tmp;
+
+	tmp = strtok(str, " ");
+	ret = tmp;
+	ret = eraseCarriageReturn(ret);
+	ret = eraseLineBreak(ret);
+	return (ret);
+}
+
 bool	isDisplayTopic(std::string &command) {
-	return (command.find_first_of(":") == std::string::npos);
+	if (command.find_first_of(":") == std::string::npos)
+		return (true);
+	return (false);
 }
 
-std::string getTopic(std::string &command) {
-	std::string tmp;
+std::string	parseTopicContent(std::string &command) {
 
-	tmp.insert(tmp.begin(), command.begin() + command.find_first_of(":") , command.end() - 1);
-	return (tmp);
-}
+	std::string ret;
+	char *str = const_cast<char *>(command.c_str() + command.find(":"));
+	char *tmp;
 
-std::string		getDisplayTopic(Server &server, int index, std::string &channelName, std::string &reason) {
-	std::string str;
-
-	str.insert(0, ":");
-	str.insert(1, server.getNick(index).c_str());
-	str.insert(str.length(), "!test");
-	str.insert(str.length(), " PRIVMSG ");
-	str.insert(str.length(), channelName.c_str());
-	str.insert(str.length(), " ");
-	str.insert(str.length(), channelName.c_str());
-	str.insert(str.length(), " :");
-	str.insert(str.length(), reason.c_str());
-	str.insert(str.length(), "\n");
-    return (str);
-}
-
-std::string		getTopicDisplayChannelName(std::string &command) {
-	std::string tmp;
-
-	tmp.insert(tmp.begin(), command.begin() + command.find_first_of("#"), command.begin() + command.find_first_of("\n") - 1);
-	return (tmp);
-}
-
-std::string		getTopicChannelName(std::string &command) {
-	std::string tmp;
-
-	tmp.insert(tmp.begin(), command.begin() + command.find_first_of("#"), command.begin() + command.find_first_of(":") - 1);
-	return (tmp);
-}
-
-std::string		getTopicResponse(Server &server, int index, std::string &channelName, std::string &reason) {
-	std::string str;
-
-	str.insert(0, ":");
-	str.insert(1, server.getNick(index).c_str());
-	str.insert(str.length(), "!test");
-	str.insert(str.length(), " TOPIC ");
-	str.insert(str.length(), channelName.c_str());
-	str.insert(str.length(), " ");
-	str.insert(str.length(), reason.c_str());
-	str.insert(str.length(), "\n");
-    return (str);
+	tmp = strtok(str, ":");
+	ret = tmp;
+	ret = eraseCarriageReturn(ret);
+	ret = eraseLineBreak(ret);
+	return (ret);
 }
 
 void	topicChangeContent(Server &server, int index, std::string &command, std::string channel) {
-	std::string response;
+	std::string							response;
 	std::vector<Channel *>::iterator	it;
+	std::string							cmd = "TOPIC";
 
-	std::string topic = getTopic(command);
-	size_t n = topic.find(0xD);
-	topic.erase(topic.begin() + n);
+	std::string topic = parseTopicContent(command);
 	it = server.findChannel(channel);
-	if (topic.compare("::") == 0) {
-		std::string newTopic = "topic not set.";
-		(*it)->setChannelTopic(newTopic);
-		response = getTopicResponse(server, index, channel, (*it)->getChannelTopic());
-		server.ssend(response, index);
-	}
-	else {
-		(*it)->setChannelTopic(topic.c_str() + 2);
-		response = getTopicResponse(server, index, channel, (*it)->getChannelTopic());
-		server.ssend(response, index);
-	}
+	(*it)->setChannelTopic(topic.c_str());
+	response = getCmdString(server, index, channel, (*it)->getChannelTopic(), cmd);
+	server.ssend(response, index);
 }
 
 void	topicCmd(Server &server, int index, std::string &command) {
-	std::string channel;
-	std::vector<Channel *>::iterator	it;
 
-	if (server.getChannels().size() == 0) {
+	if (isTopicInLobby(command) == true) {
 		server.sendErrorServerUser("IRC ", NULL, NULL, ERR_NOSUCHCHANNEL, index);
 		return ;
 	}
 
-	if (server.findChannel(channel) == server.getChannels().end()) {
+	std::string		channelName;
+	channelName = parseChannelName(command);
+
+	if (server.findChannel(channelName) == server.channels.end()) {
 		server.sendErrorServerUser("IRC ", NULL, NULL, ERR_NOTONCHANNEL, index);
 		return ;
 	}
 
+	std::vector<Channel *>::iterator	it;
 	if (isDisplayTopic(command) == true) {
-		channel = getTopicDisplayChannelName(command);
-		it = server.findChannel(channel);
-		std::string displayTopic = getDisplayTopic(server, index, channel, (*it)->getChannelTopic());
+		it = server.findChannel(channelName);
+		std::string cmd = "PRIVMSG";
+		std::string displayTopic = getCmdString(server, index, channelName, (*it)->getChannelTopic(), cmd);
 		server.ssend(displayTopic, index);
 		return ;
 	}
 
-	channel = getTopicChannelName(command);
-	if (server.getUsers()[index]->isChannelUserModeOn(channel, MODE_CHANNEL_USER_O) == true) {
-		topicChangeContent(server, index, command, channel);
+	if (server.getUsers()[index]->isChannelUserModeOn(channelName, MODE_CHANNEL_USER_O) == true) {
+		topicChangeContent(server, index, command, channelName);
 	}
 	else {
 		server.sendErrorServerUser("IRC ", NULL, NULL, ERR_CHANOPRIVSNEEDED, index);
