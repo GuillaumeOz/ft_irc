@@ -41,6 +41,14 @@ bool    toChannel(std::string &command) {
     return (true);
 }
 
+std::string     getAwayResponse(std::string user, std::string message) {
+    std::string tmp;
+    tmp += "[" + user + "] is away (";
+    message.insert(message.length() - 1, ")\n");
+    tmp.insert(tmp.length() - 1, message.c_str());
+    return (tmp);
+}
+
 void    privmsgCmd(Server &server, int index, std::string &command) {
     std::string message = getMessage(command);
     std::string response;
@@ -55,7 +63,15 @@ void    privmsgCmd(Server &server, int index, std::string &command) {
         int user_index = server.findUserIndex(user);
         if (user_index == -1)
             server.sendError(user.c_str(), NULL, NULL, ERR_NOSUCHNICK, index);
-        else
+        else {
+            if (server.isUserAway(user_index) == true) {
+                std::string     awayMessage = server.getUserAwayMessage(user_index);
+                std::string     awayResponse = getAwayResponse(user, awayMessage);
+                server.ssend(awayResponse, index);
+            }
             server.ssend(response, user_index);
+        }
     }
 }
+
+//[test] is away (message)

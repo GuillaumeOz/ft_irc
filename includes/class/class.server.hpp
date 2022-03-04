@@ -55,6 +55,9 @@ class Server {
 	bool isUserModeOn(userMode mode, int index);
 	void assignUserMode(userMode mode, int index);
 	int findUserIndex(std::string &nick);
+	void setUserAwayMessage(int index, std::string &message);
+	bool isUserAway(int index);
+	std::string &getUserAwayMessage(int index);
 
 	//Channels
 	std::vector<Channel *>	getChannels();
