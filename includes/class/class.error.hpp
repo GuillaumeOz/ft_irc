@@ -63,7 +63,10 @@ class Error {
 	void		sendError(std::string , errorType());
 
 	std::string	getMessageWithReplaceToken(const char *, const char *, const char *, errorType &);
-	void		sendError(const char *, const char *, const char *, errorType &, User *);
+
+	void		sendErrorServer(const char *, const char *, const char *, errorType &);
+	void		sendErrorUser(const char *, const char *, const char *, errorType &, User *);
+	void		sendErrorServerUser(const char *, const char *, const char *, errorType &, User *);
 };
 
 #endif

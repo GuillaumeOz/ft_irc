@@ -46,18 +46,19 @@ std::string getResponse(std::string newNick, std::string oldNick) {
 }
 
 bool    checkNickError(std::string &nick, int index, Server &server) {
+    (void)index;
     if (nick.size() > 9) {
-        server.sendError(nick.c_str(), NULL, NULL, ERR_ERRONEUSNICKNAME, index);
+        server.sendErrorServer(nick.c_str(), NULL, NULL, ERR_ERRONEUSNICKNAME);
         return (true);
     }
     for (size_t i = 0; i < server.getUsers().size(); i++) {
         if (server.getNick(i).compare(nick) == 0) {
-            server.sendError(nick.c_str(), NULL, NULL, ERR_NICKNAMEINUSE, index);
+            server.sendErrorServer(nick.c_str(), NULL, NULL, ERR_NICKNAMEINUSE);
             return (true);
         }
     }
     // if (server.getUsers()[index]->isModeOn(MODE_USER_R) == true) {
-    //     server.sendError(nick.c_str(), NULL, NULL, ERR_RESTRICTED, index);
+    //     server.sendErrorServer(nick.c_str(), NULL, NULL, ERR_RESTRICTED, index);
     //     return (true);
     // }
     return (false);

@@ -16,6 +16,10 @@ std::string   &Channel::getChannelTopic() {
 	return _topic;
 };
 
+void			Channel::setChannelTopic(std::string newTopic) {
+	_topic = newTopic;
+};
+
 size_t			Channel::getNumberofUsers() {
 	return (_users.size());
 }
