@@ -1,8 +1,8 @@
 #include "ft_irc.hpp"
 
 Error::Error(): type(NO_ERROR) {
-	errorMessages[ARGUMENT] = "Error: invalid number of arguments..\n";
-	errorMessages[UNAVAILABLE_PORT] = "Error: port is already assigned..\n";
+	errorMessages[ARGUMENT] = "Error: invalid number of arguments.\n";
+	errorMessages[UNAVAILABLE_PORT] = "Error: port is already assigned.\n";
 
 	errorMessages[ERR_NOSUCHNICK] = "place1 :No such nick/channel.\n";
 	errorMessages[ERR_NOSUCHSERVER] = "place1 :No such server.\n";
@@ -74,13 +74,24 @@ std::string	Error::getMessageWithReplaceToken(const char *arg1, const char *arg2
 	return (tmp);
 };
 
-void	Error::sendError(const char *arg1, const char *arg2, const char *arg3, errorType &value, User *user) {
+void	Error::sendErrorServer(const char *arg1, const char *arg2, const char *arg3, errorType &value) {
 	std::string	message;
 
 	message = getMessageWithReplaceToken(arg1, arg2, arg3, value);
-	POUT("User nick:")
-	POUT(user->getNick())
-	POUT("Error sent: ")
-	POUT(message);
+	PERR(message)
+};
+
+void	Error::sendErrorUser(const char *arg1, const char *arg2, const char *arg3, errorType &value, User *user) {
+	std::string	message;
+
+	message = getMessageWithReplaceToken(arg1, arg2, arg3, value);
 	user->usend(message);
+};
+
+void	Error::sendErrorServerUser(const char *arg1, const char *arg2, const char *arg3, errorType &value, User *user) {
+	std::string	message;
+
+	message = getMessageWithReplaceToken(arg1, arg2, arg3, value);
+	user->usend(message);
+	PERR(message)
 };

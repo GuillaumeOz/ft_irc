@@ -7,15 +7,15 @@ class Server {
 
 	private:
 
-	Config																			_config;
-	Error																			_error;
-	std::vector<User *>																_users;
-	std::vector<struct pollfd>														_pfds;
-	std::string																		_password;
-	std::map<std::string, void (*)(Server &, int , std::string &)> 					_commands;
+	Config															_config;
+	Error															_error;
+	std::vector<struct pollfd>										_pfds;
+	std::string														_password;
+	std::vector<User *>												_users;
+	std::map<std::string, void (*)(Server &, int , std::string &)> 	_commands;
 
 	public:
-	std::vector<Channel *>															channels;
+	std::vector<Channel *>											channels;
 
 	Server(int port);
 	Server(int port, Error error);
@@ -37,7 +37,9 @@ class Server {
 	bool spolloutCondition(int &);
 
 	//Error
-	void sendError(const char *, const char *, const char *, errorType, int);
+	void sendErrorServer(const char *, const char *, const char *, errorType);
+	void sendErrorUser(const char *, const char *, const char *, errorType, int);
+	void sendErrorServerUser(const char *, const char *, const char *, errorType, int);
 
 	//Users
 	std::vector<User *>	getUsers();

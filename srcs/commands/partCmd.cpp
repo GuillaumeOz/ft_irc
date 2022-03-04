@@ -38,5 +38,5 @@ void	partCmd(Server &server, int index, std::string &command) {
         if (server.isChannelEmpty(channelName) == true)
             server.delChannel(channelName);
     } else
-		server.sendError(channelName.c_str(), NULL, NULL, ERR_NOSUCHCHANNEL, index);
+		server.sendErrorServer(channelName.c_str(), NULL, NULL, ERR_NOSUCHCHANNEL);
 }
