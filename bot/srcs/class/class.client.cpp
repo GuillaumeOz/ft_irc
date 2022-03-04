@@ -20,8 +20,9 @@ int Client::connectSock() {
 
 void	Client::recvSock(std::string &string) {
 	char msg[1000];
-	recv(_config.socketClient, &msg, sizeof(msg), 0);
+	recv(_config.socketClient, &msg, 1000, 0);
 	string = msg;
+	memset(msg, '\0', 1000);
 };
 
 void Client::sendInfo() {
