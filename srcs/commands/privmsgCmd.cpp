@@ -43,9 +43,8 @@ bool    toChannel(std::string &command) {
 
 std::string     getAwayResponse(std::string user, std::string message) {
     std::string tmp;
-    tmp += "[" + user + "] is away (";
-    message.insert(message.length() - 1, ")\n");
-    tmp.insert(tmp.length() - 1, message.c_str());
+    message.erase(message.end() - 1);
+    tmp += "[" + user + "] is away (" + message + ")\n"; 
     return (tmp);
 }
 

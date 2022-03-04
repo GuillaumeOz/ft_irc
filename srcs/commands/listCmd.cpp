@@ -93,6 +93,5 @@ void	listCmd(Server &server, int index, std::string &string) {
 	std::string channelList;
 
 	channelList = getChannelsList(server, string);
-	POUT(channelList);
 	server.ssend(channelList, index);
 }

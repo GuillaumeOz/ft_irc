@@ -10,5 +10,3 @@ void    awayCmd(Server &server, int index, std::string &command) {
     std::string awayMessage = getAwayMessage(command);
     server.setUserAwayMessage(index, awayMessage);
 }
-
-//AWAY :I am now away

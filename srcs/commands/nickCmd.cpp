@@ -22,10 +22,9 @@ void	parseUserNick(std::string &string, int index, Server &server) {
     server.setNick(index, tmp);
 }
 
-void	welcomeNewUser(std::string &string, int index, Server &server) {
+void	welcomeNewUser(int index, Server &server) {
 	std::string response;
 
-    POUT(string)
     response += "001 ";
     response += server.getNick(index);
     response += " :Welcome to the Internet Relay Network ";
@@ -66,7 +65,7 @@ bool    checkNickError(std::string &nick, int index, Server &server) {
 void    nickCmd(Server &server, int index, std::string &command) {
     if (server.getNick(index) == "") {
         parseUserNick(command, index, server);
-        welcomeNewUser(command, index, server);
+        welcomeNewUser(index, server);
         return ;
     }
     else {
