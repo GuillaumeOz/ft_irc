@@ -27,9 +27,11 @@ void	Server::initCommands() {
 	_commands["TOPIC"] = &topicCmd;
 	_commands["AWAY"] = &awayCmd;
 	_commands["NICK"] = &nickCmd;
+	_commands["TIME"] = &timeCmd;
 }
 
 void	Server::callCommand(std::string &command, Server &server, int &index, std::string &string) {
+	std::transform(command.begin(), command.end(),command.begin(), toupper);
 	if (_commands.find(command) != _commands.end())
 		_commands.find(command)->second(server, index, string);
 }

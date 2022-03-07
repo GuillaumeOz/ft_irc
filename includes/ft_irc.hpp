@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <unistd.h>
+#include <time.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
