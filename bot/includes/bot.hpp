@@ -19,6 +19,8 @@
 #include <string>
 #include <iomanip>
 #include <map>
+#include <signal.h>
+#include <pthread.h>
 
 /* ----------------------------- Socket headers ----------------------------- */
 
@@ -28,10 +30,11 @@
 #include <arpa/inet.h>
 #include <poll.h>
 
-
 /* ----------------------------- Project headers ----------------------------- */
 
 #include "class.config.hpp"
 #include "class.client.hpp"
+#include "commands.hpp"
+#include "parsing.hpp"
 
 #endif

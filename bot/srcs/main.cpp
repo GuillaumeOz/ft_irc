@@ -1,56 +1,43 @@
 #include "bot.hpp"
 
-std::string	getMsg(std::string &string) {
-	size_t i = string.find("PRIVMSG");
+bool	g_quit = {true};
 
-	if (i != std::string::npos) {
-		std::string tmp = string.c_str() + i;
-		size_t		j = tmp.find(":");
-
-		if (j != std::string::npos) {
-			tmp = tmp.c_str() + j + 1;
-			return (tmp);
-		}
-	}
-	return (string);
+void	quitBot(int code) {
+	(void)code;
+	g_quit = true;
 }
 
-std::string getResponse(Client &client, std::string &string) {
-    std::string		msg = getMsg(string);
-	std::string		response;
-	(void)client;
-
-    if (msg.compare(string) == 0) {
-        std::cout << "Not a PRIVMSG, ignoring it." << std::endl;
-        return (msg);
-    }
-	response = msg;
-    // response += ":bot PRIVMSG #bot :" + msg;
-    return (response);
+void	*sendQuit(void *rawDataClient) {
+	Client *client = reinterpret_cast<Client *>(rawDataClient);
+	std::string quit = "QUIT :Quitte\n";
+	while (!g_quit) ;
+	client->bsend(quit);
+	return (client);
 }
 
 int	main() {
 	Client			client;
 	std::string		msg;
-	std::string		response;
-	bool			quit = {true};
+	std::string		command;
+	pthread_t 		thread_id;
 
 	if (client.connectSock() != -1)
-		quit = false;
-	if (!quit) {
+		g_quit = false;
+	if (!g_quit) {
 		client.sendInfo();
 		usleep(20);
 		client.join();
 	}
-	while (!quit) {
+	pthread_create(&thread_id, NULL, sendQuit, &client);
+	while (!g_quit) {
+		signal(SIGINT, &quitBot);
 		client.recvSock(msg);
+		eraseCarriageReturn(msg);
         std::cout << "message received by bot: " << msg << std::endl;
-		response = getResponse(client, msg);
-		std::cout << response << std::endl;
-        // if (response.compare(msg) == 0)
-        //     continue ;
-		// client.send(response);
+		command = getCommand(msg);
+		client.callCommand(client, command, msg);
 	}
+	pthread_join(thread_id, NULL);
 	client.closeClient();
 	return (0);
 }

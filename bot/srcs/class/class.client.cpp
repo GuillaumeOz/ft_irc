@@ -1,6 +1,8 @@
 #include "bot.hpp"
 
-Client::Client(): _config() {};
+Client::Client(): _config() {
+	initCommands();
+};
 
 Client::Client(int socket, in_addr_t addr, short family, unsigned short port): _config(socket, addr, family, port) {};
 
@@ -33,4 +35,22 @@ void Client::sendInfo() {
 void Client::join() {
 	std::string string("JOIN #bot\r");
 	send(_config.socketClient, string.c_str(), string.length(), 0);
+}
+
+void Client::initCommands() {
+	_commands["!TEST"] = &testCmd; 
+}
+
+void	Client::callCommand( Client &client, std::string &command, std::string &string) {
+	std::string error("the bot doesn't know this command: ");
+	std::cout << "command to find:" << command << std::endl;
+	if (_commands.find(command) != _commands.end())
+		_commands.find(command)->second(client, string);
+	else
+		bsend(error += command + "\n");
+}
+
+void Client::bsend(std::string &response) {
+	send(_config.socketClient, response.c_str(), response.length(), 0);
+	std::cout << "response sent: " << response << std::endl;
 }

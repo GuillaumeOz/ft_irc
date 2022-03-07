@@ -6,7 +6,8 @@ class Config;
 class Client {
 
  private:
-	Config _config;
+	Config 											_config;
+	std::map<std::string, void (*)(Client &, std::string &)> 	_commands;
 
  public:
 
@@ -14,11 +15,14 @@ class Client {
 	Client(int socket,  in_addr_t addr, short family, unsigned short port);
 	~Client();
 
-	int connectSock();
-	void recvSock(std::string &string);
-	void join();
-	void closeClient() const;
-	void sendInfo();
+	void	initCommands();
+	int 	connectSock();
+	void	recvSock(std::string &string);
+	void	join();
+	void	closeClient() const;
+	void	sendInfo();
+	void	callCommand(Client &, std::string &, std::string &);
+	void	bsend(std::string &response);
 };
 
 #endif
