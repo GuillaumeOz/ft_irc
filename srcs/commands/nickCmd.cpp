@@ -38,7 +38,7 @@ std::string getResponse(std::string newNick, std::string oldNick) {
 	std::string str;
     str.insert(0, ":");
 	str.insert(1, oldNick);
-	str.insert(str.length(), "!test");
+	str.insert(str.length(), "!ircserv");
 	str.insert(str.length(), " NICK ");
 	str.insert(str.length(), newNick.c_str());
 	str.insert(str.length(), "\n");

@@ -26,7 +26,7 @@ std::string		setResponse(Server &server, int index, std::string &destination, st
 
 	str.insert(0, ":");
 	str.insert(1, server.getNick(index).c_str());
-	str.insert(str.length(), "!test");
+	str.insert(str.length(), "!ircserv");
 	str.insert(str.length(), " PRIVMSG ");
 	str.insert(str.length(), destination.c_str());
 	str.insert(str.length(), " ");

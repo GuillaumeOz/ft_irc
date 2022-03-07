@@ -12,7 +12,7 @@ std::string		getLeaveResponse(Server &server, int index, std::string &channelNam
 
 	str.insert(0, ":");
 	str.insert(1, server.getNick(index).c_str());
-	str.insert(str.length(), "!test");//test here ?
+	str.insert(str.length(), "!ircserv");
 	str.insert(str.length(), " PRIVMSG ");
 	str.insert(str.length(), channelName.c_str());
 	str.insert(str.length(), " ");
