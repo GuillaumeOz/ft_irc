@@ -49,9 +49,33 @@ std::string     getAwayResponse(std::string user, std::string message) {
     return (tmp);
 }
 
+bool        isVersion(std::string &command) {
+    std::string test;
+    test += "PRIVMSG ircserv :";
+    test += static_cast<char> (129);
+    test += "VERSION";
+    test += static_cast<char> (129);
+    test += "\r\n";
+    if (command.compare(test) == -128)
+        return (true);
+    return (false);
+}
+
+//PRIVMSG ircserv :^AVERSION^A^M$
+
+void        versionCmd(Server &server, int index) {
+    std::string version = "Version: 108.114.99\n";
+    server.ssend(version, index);
+}
+
 void    privmsgCmd(Server &server, int index, std::string &command) {
     std::string message = getMessage(command);
     std::string response;
+    if (isVersion(command) == true) {
+        versionCmd(server, index);
+        return ;
+    }
+    POUT("got here")
     if (toChannel(command) == true) {
         std::string channelName = setChannelName(command);
         response = setResponse(server, index, channelName, message);
@@ -62,7 +86,7 @@ void    privmsgCmd(Server &server, int index, std::string &command) {
         response = setResponse(server, index, user, message);
         int user_index = server.findUserIndex(user);
         if (user_index == -1)
-            server.sendErrorServer(user.c_str(), NULL, NULL, ERR_NOSUCHNICK);
+            server.sendErrorServerUser(user.c_str(), NULL, NULL, ERR_NOSUCHNICK, index);
         else {
             if (server.isUserAway(user_index) == true) {
                 std::string     awayMessage = server.getUserAwayMessage(user_index);
