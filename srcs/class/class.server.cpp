@@ -26,6 +26,7 @@ void	Server::initCommands() {
 	_commands["TOPIC"] = &topicCmd;
 	_commands["AWAY"] = &awayCmd;
 	_commands["NICK"] = &nickCmd;
+	//VERSION is handled but included in PRIVMSG for parsing reasons
 }
 
 void	Server::callCommand(std::string &command, Server &server, int &index, std::string &string) {
