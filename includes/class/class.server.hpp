@@ -45,9 +45,14 @@ class Server {
 	std::vector<User *>	getUsers();
 	void addUser(User *);
 	void removeUser(int &);
+    void setHost(int , std::string &);
     void setNick(int , std::string &);
+    void setUsername(int , std::string &);
+    void setRealname(int , std::string &);
+	std::string	&getHost(int);
 	std::string	&getNick(int);
-	std::string	&getNick(User *);
+	std::string	&getUsername(int);
+	std::string	&getRealname(int);
 	void delChannelFromUser(std::string &channelName, int user_index);
 	bool isUserModeOn(userMode mode, int index);
 	void assignUserMode(userMode mode, int index);
