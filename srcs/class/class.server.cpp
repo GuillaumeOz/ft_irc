@@ -23,8 +23,11 @@ void	Server::initCommands() {
 	_commands["PRIVMSG"] = &privmsgCmd;
 	_commands["LIST"] = &listCmd;
 	_commands["QUIT"] = &quitCmd;
+	_commands["USER"] = &userCmd;
+	_commands["TOPIC"] = &topicCmd;
 	_commands["AWAY"] = &awayCmd;
 	_commands["NICK"] = &nickCmd;
+	//VERSION is handled but included in PRIVMSG for parsing reasons
 }
 
 void	Server::callCommand(std::string &command, Server &server, int &index, std::string &string) {
@@ -56,8 +59,16 @@ void	Server::ssend(std::string &string, User &user) {
 	user.usend(string);
 };
 
-void	Server::sendError(const char *arg1, const char *arg2, const char *arg3, errorType value, int index) {
-	_error.sendError(arg1, arg2, arg3, value, _users[index]);
+void	Server::sendErrorServer(const char *arg1, const char *arg2, const char *arg3, errorType value) {
+	_error.sendErrorServer(arg1, arg2, arg3, value);
+}
+
+void	Server::sendErrorUser(const char *arg1, const char *arg2, const char *arg3, errorType value, int index) {
+	_error.sendErrorUser(arg1, arg2, arg3, value, _users[index]);
+}
+
+void	Server::sendErrorServerUser(const char *arg1, const char *arg2, const char *arg3, errorType value, int index) {
+	_error.sendErrorServerUser(arg1, arg2, arg3, value, _users[index]);
 }
 
 int		Server::srecv(std::string *string, int index) {
@@ -168,12 +179,37 @@ int		Server::findClientSock(int socket) {
 	return (-1);
 };
 
+
+void	Server::setHost(int index, std::string &string) {
+	_users[index]->setHost(string);
+};
+
 void	Server::setNick(int index, std::string &string) {
 	_users[index]->setNick(string);
-}
+};
+
+void	Server::setUsername(int index, std::string &string) {
+	_users[index]->setUsername(string);
+};
+
+void	Server::setRealname(int index, std::string &string) {
+	_users[index]->setRealname(string);
+};
+
+std::string		&Server::getHost(int index) {
+	return (_users[index]->getHost());
+};
 
 std::string		&Server::getNick(int index) {
 	return (_users[index]->getNick());
+};
+
+std::string		&Server::getUsername(int index) {
+	return (_users[index]->getUsername());
+};
+
+std::string		&Server::getRealname(int index) {
+	return (_users[index]->getRealname());
 };
 
 int		Server::getPfdsSize() {
