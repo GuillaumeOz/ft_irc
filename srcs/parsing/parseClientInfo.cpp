@@ -19,4 +19,5 @@ void 	parseClientInformations(std::string &string, int index, Server &server) {
 	if (tmp.compare(string) != 0 && strncmp(tmp.c_str(), "NICK", 4) == 0) {
 		nickCmd(server, index, tmp);
 	}
+	userCmd(server, index, string);
 }

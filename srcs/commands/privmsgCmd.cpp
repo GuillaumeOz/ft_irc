@@ -45,7 +45,7 @@ std::string     getAwayResponse(std::string user, std::string message) {
     std::string tmp;
     tmp += "[" + user + "] is away (";
     message.insert(message.length() - 1, ")\n");
-    tmp.insert(tmp.length() - 1, message.c_str());
+    tmp.insert(tmp.length(), message.c_str());
     return (tmp);
 }
 
