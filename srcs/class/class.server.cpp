@@ -28,6 +28,7 @@ void	Server::initCommands() {
 	_commands["AWAY"] = &awayCmd;
 	_commands["NICK"] = &nickCmd;
 	_commands["TIME"] = &timeCmd;
+	_commands["MODE"] = &modeCmd;
 }
 
 void	Server::callCommand(std::string &command, Server &server, int &index, std::string &string) {
@@ -96,7 +97,6 @@ void Server::addChannelToUser(int index, std::string channelName) {
 	_users[index]->joinChannel(channelName);
 }
 
-
 void	Server::joinChannel(int index, std::string &channelName) {
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
 		if ((*it)->getChannelName() == channelName)//add double join channel protection
@@ -116,7 +116,7 @@ bool	Server::isValidChannel(std::string &name) {
 			return (true);
 	}
 	return (false);
-}
+};
 
 void	Server::delUserFromChannel(std::string &channelName, int index) {
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
