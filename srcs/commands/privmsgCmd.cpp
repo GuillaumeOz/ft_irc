@@ -26,7 +26,7 @@ std::string		setResponse(Server &server, int index, std::string &destination, st
 
 	str.insert(0, ":");
 	str.insert(1, server.getNick(index).c_str());
-	str.insert(str.length(), "!test");
+	str.insert(str.length(), "!ircserv");
 	str.insert(str.length(), " PRIVMSG ");
 	str.insert(str.length(), destination.c_str());
 	str.insert(str.length(), " ");
@@ -61,8 +61,6 @@ bool        isVersion(std::string &command) {
     return (false);
 }
 
-//PRIVMSG ircserv :^AVERSION^A^M$
-
 void        versionCmd(Server &server, int index) {
     std::string version = "Version: 108.114.99\n";
     server.ssend(version, index);
@@ -75,7 +73,6 @@ void    privmsgCmd(Server &server, int index, std::string &command) {
         versionCmd(server, index);
         return ;
     }
-    POUT("got here")
     if (toChannel(command) == true) {
         std::string channelName = setChannelName(command);
         response = setResponse(server, index, channelName, message);
@@ -97,5 +94,3 @@ void    privmsgCmd(Server &server, int index, std::string &command) {
         }
     }
 }
-
-//[test] is away (message)

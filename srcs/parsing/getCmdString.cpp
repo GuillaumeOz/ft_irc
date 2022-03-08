@@ -5,7 +5,7 @@ std::string		getCmdString(Server &server, int index, std::string &channelName, s
 
 	ret += ":";
 	ret += server.getNick(index).c_str();
-	ret += "!lobby";
+	ret += "!ircserv";
 	ret += " ";
 	ret += cmd;
 	ret += " ";

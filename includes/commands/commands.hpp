@@ -10,5 +10,8 @@ void	userCmd(Server &, int, std::string &);
 void	awayCmd(Server &, int, std::string &);
 void	nickCmd(Server &, int, std::string &);
 void	topicCmd(Server &, int, std::string &);
+void	timeCmd(Server &, int, std::string &);
+void    noticeCmd(Server &, int, std::string &);
+
 
 #endif
