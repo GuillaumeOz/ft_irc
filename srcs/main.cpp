@@ -35,20 +35,40 @@ void	usersActionsLoop(Server &server) {
 	}
 }
 
+bool	isBotOn(int ac, char **av) {
+	if (ac == 3) {
+		if (strcmp(av[2], "bot") == 0)
+			return (true);
+	}
+	return (false);
+}
+
+void	runBot(void) {
+	system("xterm -e bash make bot");
+	system("xterm -e bash -c ./bot/bin/bot_client");
+	std::cout << "toto" << std::endl;
+}
+
 int	main(int ac, char **av) {
 	Error error;
+	bool botState = isBotOn(ac, av);
 
-	if (ac != 2)
+	if ((ac != 2 && ac != 3) || ( ac == 3 && !botState))
 		error.type = ARGUMENT;
 	error.displayError();
 	Server server(atoi(av[1]), error);
 	server.sbind();
 	server.slisten(10);
 	int i = {0};
+	if (botState)
+		runBot();
 	while (true) {
 		server.spoll();
-		if (server.spollinCondition(i))
-			server.saccept();
+		if (server.spollinCondition(i)) {
+			int index = server.saccept();
+			std::string str("JOIN #bot\r");
+			joinCmd(server, index, str);
+		}
 		usersActionsLoop(server);
 	}
 	server.closeServer();

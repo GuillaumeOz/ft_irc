@@ -77,12 +77,14 @@ int		Server::srecv(std::string *string, int index) {
 	return (_users[index]->urecv(string));
 };
 
-void    Server::saccept() {
+int    Server::saccept() {
 	User *user = new User();
 
 	user->uaccept(_config.sock);
 	addUser(user);
 	addSockToPfds(user->getSocket());
+	int index = findUserIndex(user->getNick());
+	return (index);
 };
 
 //JOIN
