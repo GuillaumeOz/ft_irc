@@ -28,6 +28,7 @@ void	Server::initCommands() {
 	_commands["AWAY"] = &awayCmd;
 	_commands["NICK"] = &nickCmd;
 	_commands["TIME"] = &timeCmd;
+	_commands["NOTICE"] = &noticeCmd;
 }
 
 void	Server::callCommand(std::string &command, Server &server, int &index, std::string &string) {
