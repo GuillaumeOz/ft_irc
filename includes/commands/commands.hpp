@@ -12,6 +12,6 @@ void	nickCmd(Server &, int, std::string &);
 void	topicCmd(Server &, int, std::string &);
 void	timeCmd(Server &, int, std::string &);
 void    noticeCmd(Server &, int, std::string &);
-
+void	passCmd(Server &, int , std::string &);
 
 #endif

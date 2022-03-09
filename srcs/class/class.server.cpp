@@ -50,9 +50,11 @@ void	Server::initCommands() {
 }
 
 void	Server::callCommand(std::string &command, Server &server, int &index, std::string &string) {
-	std::transform(command.begin(), command.end(),command.begin(), toupper);
-	if (_commands.find(command) != _commands.end())
-		_commands.find(command)->second(server, index, string);
+	if (server.isRegistered(index)) {
+		std::transform(command.begin(), command.end(),command.begin(), toupper);
+		if (_commands.find(command) != _commands.end())
+			_commands.find(command)->second(server, index, string);
+	}
 }
 
 void	Server::slisten(int num) {
