@@ -43,6 +43,7 @@ i - marks a users as invisible;
 w - user receives wallops;
 r - restricted user connection;
 o - operator flag;
+add x flag ? 
 
 
 CHANNEL MODES :

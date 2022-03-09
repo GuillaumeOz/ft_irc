@@ -19,6 +19,7 @@ class Channel {
 		std::string						&getChannelName();
 		std::string						&getChannelTopic();
 		size_t							getNumberofUsers();
+		int8_t							getChannelMode();
 		void							setChannelTopic(std::string newTopic);
 		std::vector<User *>::iterator	findUser(std::string &name);
 		void							addUser(User *user);

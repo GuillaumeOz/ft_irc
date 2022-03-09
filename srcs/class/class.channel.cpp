@@ -1,8 +1,6 @@
 #include "ft_irc.hpp"
 
 Channel::Channel(std::string &name, std::string &topic, User *first) : _name(name), _topic(topic), _channelMode(0) {
-	assignMode(MODE_CHANNEL_N);
-	assignMode(MODE_CHANNEL_T);
 	_users.push_back(first);
 };
 
@@ -23,6 +21,11 @@ void			Channel::setChannelTopic(std::string newTopic) {
 size_t			Channel::getNumberofUsers() {
 	return (_users.size());
 }
+
+int8_t			Channel::getChannelMode() {
+	return (_channelMode);
+}
+
 
 std::vector<User *>::iterator Channel::findUser(std::string &name) {
 	for (std::vector<User *>::iterator it = _users.begin(); it != _users.end(); it++) {

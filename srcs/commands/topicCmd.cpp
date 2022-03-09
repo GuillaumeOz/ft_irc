@@ -67,8 +67,7 @@ void	topicCmd(Server &server, int index, std::string &command) {
 	std::vector<Channel *>::iterator	it;
 	if (isDisplayTopic(command) == true) {
 		it = server.findChannel(channelName);
-		std::string cmd = "PRIVMSG";
-		std::string displayTopic = getCmdString(server, index, channelName, (*it)->getChannelTopic(), cmd);
+		std::string displayTopic = getCmdString(server, index, channelName, (*it)->getChannelTopic(), "PRIVMSG");
 		server.ssend(displayTopic, index);
 		return ;
 	}

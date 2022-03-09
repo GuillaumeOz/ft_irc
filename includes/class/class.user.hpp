@@ -29,6 +29,7 @@ class User {
 	void						setSocket(int &);
 	int							getSocket();
 	std::vector<std::string>	getUchannels();
+	int8_t						getUserMode();
 	void						setHost(std::string &);
 	void						setNick(std::string &);
 	void						setUsername(std::string &);

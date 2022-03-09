@@ -241,6 +241,14 @@ std::vector<Channel *>::iterator Server::findChannel(std::string &channelName) {
 	return (channels.end());
 };
 
+size_t Server::findChannelIndex(std::string &channelName) {
+	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
+		if ((*it)->getChannelName() == channelName)
+			return (it - channels.begin());
+	}
+	return (std::string::npos);
+};
+
 void		Server::sendToAllUsersInChannel(std::string &channelName, std::string &response) {
 	std::vector<Channel *>::iterator	it = findChannel(channelName);
 

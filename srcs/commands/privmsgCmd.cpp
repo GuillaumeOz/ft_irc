@@ -75,7 +75,6 @@ void    privmsgCmd(Server &server, int index, std::string &command) {
         versionCmd(server, index);
         return ;
     }
-    POUT("got here")
     if (toChannel(command) == true) {
         std::string channelName = setChannelName(command);
         response = setResponse(server, index, channelName, message);

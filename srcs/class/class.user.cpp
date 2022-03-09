@@ -1,8 +1,8 @@
 #include "ft_irc.hpp"
 
-User::User(): _csize(sizeof(_addr)), _nick(), _username(), _realname(),  _awaymessage("") {};
+User::User(): _csize(sizeof(_addr)), _nick(), _username(), _realname(), _userMode(NO_USER_MODE), _awaymessage("") {};
 
-User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _nick(nick), _username(username), _realname() {};
+User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _nick(nick), _username(username), _realname(), _userMode(NO_USER_MODE) {};
 
 User::~User() {
 	uclose();
@@ -44,6 +44,10 @@ int		User::getSocket() {
 std::vector<std::string>	User::getUchannels() {
 
 	return (_uchannels);
+}
+
+int8_t	User::getUserMode() {
+	return (_userMode);
 }
 
 void	User::setHost(std::string &string) {

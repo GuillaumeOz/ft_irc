@@ -67,6 +67,7 @@ class Server {
 	void addChannelToUser(int index, std::string channelName);
 	void removeChannel(int &);
 	std::vector<Channel *>::iterator findChannel(std::string &name);
+	size_t	findChannelIndex(std::string &channelName);
 	void joinChannel(int index, std::string &channel);
 	bool isValidChannel(std::string &);
 	void delUserFromChannel(std::string &channelName, int);
