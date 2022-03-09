@@ -49,8 +49,6 @@ int	main(int ac, char **av) {
 		server.spoll();
 		if (server.spollinCondition(i)) {
 			server.saccept();
-			// std::string str("JOIN #bot\r");
-			// joinCmd(server, index, str);
 		}
 		usersActionsLoop(server);
 	}
