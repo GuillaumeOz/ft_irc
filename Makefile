@@ -58,9 +58,6 @@ $(OBJ_DIR)/%.opp: %.cpp
 # Build all targets
 all: $(NAME)
 
-# Run the bot project makefile
-bot: make -sC ./bot/
-
 # Show macro details
 show:
 	@echo "$(_BLUE)SRC :\n$(_YELLOW)$(SRC)$(_WHITE)"
