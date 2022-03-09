@@ -5,7 +5,7 @@ Server::Server(int port): _config(port), _error() {
 	initCommands();
 };
 
-Server::Server(int port, Error error): _config(port), _error(error) {
+Server::Server(int port, Error error, std::string pass): _config(port), _error(error), _pass(pass) {
 	addSockToPfds(_config.sock);
 	initCommands();
 };
@@ -15,6 +15,10 @@ Server::~Server() {};
 void	Server::sbind()  {
 	bind(_config.sock, (const struct sockaddr *)&(_config.addr), sizeof(_config.addr));
 	std::cout << "[Bind] : " << _config.sock << "." << std::endl;
+}
+
+void	Server::printPass() {
+	POUT(_pass);
 }
 
 void	Server::initCommands() {

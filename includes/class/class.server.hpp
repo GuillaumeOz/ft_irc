@@ -9,6 +9,7 @@ class Server {
 
 	Config															_config;
 	Error															_error;
+	std::string														_pass;
 	std::vector<struct pollfd>										_pfds;
 	std::string														_password;
 	std::vector<User *>												_users;
@@ -18,8 +19,11 @@ class Server {
 	std::vector<Channel *>											channels;
 
 	Server(int port);
-	Server(int port, Error error);
+	Server(int port, Error error, std::string pass);
 	~Server();
+
+	//Password
+	void printPass();
 
 	//Commands
 	void initCommands();
