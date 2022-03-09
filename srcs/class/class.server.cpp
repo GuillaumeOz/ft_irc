@@ -21,6 +21,20 @@ void	Server::printPass() {
 	POUT(_pass);
 }
 
+bool Server::isValidPass(std::string &string) {
+	if (_pass.compare(string) == 0)
+		return (true);
+	return (false);
+}
+
+bool 	Server::isRegistered(int index) {
+	return (_users[index]->isRegistered());
+}
+
+void 	Server::sregister(int index) {
+	_users[index]->uregister();
+}
+
 void	Server::initCommands() {
 	_commands["JOIN"] = &joinCmd;
 	_commands["PART"] = &partCmd;

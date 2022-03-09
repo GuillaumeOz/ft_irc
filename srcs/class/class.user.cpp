@@ -1,8 +1,8 @@
 #include "ft_irc.hpp"
 
-User::User(): _csize(sizeof(_addr)), _nick(), _username(), _realname(),  _awaymessage("") {};
+User::User(): _csize(sizeof(_addr)), _nick(), _username(), _realname(),  _registerState(false), _awaymessage("") {};
 
-User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _nick(nick), _username(username), _realname() {};
+User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _nick(nick), _username(username), _realname(), _registerState(false) {};
 
 User::~User() {
 	uclose();
@@ -123,4 +123,12 @@ void		User::setAwayMessage(std::string &awayMessage) {
 
 bool		User::isAway() {
 	return (_awaymessage != "");
+}
+
+bool 		User::isRegistered() {
+	return (_registerState);
+}
+
+void 		User::uregister() {
+	_registerState = true;
 }

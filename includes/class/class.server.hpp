@@ -24,6 +24,9 @@ class Server {
 
 	//Password
 	void printPass();
+	bool isValidPass(std::string &);
+	bool isRegistered(int);
+	void sregister(int);
 
 	//Commands
 	void initCommands();
