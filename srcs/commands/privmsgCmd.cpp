@@ -61,8 +61,6 @@ bool        isVersion(std::string &command) {
     return (false);
 }
 
-//PRIVMSG ircserv :^AVERSION^A^M$
-
 void        versionCmd(Server &server, int index) {
     std::string version = "Version: 108.114.99\n";
     server.ssend(version, index);
@@ -96,5 +94,3 @@ void    privmsgCmd(Server &server, int index, std::string &command) {
         }
     }
 }
-
-//[test] is away (message)
