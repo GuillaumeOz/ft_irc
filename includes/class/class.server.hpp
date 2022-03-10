@@ -28,7 +28,7 @@ class Server {
 	//Sockets
 	void sbind();
 	void slisten(int);
-	int saccept();
+	void saccept();
 	void ssend(std::string &, int);
 	void ssend(std::string &, User &);
 	int  srecv(std::string *, int);

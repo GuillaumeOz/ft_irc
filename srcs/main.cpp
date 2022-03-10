@@ -38,7 +38,7 @@ void	usersActionsLoop(Server &server) {
 int	main(int ac, char **av) {
 	Error error;
 
-	if ((ac != 2 && ac != 3))
+	if (ac != 2 && ac != 3)
 		error.type = ARGUMENT;
 	error.displayError();
 	Server server(atoi(av[1]), error);
@@ -47,9 +47,8 @@ int	main(int ac, char **av) {
 	int i = {0};
 	while (true) {
 		server.spoll();
-		if (server.spollinCondition(i)) {
+		if (server.spollinCondition(i))
 			server.saccept();
-		}
 		usersActionsLoop(server);
 	}
 	server.closeServer();

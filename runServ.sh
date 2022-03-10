@@ -19,7 +19,7 @@ then
 	if [ "$3" = "bot" ]
 	then
 		x-terminal-emulator -T "Server IRC" -e bash -c "make; ./bin/ircserv $1 $2" &
-		sleep 2
+		sleep 7
 		x-terminal-emulator -T "Bot Irc" -e bash -c "cd ./bot && make; ./bin/bot_client"
 	else
 		echo "Wrong arguments... Try with ./script.sh [server port] [password] [bot]"

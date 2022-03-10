@@ -68,6 +68,7 @@ show:
 	@echo "\n-----\n"
 	@echo "$(_BLUE)Compiling : \n$(_YELLOW)$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(_WHITE)"
 
+
 # Remove objects
 clean:
 	@echo "$(_WHITE)Deleting Objects Directory $(_YELLOW)$(OBJ_DIR)$(_WHITE) ... \c"
