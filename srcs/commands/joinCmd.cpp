@@ -29,8 +29,6 @@ void    joinCmd(Server &server, int index, std::string &string) {
 	std::string response;
 	std::string channelTopic("topic not set.");
 
-	if (string.compare("JOIN #bot\r") == 0)
-		POUT("joining bot...")
 	findChannelName(string, channelName);
 	response = getResponse(server, index, channelName);
 	if (server.isValidChannel(channelName) == true) {

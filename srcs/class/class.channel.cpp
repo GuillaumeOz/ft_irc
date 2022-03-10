@@ -48,7 +48,12 @@ void                Channel::removeUser(User *user) {
 void				Channel::sendToAllUsers(std::string &response) {
 	std::vector<User *>::iterator it = _users.begin();
 
-	while ( it != _users.end()) {
+	while (it != _users.end()) {
+		if ((*it)->getNick().compare("bot") == 0) {
+			if (response.find("PRIVMSG") != std::string::npos)
+				(*it)->usend(response);
+		}
+		else 
 			(*it)->usend(response);
 		it++;
 	}

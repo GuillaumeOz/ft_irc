@@ -5,7 +5,7 @@ bot_var="bot"
 
 echo "Hi $(whoami)!
 
-if you got some problem with the bot start command please check your defualt x-termainal-emulator.
+if you got some problem with the bot start command please check your default x-termainal-emulator.
 
 You can change it by using the command:  [sudo update-alternatives --config x-terminal-emulator].
 "

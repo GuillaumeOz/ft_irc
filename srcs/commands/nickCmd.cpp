@@ -19,13 +19,26 @@ void	parseUserNick(std::string &string, int index, Server &server) {
         i++;
     }
     tmp.insert(tmp.begin(), string.begin() + 5, string.begin() + i);
+    for (size_t i = 0; i < server.getUsers().size(); i++) {
+        if (server.getNick(i).compare(tmp) == 0) {
+            std::string str;
+            str.insert(0, ":");
+            str.insert(1, tmp);
+            tmp += "2";
+            str.insert(str.length(), "!ircserv");
+            str.insert(str.length(), " NICK ");
+            str.insert(str.length(), tmp.c_str());
+            str.insert(str.length(), "\n");
+            server.ssend(str, index);
+            break ;
+        }
+    }
     server.setNick(index, tmp);
 }
 
-void	welcomeNewUser(std::string &string, int index, Server &server) {
+void	welcomeNewUser(int index, Server &server) {
 	std::string response;
 
-    POUT(string)
     response += "001 ";
     response += server.getNick(index);
     response += " :Welcome to the Internet Relay Network ";
@@ -67,7 +80,8 @@ bool    checkNickError(std::string &nick, int index, Server &server) {
 void    nickCmd(Server &server, int index, std::string &command) {
     if (server.getNick(index) == "") {
         parseUserNick(command, index, server);
-        welcomeNewUser(command, index, server);
+        if (server.getNick(index).compare("bot") != 0)
+            welcomeNewUser(index, server);
         return ;
     }
     else {
