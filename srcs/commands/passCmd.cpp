@@ -14,7 +14,7 @@ std::string	getPass(std::string &command) {
 
 void	passCmd(Server &server, int index, std::string &command) {
 	std::string pass = getPass(command);
-	std::string invalidPassword(":Invalid password\n");
+	std::string invalidPassword("Invalid password\n");
 
 	if (!isToken(command, " "))
 		server.sendErrorUser(command.c_str(), NULL, NULL, ERR_NEEDMOREPARAMS, index);

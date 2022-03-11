@@ -17,7 +17,7 @@ std::string	skipCap(std::string &string) {
 
 void 	parseClientInformations(std::string &string, int index, Server &server) {
 	std::string tmp = skipCap(string);
-	std::string passMsg("Your are not register to the server. Please use the /PASS command followed by the server password");
+	std::string passMsg("Your are not register to the server. Please use the /PASS command followed by the server password.\n");
 
 	if (strncmp(string.c_str(), "PASS", 4) == 0)
 		passCmd(server, index, string);
