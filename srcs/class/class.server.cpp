@@ -18,7 +18,7 @@ void	Server::sbind()  {
 }
 
 void	Server::initCommands() {
-	// _commands["JOIN"] = &joinCmd;
+	_commands["JOIN"] = &joinCmd;
 	// _commands["PART"] = &partCmd;
 	// _commands["PRIVMSG"] = &privmsgCmd;
 	// _commands["LIST"] = &listCmd;
@@ -110,7 +110,7 @@ void	Server::removeChannel(int &index) {
 	channels.erase(channels.begin() + index);
 };
 
-bool	Server::isValidChannel(std::string &name) {
+bool	Server::isExistingChannel(std::string &name) {
 	for (size_t i = 0; i < channels.size(); i++) {
 		if (channels[i]->getChannelName() == name)
 			return (true);

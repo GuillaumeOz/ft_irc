@@ -24,3 +24,12 @@ std::string nickResponse(std::string &newNick, std::string &oldNick)
 	response += ":" + oldNick + "!ircserv NICK " + newNick + "\n";
 	return (response);
 }
+
+/* ----------------------------- Join functions ----------------------------- */
+
+std::string	joinResponse(Server &server, int index, std::string &channelName) {
+	std::string response;
+
+	response += ":" + server.getNick(index) + " JOIN " + channelName + "\n";
+	return (response);
+}

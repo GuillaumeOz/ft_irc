@@ -68,7 +68,7 @@ class Server {
 	void removeChannel(int &);
 	std::vector<Channel *>::iterator findChannel(std::string &name);
 	void joinChannel(int index, std::string &channel);
-	bool isValidChannel(std::string &);
+	bool isExistingChannel(std::string &);
 	void delUserFromChannel(std::string &channelName, int);
 	bool isChannelEmpty(std::string &channelName);
 	void delChannel(std::string &channelName);

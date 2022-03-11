@@ -48,7 +48,7 @@ void		addListedChannelsToChannelList(Server &server, bool channelsOnly, std::str
 	while (splitted != NULL) {
 		tmp = "#";
 		tmp += splitted;
-		if (server.isValidChannel(tmp) == false)
+		if (server.isExistingChannel(tmp) == false)
 			tmp += " :no such channel";
 		else {
 			std::vector<Channel *>::iterator it = server.findChannel(tmp); 

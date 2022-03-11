@@ -31,7 +31,7 @@ void	partCmd(Server &server, int index, std::string &command) {
 	std::string channelName = getChannelName(command);
 	std::string reason = getReason(command);
 	std::string	response = getResponse(server, index, channelName, reason);
-    if (server.isValidChannel(channelName)) {
+    if (server.isExistingChannel(channelName)) {
         server.delUserFromChannel(channelName, index);
 		server.delChannelFromUser(channelName, index);
 		server.ssend(response, index);
