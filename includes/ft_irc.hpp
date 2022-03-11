@@ -70,6 +70,7 @@ enum channelMode {
 #include "class.channel.hpp"
 #include "class.server.hpp"
 #include "class.user.hpp"
+#include "class.parsed.hpp"
 
 #include "commands.hpp"
 #include "parse.hpp"

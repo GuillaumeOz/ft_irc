@@ -25,7 +25,7 @@ void	parseUserNick(std::string &string, int index, Server &server) {
 void	welcomeNewUser(std::string &string, int index, Server &server) {
 	std::string response;
 
-    POUT(string)
+    (void)string;
     response += "001 ";
     response += server.getNick(index);
     response += " :Welcome to the Internet Relay Network ";

@@ -19,7 +19,8 @@ void	handleActions(std::string &string, int index, Server &server) {
 }
 
 void	usersActionsLoop(Server &server) {
-	std::string string;
+	std::string				string;
+	std::vector<parsed*>	parsedCommands;
 	int res = {0};
 
 	for (int i = 1; i < server.getPfdsSize(); i++) {
@@ -28,6 +29,8 @@ void	usersActionsLoop(Server &server) {
 			std::cout << string << std::endl;
 		}
 		if (res > 0) {
+			parseCommands(parsedCommands, string);
+			printParsedCommands(parsedCommands);
 			parseClientInformations(string, (i - 1), server);
 			handleActions(string, (i - 1), server);
 			string.clear();
