@@ -66,6 +66,15 @@ void				Channel::sendToAllOtherUsers(std::string &response, int socket) {
 	}
 }
 
+void				Channel::sendToMyself(std::string &response, int socket) {
+	std::vector<User *>::iterator it = _users.begin();
+	while ( it != _users.end()) {
+			if ((*it)->getSocket() == socket) 
+				(*it)->usend(response);
+		it++;
+	}
+}
+
 bool				Channel::isEmpty() {
 	return (_users.empty());
 };

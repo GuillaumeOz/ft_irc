@@ -1,7 +1,5 @@
 #include "ft_irc.hpp"
 
-//guillaumeoz_ sets mode -n #test2   ---> channel
-// guillaumeoz_ sets mode +i guillaumeoz_ ---> nick
 std::string	composeNickMode(int8_t nickMode) {
 	std::string ret = "+";
 
@@ -15,6 +13,34 @@ std::string	composeNickMode(int8_t nickMode) {
 		ret += "r";
 	}
 	return (ret + "\n");
+}
+
+std::string	composeChannelMode(int8_t channelMode, std::string &channelName) {
+	std::string ret = "+";
+
+	if (channelMode & MODE_CHANNEL_I) {
+		ret += "i";
+	}
+	if (channelMode & MODE_CHANNEL_M) {
+		ret += "m";
+	}
+	if (channelMode & MODE_CHANNEL_N) {
+		ret += "n";
+	}
+	if (channelMode & MODE_CHANNEL_P) {
+		ret += "p";
+	}
+	if (channelMode & MODE_CHANNEL_T) {
+		ret += "t";
+	}
+	if (channelMode & MODE_CHANNEL_K) {
+		ret += "k";
+	}
+	if (channelMode & MODE_CHANNEL_L) {
+		ret += "l";
+	}
+	ret = "Channel " + channelName + " modes: " + ret + "\n";
+	return (ret);
 }
 
 void	displayNickMode(Server &server, int index, std::string &nick, int8_t nickMode, char prefix) {
@@ -204,7 +230,7 @@ void	handleModeNick(Server &server, int index, std::string &command, std::string
 	POUT("C LE USER")
 	size_t findLen;
 
-	POUT(command)
+    //add  502    ERR_USERSDONTMATCH ":Cannot change mode for other users" ??
 	if (isModeOnlyNick(command, server.getNick(index)) == true) {
 		std::string composedNickMode = composeNickMode(server.getUsers()[index]->getUserMode());
 		server.ssend(composedNickMode, index);
@@ -214,8 +240,25 @@ void	handleModeNick(Server &server, int index, std::string &command, std::string
 	}
 }
 
+bool	isModeOnlyChannel(std::string command, std::string &channelName) {
+	std::string ret;
+	char *str = const_cast<char *>(command.c_str() + command.find(" "));
+	char *tmp;
+
+	tmp = strtok(str, "\0");
+	ret = tmp;
+	ret = eraseCarriageReturn(ret);
+	ret = eraseLineBreak(ret);
+	ret = eraseSelectedChar(ret, ' ');
+	if (ret.compare(channelName) == 0)
+		return (true);
+	return (false);
+}
+
 // default +nt  
 // MODE_CHANNEL_USER_O
+// guillaumeoz_ sets mode -n #test2   ---> channel
+// guillaumeoz_ sets mode +i guillaumeoz_ ---> nick
 void	handleModeChannel(Server &server, int index, std::string &command, std::string &channelName) {
 	POUT("C LE CHANNEL")
 	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
@@ -227,7 +270,23 @@ void	handleModeChannel(Server &server, int index, std::string &command, std::str
 		displayChannelMode(server, index, channelName, (*it)->getChannelMode(), '+');
 		return ;
 	}
+	if (isModeOnlyChannel(command, channelName) == true) {
+		std::string composedChannelMode = composeChannelMode((*it)->getChannelMode(), channelName);
+		server.sendToMyselfInChannel(channelName, composedChannelMode, index);
+	}
+	if (server.getUsers()[index]->isChannelUserModeOn(channelName, MODE_CHANNEL_USER_O) == true) {
 
+		;
+		// changeNickMode();
+// 		ERR_USERNOTINCHANNEL   "<nick> <channel> :They aren't on that channel"      
+
+	}
+	else {
+		server.sendErrorServerUser(channelName.c_str(), NULL, NULL, ERR_CHANOPRIVSNEEDED, index);
+
+// 		ERR_CHANOPRIVSNEEDED	"<channel> :You're not channel operator"
+
+	}
 	(void)command;
 }
 
@@ -235,7 +294,6 @@ void	modeCmd(Server &server, int index, std::string &command) {
 POUT("***************BEGIN***************")
 	POUT("command")
 	POUT(command)
-
 
 	std::string	userName;
 	std::string	channelName;
@@ -256,22 +314,11 @@ POUT("***************BEGIN***************")
 POUT("****************END****************")
 }
 
-// USER ERROR:
-    //    502    ERR_USERSDONTMATCH ":Cannot change mode for other users"
-	    //    461    ERR_NEEDMOREPARAMS  "<command> :Not enough parameters"
-	    //    501    ERR_UMODEUNKNOWNFLAG  ":Unknown MODE flag"
-
-    //    221    RPL_UMODEIS "<user mode string>"
-    //      - To answer a query about a client's own mode,
-    //        RPL_UMODEIS is sent back.
-
 // SERVER ERROR:
 
 // 		ERR_NEEDMOREPARAMS    "<command> :Not enough parameters"          
 // 		ERR_KEYSET			"<channel> :Channel key already set"
 // 		ERR_NOCHANMODES      	"<channel> :Channel doesn't support modes"      
-// 		ERR_CHANOPRIVSNEEDED	"<channel> :You're not channel operator"
-// 		ERR_USERNOTINCHANNEL   "<nick> <channel> :They aren't on that channel"      
 // 		ERR_UNKNOWNMODE			"<char> :is unknown mode char to me for <channel>"
 
 // 		RPL_CHANNELMODEIS

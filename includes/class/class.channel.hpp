@@ -26,6 +26,7 @@ class Channel {
 		void							removeUser(User *);
 		void							sendToAllUsers(std::string &response);
 		void							sendToAllOtherUsers(std::string &response, int socket);
+		void							sendToMyself(std::string &response, int socket);
 		bool							isEmpty();
 		bool							isModeOn(channelMode);
 		void							assignMode(channelMode);

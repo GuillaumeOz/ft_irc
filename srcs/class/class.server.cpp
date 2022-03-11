@@ -266,6 +266,14 @@ void		Server::sendToOtherUsersInChannel(std::string &channelName, std::string &r
 	}
 };
 
+void		Server::sendToMyselfInChannel(std::string &channelName, std::string &response, int index) {
+	std::vector<Channel *>::iterator	it = findChannel(channelName);
+
+	if (it != channels.end()) {
+		(*it)->sendToMyself(response, _users[index]->getSocket());
+	}
+};
+
 void		Server::printChannels() {
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
 		std::cout << (*it)->getChannelName() << std::endl;
