@@ -23,7 +23,7 @@ class Server {
 
 	//Commands
 	void initCommands();
-	void callCommand(std::string &, Server &, int &, std::string &);
+	void callCommand(Server &, int &, parsed *);
 
 	//Sockets
 	void sbind();

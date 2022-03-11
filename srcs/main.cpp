@@ -2,7 +2,7 @@
 
 void	handleActions(std::vector<parsed*> parsedCommands, int index, Server &server) {
 	for (size_t i = 0; i < parsedCommands.size(); i++) {
-		server.callCommand(parsedCommands[i]->command, server, index, parsedCommands[i]->rawCommand);
+		server.callCommand(server, index, parsedCommands[i]);
 	}
 }
 

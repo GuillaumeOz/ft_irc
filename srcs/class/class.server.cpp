@@ -31,10 +31,9 @@ void	Server::initCommands() {
 	_commands["NOTICE"] = &noticeCmd;
 }
 
-void	Server::callCommand(std::string &command, Server &server, int &index, std::string &string) {
-	std::transform(command.begin(), command.end(),command.begin(), toupper);
-	if (_commands.find(command) != _commands.end())
-		_commands.find(command)->second(server, index, string);
+void	Server::callCommand(Server &server, int &index, parsed *parsedCommand) {
+	if (_commands.find(parsedCommand->command) != _commands.end())
+		_commands.find(parsedCommand->command)->second(server, index, parsedCommand->rawCommand);
 }
 
 void	Server::slisten(int num) {

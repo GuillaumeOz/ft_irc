@@ -65,12 +65,12 @@ enum channelMode {
 
 /* ----------------------------- Project headers ----------------------------- */
 
+#include "class.parsed.hpp"
 #include "class.config.hpp"
 #include "class.error.hpp"
 #include "class.channel.hpp"
 #include "class.server.hpp"
 #include "class.user.hpp"
-#include "class.parsed.hpp"
 
 #include "commands.hpp"
 #include "parse.hpp"
