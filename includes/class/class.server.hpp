@@ -12,7 +12,7 @@ class Server {
 	std::vector<struct pollfd>										_pfds;
 	std::string														_password;
 	std::vector<User *>												_users;
-	std::map<std::string, void (*)(Server &, int , std::string &)> 	_commands;
+	std::map<std::string, void (*)(Server &, int , parsed *)> 		_commands;
 
 	public:
 	std::vector<Channel *>											channels;
@@ -45,10 +45,10 @@ class Server {
 	std::vector<User *>	getUsers();
 	void addUser(User *);
 	void removeUser(int &);
-    void setHost(int , std::string &);
-    void setNick(int , std::string &);
-    void setUsername(int , std::string &);
-    void setRealname(int , std::string &);
+	void setHost(int , std::string &);
+	void setNick(int , std::string &);
+	void setUsername(int , std::string &);
+	void setRealname(int , std::string &);
 	std::string	&getHost(int);
 	std::string	&getNick(int);
 	std::string	&getUsername(int);

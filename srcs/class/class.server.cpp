@@ -18,22 +18,22 @@ void	Server::sbind()  {
 }
 
 void	Server::initCommands() {
-	_commands["JOIN"] = &joinCmd;
-	_commands["PART"] = &partCmd;
-	_commands["PRIVMSG"] = &privmsgCmd;
-	_commands["LIST"] = &listCmd;
-	_commands["QUIT"] = &quitCmd;
-	_commands["USER"] = &userCmd;
-	_commands["TOPIC"] = &topicCmd;
+	// _commands["JOIN"] = &joinCmd;
+	// _commands["PART"] = &partCmd;
+	// _commands["PRIVMSG"] = &privmsgCmd;
+	// _commands["LIST"] = &listCmd;
+	// _commands["QUIT"] = &quitCmd;
+	// _commands["USER"] = &userCmd;
+	// _commands["TOPIC"] = &topicCmd;
 	_commands["AWAY"] = &awayCmd;
-	_commands["NICK"] = &nickCmd;
-	_commands["TIME"] = &timeCmd;
-	_commands["NOTICE"] = &noticeCmd;
+	// _commands["NICK"] = &nickCmd;
+	// _commands["TIME"] = &timeCmd;
+	// _commands["NOTICE"] = &noticeCmd;
 }
 
 void	Server::callCommand(Server &server, int &index, parsed *parsedCommand) {
 	if (_commands.find(parsedCommand->command) != _commands.end())
-		_commands.find(parsedCommand->command)->second(server, index, parsedCommand->rawCommand);
+		_commands.find(parsedCommand->command)->second(server, index, parsedCommand);
 }
 
 void	Server::slisten(int num) {
