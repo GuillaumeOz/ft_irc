@@ -101,6 +101,10 @@ void	User::assignMode(userMode mode) {
 	_userMode |= mode;
 }
 
+void	User::removeMode(userMode mode) {
+	_userMode ^= mode;
+}
+
 bool	User::isModeOn(userMode mode) {
 	if (_userMode & mode)
 		return (true);

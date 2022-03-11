@@ -41,6 +41,7 @@ class User {
 	std::string 				&getRealname();
 	void						joinChannel(std::string &channelName);
 	void						assignMode(userMode);
+	void						removeMode(userMode);
 	bool						isModeOn(userMode);
 	bool						isChannelUserModeOn(std::string &, channelUserMode);
 	void						assignChannelUserMode(std::string &, channelUserMode);

@@ -25,7 +25,7 @@ Error::Error(): type(NO_ERROR) {
 	errorMessages[ERR_CANTKILLSERVER] = ":You can't kill a server!.\n";
 	errorMessages[ERR_UNIQOPPRIVSNEEDED] = ":You're not the original channel operator.\n";
 	errorMessages[ERR_NOOPERHOST] = ":No O-lines for your host.\n";
-	errorMessages[ERR_UMODEUNKNOWNFLAG] = ":Unknown MODE flag.\n";
+	errorMessages[ERR_UMODEUNKNOWNFLAG] = "place1 :Unknown MODE flag.\n";
 	errorMessages[ERR_USERSDONTMATCH] = ":Cannot change mode for other users.\n";
 	errorMessages[ERR_NICKCOLLISION] = "place1 :Nickname collision KILL from place2@place3.\n";
 	errorMessages[ERR_UNAVAILRESOURCE] = "place1 :Nick/channel is temporarily unavailable.\n";
