@@ -55,10 +55,18 @@ std::string partResponse(Server &server, int index, std::string &channelName, st
 
 /* ----------------------------- Quit functions ----------------------------- */
 
-
 std::string quitResponse(Server &server, int index, std::string &channelName, std::string &reason) {
 	std::string	response;
 	
 	response += ":" + server.getNick(index) + "!ircserv PRIVMSG " + channelName + " has left the channel for the reason: " + reason + "\n";
+	return (response);
+}
+
+/* ----------------------------- Notice functions ----------------------------- */
+
+std::string		noticeResponse(Server &server, int index, std::string &destination, std::string &reason) {
+	std::string response;
+
+	response += ":" + server.getNick(index) + "!ircserv NOTICE " + destination + " " + reason + "\n";
 	return (response);
 }
