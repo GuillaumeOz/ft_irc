@@ -4,7 +4,7 @@
 void	partCmd(Server &, int, parsed *);
 void	listCmd(Server &, int , parsed *);
 void	quitCmd(Server &, int, parsed *);
-// void	userCmd(Server &, int, std::string &);
+void	userCmd(Server &, int, parsed *);
 void	privmsgCmd(Server &, int, parsed *);
 void	awayCmd(Server &, int, parsed *);
 void	nickCmd(Server &, int, parsed *);
