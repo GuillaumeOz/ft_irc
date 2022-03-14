@@ -75,8 +75,23 @@ void    privmsgCmd(Server &server, int index, std::string &command) {
     }
     if (toChannel(command) == true) {
         std::string channelName = setChannelName(command);
-        response = setResponse(server, index, channelName, message);
-        server.sendToOtherUsersInChannel(channelName, response, index);
+        int count = std::count(message.begin(), message.end(), '\n');
+        if (count > 1) {
+            size_t pos = message.find("\n");
+            while (pos != std::string::npos) {
+                std::string tmp;
+                tmp.insert(tmp.begin(), message.begin(), message.begin() + pos);
+                response = setResponse(server, index, channelName, tmp);
+                server.sendToOtherUsersInChannel(channelName, response, index);
+                message.erase(0, message.find("\n") + 1);
+                response.clear();
+                pos = message.find("\n");
+            }
+        }
+        else {
+            response = setResponse(server, index, channelName, message);
+            server.sendToOtherUsersInChannel(channelName, response, index);
+        }
     }
     else {
         std::string user = getUser(command);
