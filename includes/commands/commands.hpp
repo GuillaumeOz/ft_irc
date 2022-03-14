@@ -2,7 +2,7 @@
 # define COMMANDS_HPP
 
 void	partCmd(Server &, int, parsed *);
-// void	listCmd(Server &, int , std::string &);
+void	listCmd(Server &, int , parsed *);
 void	quitCmd(Server &, int, parsed *);
 // void	userCmd(Server &, int, std::string &);
 void	privmsgCmd(Server &, int, parsed *);

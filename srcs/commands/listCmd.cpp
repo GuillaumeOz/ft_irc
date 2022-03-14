@@ -1,15 +1,19 @@
 #include "ft_irc.hpp"
 
-bool	isListlParams(std::string &string) {
-	return (string.find_first_of(" ") != std::string::npos);
+bool	isListlParams(parsed *parsedCommand) {
+	return (parsedCommand->args.size() != 0);
 }
 
-bool	isChannelParamUsed(std::string &string) {
-	return (string.find(" channel" ) != std::string::npos);
+bool	isChannelParamUsed(parsed *parsedCommand) {
+	for (size_t i = 0; i < parsedCommand->args.size(); i++) {
+		if (parsedCommand->args[i]->compare("channel") == 0)
+			return (true);
+	}
+	return (false);
 }
 
-bool	isChannelParam(std::string &string) {
-	return (string.find("#" ) != std::string::npos);
+bool	isChannelParam(parsed *parsedCommand) {
+	return (parsedCommand->channels.size() != 0);
 }
 
 void		addNbOfUserAndTopic(std::string &string, std::vector<Channel *>::iterator it) {
@@ -36,52 +40,43 @@ void		addChannelsToChannelList(Server &server, bool channelsOnly, std::stringstr
 	}
 }
 
-void		addListedChannelsToChannelList(Server &server, bool channelsOnly, std::stringstream &channelList, std::string &string) {
+void		addListedChannelsToChannelList(Server &server, bool channelsOnly, std::stringstream &channelList, parsed *parsedCommand) {
 	std::string tmp;
-	char *splitted;
-	char *str = const_cast<char *>(string.c_str());
 
-	splitted = strtok(str, "# ");
-	splitted = strtok(NULL, "#, \r");
-	if (channelsOnly == true)
-		splitted = strtok(NULL, "#, \r");
-	while (splitted != NULL) {
-		tmp = "#";
-		tmp += splitted;
-		if (server.isExistingChannel(tmp) == false)
+	for (size_t i = 0; i < parsedCommand->channels.size(); i++) {
+		tmp += *parsedCommand->channels[i];
+		if (server.isExistingChannel(*parsedCommand->channels[i]) == false)
 			tmp += " :no such channel";
 		else {
 			std::vector<Channel *>::iterator it = server.findChannel(tmp); 
 			if ((*it)->isModeOn(MODE_CHANNEL_P))
-				goto NEXT_CHANNEL;
+				i++;
 			if (channelsOnly == false) {
 				addNbOfUserAndTopic(tmp, it);
 			}
 		}
 		tmp += "\n";
 		channelList << tmp;
-	NEXT_CHANNEL:
-		splitted = strtok(NULL, "#, \r\n");
+		tmp.clear();
 	}
 }
 
-std::string getChannelsList(Server &server, std::string &string) {
+std::string getChannelsList(Server &server, parsed *parsedCommand) {
 	std::stringstream channelList;
 	bool		channelsOnly = false;
-	(void)string;
 
 	channelList << std::setw(30) << std::left << "Channel" << std::right << std::setw(5) << "Users" << std::setw(20) << "Topics\n";
 	for (int i = 0; i < 55; i++) { channelList << "-"; }
 	channelList << "\n";
-	if (isListlParams(string)) {
-		if (isChannelParamUsed(string))
+	if (isListlParams(parsedCommand)) {
+		if (isChannelParamUsed(parsedCommand))
 			channelsOnly = true;
-		if (isChannelParam(string))
-			addListedChannelsToChannelList(server, channelsOnly, channelList, string);
+		if (isChannelParam(parsedCommand))
+			addListedChannelsToChannelList(server, channelsOnly, channelList, parsedCommand);
 		else
 			addChannelsToChannelList(server, channelsOnly, channelList);
 	} else {
-		if (isChannelParamUsed(string))
+		if (isChannelParamUsed(parsedCommand))
 			channelsOnly = true;
 		addChannelsToChannelList(server, channelsOnly, channelList);
 	}
@@ -89,10 +84,10 @@ std::string getChannelsList(Server &server, std::string &string) {
 	return (channelList.str());
 }
 
-void	listCmd(Server &server, int index, std::string &string) {
+void	listCmd(Server &server, int index, parsed *parsedCommand) {
 	std::string channelList;
 
-	channelList = getChannelsList(server, string);
+	channelList = getChannelsList(server, parsedCommand);
 	POUT(channelList);
 	server.ssend(channelList, index);
 }
