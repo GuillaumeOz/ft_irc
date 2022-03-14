@@ -22,6 +22,7 @@ std::string nickResponse(std::string &newNick, std::string &oldNick)
 	std::string response;
 
 	response += ":" + oldNick + "!ircserv NICK " + newNick + "\n";
+	POUT(response)
 	return (response);
 }
 

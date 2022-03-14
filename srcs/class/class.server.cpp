@@ -299,3 +299,11 @@ bool		Server::isUserAway(int index) {
 std::string &Server::getUserAwayMessage(int index) {
 	return (_users[index]->getAwayMessage());
 }
+
+std::string &Server::getUserInvalidNick(int index) {
+	return (_users[index]->getInvalidNick());
+}
+
+void		Server::setUserInvalidNick(int index, std::string &invalidNick) {
+	_users[index]->setInvalidNick(invalidNick);
+}

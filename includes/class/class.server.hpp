@@ -60,6 +60,8 @@ class Server {
 	void setUserAwayMessage(int index, std::string &message);
 	bool isUserAway(int index);
 	std::string &getUserAwayMessage(int index);
+	std::string &getUserInvalidNick(int index);
+	void		setUserInvalidNick(int index, std::string &invalidNick);
 
 	//Channels
 	std::vector<Channel *>	getChannels();
