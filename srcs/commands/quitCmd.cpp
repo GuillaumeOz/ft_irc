@@ -2,7 +2,6 @@
 
 void	quitCmd(Server &server, int index, parsed *parsedCommand) {
 	std::string reason = parsedCommand->getFullTwoPointsArgs();
-	POUT(reason)
 	std::vector<std::string> uchannel = server.getUsers()[index]->getUchannels();
 
 	for (size_t i = 0; i < uchannel.size(); i++) {
