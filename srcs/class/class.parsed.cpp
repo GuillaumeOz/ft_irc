@@ -39,8 +39,26 @@ void	parsed::addRawString(std::string &string) {
 
 /* ---------------------------- delete/deallocate --------------------------- */
 
-void	parsed::clear() {
+void	parsed::clearArgs() {
 	for(size_t i = 0; i < args.size(); i++) {
 		delete args[i];
 	}
+};
+
+void	parsed::clearChannels() {
+	for(size_t i = 0; i < channels.size(); i++) {
+		delete channels[i];
+	}
+}
+
+void	parsed::clearTwoPointsArgs() {
+	for(size_t i = 0; i < twoPointsArgs.size(); i++) {
+		delete twoPointsArgs[i];
+	}
+}
+
+void	parsed::clear() {
+	clearArgs();
+	command.clear();
+	rawCommand.clear();
 };

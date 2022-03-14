@@ -18,10 +18,11 @@ void	usersActionsLoop(Server &server) {
 		}
 		if (res > 0) {
 			parseCommands(parsedCommands, string);
-			printParsedCommands(parsedCommands);
+			// printParsedCommands(parsedCommands);
 			handleActions(parsedCommands, (i - 1), server);
 			string.clear();
 		}
+		parsedCommands.clear();
 	}
 }
 

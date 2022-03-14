@@ -29,6 +29,9 @@ class parsed
 
 /* ---------------------------- delete/deallocate --------------------------- */
 
+		void	clearArgs();
+		void	clearChannels();
+		void	clearTwoPointsArgs();
 		void	clear();
 };
 
