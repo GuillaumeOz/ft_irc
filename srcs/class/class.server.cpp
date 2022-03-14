@@ -307,3 +307,12 @@ std::string &Server::getUserInvalidNick(int index) {
 void		Server::setUserInvalidNick(int index, std::string &invalidNick) {
 	_users[index]->setInvalidNick(invalidNick);
 }
+
+bool 		Server::userIsinChannel(std::string &channelName, int index) {
+	std::vector<std::string> uchannels = _users[index]->getUchannels();
+	for (size_t i = 0; i < uchannels.size(); i++) {
+		if (channelName == uchannels[i])
+			return (true);
+	}
+	return (false);
+}

@@ -11,7 +11,7 @@ void	nickCmd(Server &, int, parsed *);
 void	joinCmd(Server &, int, parsed *);
 // void	topicCmd(Server &, int, std::string &);
 // void	timeCmd(Server &, int, std::string &);
-// void    noticeCmd(Server &, int, std::string &);
+// void	noticeCmd(Server &, int, std::string &);
 
 /* -------------------------------- response -------------------------------- */
 

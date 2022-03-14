@@ -79,11 +79,12 @@ class Server {
 	void printChannels();
 	bool ischannelModeOn(channelMode mode, int index);
 	void assignchannelMode(channelMode mode, int index);
+	bool userIsinChannel(std::string &, int);
 
 	//Pfds
 	void addSockToPfds(int);
 	void removeSockFromPfds(int socket);
-	int  findClientSock(int socket);
+	int	 findClientSock(int socket);
 	int	 getPfdsSize();
 	int	 getPfdsSock(int &);
 
