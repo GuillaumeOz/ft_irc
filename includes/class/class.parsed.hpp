@@ -21,11 +21,15 @@ class parsed
 
 /* --------------------------------- setters -------------------------------- */
 
-		void	addCommand(const char *);
-		void	addArgs(const char *);
-		void	addArgChannel(std::string *);
-		void	addArgTwoPoints(std::string *);
-		void	addRawString(std::string &);
+		void			addCommand(const char *);
+		void			addArgs(const char *);
+		void			addArgChannel(std::string *);
+		void			addArgTwoPoints(std::string *);
+		void			addRawString(std::string &);
+
+/* --------------------------------- getters -------------------------------- */
+
+		std::string		getFullTwoPointsArgs();
 
 /* ---------------------------- delete/deallocate --------------------------- */
 

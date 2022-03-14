@@ -1,23 +1,5 @@
 #include "ft_irc.hpp"
 
-std::string getMessage(parsed *parsedCommand)
-{
-	bool sum = {false};
-	int charSkip = 1;
-	std::string tmp("");
-
-	for (size_t i = 1; i < parsedCommand->args.size(); i++) {
-		if ((*parsedCommand->args[i])[0] == ':')
-			sum = true;
-		if (sum == true) {
-			tmp += (parsedCommand->args[i]->c_str() + charSkip);
-			charSkip = 0;
-			tmp += " ";
-		}
-	}
-	return (tmp);
-}
-
 bool toChannel(std::string &command)
 {
 	if (command.find_first_of("#") == std::string::npos)
@@ -53,7 +35,7 @@ void	versionCmd(Server &server, int index) {
 }
 
 void privmsgCmd(Server &server, int index, parsed *parsedCommand) {
-	std::string message = getMessage(parsedCommand);
+	std::string message = parsedCommand->getFullTwoPointsArgs();
 	std::string response;
 
 	if (isVersion(parsedCommand->rawCommand) == true) {
