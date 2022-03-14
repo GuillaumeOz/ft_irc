@@ -2,15 +2,17 @@
 
 std::string getMessage(parsed *parsedCommand)
 {
-	bool sum = false;
+	bool sum = {false};
+	int charSkip = 1;
 	std::string tmp("");
 
 	for (size_t i = 1; i < parsedCommand->args.size(); i++) {
 		if ((*parsedCommand->args[i])[0] == ':')
 			sum = true;
 		if (sum == true) {
+			tmp += (parsedCommand->args[i]->c_str() + charSkip);
+			charSkip = 0;
 			tmp += " ";
-			tmp += (parsedCommand->args[i]->c_str() + 1);
 		}
 	}
 	return (tmp);
