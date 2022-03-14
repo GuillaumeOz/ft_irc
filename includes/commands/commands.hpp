@@ -3,7 +3,7 @@
 
 void	partCmd(Server &, int, parsed *);
 // void	listCmd(Server &, int , std::string &);
-// void	quitCmd(Server &, int, std::string &);
+void	quitCmd(Server &, int, parsed *);
 // void	userCmd(Server &, int, std::string &);
 void	privmsgCmd(Server &, int, parsed *);
 void	awayCmd(Server &, int, parsed *);
@@ -21,5 +21,7 @@ std::string		nickResponse(std::string & , std::string &);
 std::string 	joinResponse(Server &, int, std::string &);
 std::string		privmsgResponse(Server &, int, std::string &, std::string &);
 std::string		partResponse(Server &, int, std::string &, std::string &);
+std::string     quitResponse(Server &, int, std::string &, std::string &);
+
 
 #endif

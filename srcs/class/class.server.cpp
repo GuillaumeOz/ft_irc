@@ -22,7 +22,7 @@ void	Server::initCommands() {
 	_commands["PART"] = &partCmd;
 	_commands["PRIVMSG"] = &privmsgCmd;
 	// _commands["LIST"] = &listCmd;
-	// _commands["QUIT"] = &quitCmd;
+	_commands["QUIT"] = &quitCmd;
 	// _commands["USER"] = &userCmd;
 	// _commands["TOPIC"] = &topicCmd;
 	_commands["AWAY"] = &awayCmd;
