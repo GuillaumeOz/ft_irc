@@ -44,7 +44,7 @@ std::string	parsed::getFullTwoPointsArgs() {
 	int charSkip = 1;
 	std::string tmp("");
 
-	for (size_t i = 1; i < args.size(); i++) {
+	for (size_t i = 0; i < args.size(); i++) {
 		if ((*args[i])[0] == ':')
 			sum = true;
 		if (sum == true) {
