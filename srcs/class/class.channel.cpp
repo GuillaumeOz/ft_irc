@@ -14,6 +14,14 @@ std::string   &Channel::getChannelTopic() {
 	return _topic;
 };
 
+std::vector<User *>   Channel::getUsers() {
+	return (_users);
+};
+
+std::vector<User *>::iterator Channel::getUsersEnd() {
+	return (_users.end());
+}
+
 void			Channel::setChannelTopic(std::string newTopic) {
 	_topic = newTopic;
 };
@@ -25,7 +33,6 @@ size_t			Channel::getNumberofUsers() {
 int8_t			Channel::getChannelMode() {
 	return (_channelMode);
 }
-
 
 std::vector<User *>::iterator Channel::findUser(std::string &name) {
 	for (std::vector<User *>::iterator it = _users.begin(); it != _users.end(); it++) {
@@ -81,6 +88,10 @@ bool				Channel::isEmpty() {
 
 void				Channel::assignMode(enum channelMode mode) {
 	_channelMode |= mode;
+}
+
+void				Channel::removeMode(enum channelMode mode) {
+	_channelMode ^= mode;
 }
 
 bool				Channel::isModeOn(enum channelMode mode) {

@@ -114,6 +114,9 @@ bool	User::isModeOn(userMode mode) {
 void	User::assignChannelUserMode(std::string &channel, channelUserMode mode) {
 	_channelUserMode[channel] |= mode;
 }
+void	User::removeChannelUserMode(std::string &channel, channelUserMode mode) {
+	_channelUserMode[channel] ^= mode;
+}
 
 bool	User::isChannelUserModeOn(std::string &channel, channelUserMode mode) {
 	if (_channelUserMode[channel] & mode)

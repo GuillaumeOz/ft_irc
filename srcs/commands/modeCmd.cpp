@@ -163,7 +163,7 @@ bool	isModeOnlyNick(std::string command, std::string &userNick) {
 	return (false);
 }
 
-bool	isModeNickChanges(std::string command, size_t &findLen) {
+bool	isModeChanges(std::string command, size_t &findLen) {
 	for (size_t i = 0; command[i] != '\0'; i++) {
 		if (command[i] == '+' || command[i] == '-') {
 			findLen = i;
@@ -184,6 +184,18 @@ bool	isKnowUserMode(char mode, userMode &modeToAdd) {
 	}
 	else if (mode == 'r') {
 		modeToAdd = MODE_USER_R;
+		return (true);
+	}
+	return (false);
+}
+
+bool	isKnowUserModeInChannel(char mode, channelUserMode &modeToAdd) {
+	if (mode == 'o') {
+		modeToAdd = MODE_CHANNEL_USER_O;
+		return (true);
+	}
+	else if (mode == 'v') {
+		modeToAdd = MODE_CHANNEL_USER_V;
 		return (true);
 	}
 	return (false);
@@ -235,7 +247,7 @@ void	handleModeNick(Server &server, int index, std::string &command, std::string
 		std::string composedNickMode = composeNickMode(server.getUsers()[index]->getUserMode());
 		server.ssend(composedNickMode, index);
 	}
-	else if (isModeNickChanges(command, findLen) == true) {
+	else if (isModeChanges(command, findLen) == true) {
 		changeNickMode(server, command, nickName, findLen, index);
 	}
 }
@@ -253,6 +265,162 @@ bool	isModeOnlyChannel(std::string command, std::string &channelName) {
 	if (ret.compare(channelName) == 0)
 		return (true);
 	return (false);
+}
+
+void	displayUserInChannelMode(Server &server, int index, std::string &nick, int8_t nickMode, char prefix) {
+	std::string mode = "0";
+	if (nickMode & MODE_CHANNEL_USER_O) {
+		nickMode ^= MODE_CHANNEL_USER_O;
+		mode = "o";
+	}
+	else if (nickMode & MODE_CHANNEL_USER_V) {
+		nickMode ^= MODE_CHANNEL_USER_V;
+		mode = "v";
+	}
+	if (mode != "0") {
+		std::string initChanelModeRespose = getCmdString(server, index, nick, (prefix + mode), "MODE");
+		server.ssend(initChanelModeRespose, index);
+		displayUserInChannelMode(server, index, nick, nickMode, prefix);
+	}
+}
+
+bool	isUserInChannelMode(Server &server, std::string command, std::string &channelName, std::string &nickName) {
+	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
+	std::string delimiter = " ";
+	size_t		pos = 0;
+
+	while ((pos = command.find(delimiter)) != std::string::npos) {
+		command.erase(0, pos + delimiter.length());
+	}
+	command = eraseCarriageReturn(command);
+	command = eraseLineBreak(command);
+	if ((*it)->findUser(command) != (*it)->getUsersEnd()) {
+		nickName = command;
+		POUT("LAICI:LALALLSCK:ASMCKLAS")
+		POUT(nickName)
+		return (true);
+	}
+	return (false);
+// 		ERR_USERNOTINCHANNEL   "<nick> <channel> :They aren't on that channel"
+}
+
+void	changeUserInChannelMode(Server &server, std::string command, std::string &channelName, std::string &nickName, int index) {
+	size_t	findLen;
+
+	if (isModeChanges(command, findLen) == true) {
+		char 			*mode = const_cast<char *>(command.c_str() + findLen);
+		char			prefix;
+		channelUserMode	modeToAddDel;
+
+		for (int i = 0; mode[i] != ' '; i++) {
+			modeToAddDel = NO_CHANNEL_USER_MODE;
+
+			if (isspace(mode[i])) {
+				return ;
+			}
+			else if (mode[i] == '+')
+				prefix = '+';
+			else if (mode[i] == '-')
+				prefix = '-';
+			else if (isKnowUserModeInChannel((mode[i]), modeToAddDel) == true) {
+				if (prefix == '+') {
+					if (!(server.getUsers()[index]->isChannelUserModeOn(channelName, modeToAddDel))) {
+						server.getUsers()[index]->assignChannelUserMode(channelName, modeToAddDel);
+						displayUserInChannelMode(server, index, nickName, modeToAddDel, prefix);
+					}
+				}
+				else if (prefix == '-') {
+					if (server.getUsers()[index]->isChannelUserModeOn(channelName, modeToAddDel)) {
+						server.getUsers()[index]->removeChannelUserMode(channelName, modeToAddDel);
+						displayUserInChannelMode(server, index, nickName, modeToAddDel, prefix);
+					}
+				}
+			}
+			else {
+				std::string errMode;
+				errMode += mode[i];
+				server.sendErrorServerUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
+			}
+		}
+	}
+}
+
+bool	isKnowChannelMode(char mode, channelMode &modeToAdd) {
+	if (mode == 'i') {
+		modeToAdd = MODE_CHANNEL_I;
+		return (true);
+	}
+	else if (mode == 'm') {
+		modeToAdd = MODE_CHANNEL_M;
+		return (true);
+	}
+	else if (mode == 'n') {
+		modeToAdd = MODE_CHANNEL_N;
+		return (true);
+	}
+	else if (mode == 'p') {
+		modeToAdd = MODE_CHANNEL_P;
+		return (true);
+	}
+	else if (mode == 't') {
+		modeToAdd = MODE_CHANNEL_T;
+		return (true);
+	}
+	else if (mode == 'k') {
+		modeToAdd = MODE_CHANNEL_K;
+		return (true);
+	}
+	else if (mode == 'l') {
+		modeToAdd = MODE_CHANNEL_L;
+		return (true);
+	}
+	return (false);
+}
+
+void	changeChannelMode(Server &server, std::string command, std::string &channelName, int index) {
+	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
+	size_t	findLen;
+
+	POUT("ICICICIC")
+	if (isModeChanges(command, findLen) == true) {
+		char 		*mode = const_cast<char *>(command.c_str() + findLen);
+		char		prefix;
+		channelMode	modeToAddDel;
+		POUT("LALALAL")
+
+		for (int i = 0; mode[i] != '\0'; i++) {
+			modeToAddDel = NO_CHANNEL_MODE;
+
+			POUT("mode")
+			POUT(mode)
+			if (isspace(mode[i])) {
+				return ;
+			}
+			else if (mode[i] == '+')
+				prefix = '+';
+			else if (mode[i] == '-')
+				prefix = '-';
+			else if (isKnowChannelMode((mode[i]), modeToAddDel) == true) {
+				if (prefix == '+') {
+					if (!((*it)->getChannelMode() & modeToAddDel)) {
+						(*it)->assignMode(modeToAddDel);
+						displayChannelMode(server, index, channelName, modeToAddDel, prefix);
+					}
+				}
+				else if (prefix == '-') {
+					if ((*it)->getChannelMode() & modeToAddDel) {
+						(*it)->removeMode(modeToAddDel);
+						displayChannelMode(server, index, channelName, modeToAddDel, prefix);
+					}
+				}
+			}
+			else {
+				std::string errMode;
+				errMode += mode[i];
+				server.sendErrorServerUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
+			}
+		}
+	}
 }
 
 // default +nt  
@@ -274,20 +442,17 @@ void	handleModeChannel(Server &server, int index, std::string &command, std::str
 		std::string composedChannelMode = composeChannelMode((*it)->getChannelMode(), channelName);
 		server.sendToMyselfInChannel(channelName, composedChannelMode, index);
 	}
-	if (server.getUsers()[index]->isChannelUserModeOn(channelName, MODE_CHANNEL_USER_O) == true) {
-
-		;
-		// changeNickMode();
-// 		ERR_USERNOTINCHANNEL   "<nick> <channel> :They aren't on that channel"      
-
+	else if (server.getUsers()[index]->isChannelUserModeOn(channelName, MODE_CHANNEL_USER_O) == true) {
+		std::string nickName;
+		if (isUserInChannelMode(server, command, channelName, nickName) == true)
+			changeUserInChannelMode(server, command, channelName, nickName, index);
+		else
+			changeChannelMode(server, command, channelName, index);
+		// 		ERR_KEYSET			"<channel> :Channel key already set"
 	}
 	else {
 		server.sendErrorServerUser(channelName.c_str(), NULL, NULL, ERR_CHANOPRIVSNEEDED, index);
-
-// 		ERR_CHANOPRIVSNEEDED	"<channel> :You're not channel operator"
-
 	}
-	(void)command;
 }
 
 void	modeCmd(Server &server, int index, std::string &command) {
@@ -317,7 +482,6 @@ POUT("****************END****************")
 // SERVER ERROR:
 
 // 		ERR_NEEDMOREPARAMS    "<command> :Not enough parameters"          
-// 		ERR_KEYSET			"<channel> :Channel key already set"
 // 		ERR_NOCHANMODES      	"<channel> :Channel doesn't support modes"      
 // 		ERR_UNKNOWNMODE			"<char> :is unknown mode char to me for <channel>"
 

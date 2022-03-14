@@ -45,6 +45,7 @@ class User {
 	bool						isModeOn(userMode);
 	bool						isChannelUserModeOn(std::string &, channelUserMode);
 	void						assignChannelUserMode(std::string &, channelUserMode);
+	void						removeChannelUserMode(std::string &, channelUserMode);
 	std::string					&getAwayMessage();
 	void						setAwayMessage(std::string &awayMessage);
 	bool						isAway();

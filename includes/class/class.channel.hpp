@@ -20,6 +20,8 @@ class Channel {
 		std::string						&getChannelTopic();
 		size_t							getNumberofUsers();
 		int8_t							getChannelMode();
+		std::vector<User *>				getUsers();
+		std::vector<User *>::iterator	getUsersEnd();
 		void							setChannelTopic(std::string newTopic);
 		std::vector<User *>::iterator	findUser(std::string &name);
 		void							addUser(User *user);
@@ -30,6 +32,7 @@ class Channel {
 		bool							isEmpty();
 		bool							isModeOn(channelMode);
 		void							assignMode(channelMode);
+		void							removeMode(channelMode);
 		// bool							isInChannel(std::string &);
 };
 
