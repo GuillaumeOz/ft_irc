@@ -31,10 +31,9 @@ void	Server::initCommands() {
 	_commands["NOTICE"] = &noticeCmd;
 }
 
-void	Server::callCommand(std::string &command, Server &server, int &index, std::string &string) {
-	std::transform(command.begin(), command.end(),command.begin(), toupper);
-	if (_commands.find(command) != _commands.end())
-		_commands.find(command)->second(server, index, string);
+void	Server::callCommand(Server &server, int &index, parsed *parsedCommand) {
+	if (_commands.find(parsedCommand->command) != _commands.end())
+		_commands.find(parsedCommand->command)->second(server, index, parsedCommand);
 }
 
 void	Server::slisten(int num) {
@@ -111,7 +110,7 @@ void	Server::removeChannel(int &index) {
 	channels.erase(channels.begin() + index);
 };
 
-bool	Server::isValidChannel(std::string &name) {
+bool	Server::isExistingChannel(std::string &name) {
 	for (size_t i = 0; i < channels.size(); i++) {
 		if (channels[i]->getChannelName() == name)
 			return (true);
@@ -299,4 +298,21 @@ bool		Server::isUserAway(int index) {
 
 std::string &Server::getUserAwayMessage(int index) {
 	return (_users[index]->getAwayMessage());
+}
+
+std::string &Server::getUserInvalidNick(int index) {
+	return (_users[index]->getInvalidNick());
+}
+
+void		Server::setUserInvalidNick(int index, std::string &invalidNick) {
+	_users[index]->setInvalidNick(invalidNick);
+}
+
+bool 		Server::userIsinChannel(std::string &channelName, int index) {
+	std::vector<std::string> uchannels = _users[index]->getUchannels();
+	for (size_t i = 0; i < uchannels.size(); i++) {
+		if (channelName == uchannels[i])
+			return (true);
+	}
+	return (false);
 }

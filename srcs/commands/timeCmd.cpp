@@ -1,7 +1,7 @@
 #include "ft_irc.hpp"
 
-void	timeCmd(Server &server, int index, std::string &command) {
-	(void)command;
+void	timeCmd(Server &server, int index, parsed *parsedCommand) {
+	(void)parsedCommand;
 	time_t rawtime;
 	std::string timeResponse;
 	time(&rawtime);

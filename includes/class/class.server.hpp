@@ -12,7 +12,7 @@ class Server {
 	std::vector<struct pollfd>										_pfds;
 	std::string														_password;
 	std::vector<User *>												_users;
-	std::map<std::string, void (*)(Server &, int , std::string &)> 	_commands;
+	std::map<std::string, void (*)(Server &, int , parsed *)> 		_commands;
 
 	public:
 	std::vector<Channel *>											channels;
@@ -23,7 +23,7 @@ class Server {
 
 	//Commands
 	void initCommands();
-	void callCommand(std::string &, Server &, int &, std::string &);
+	void callCommand(Server &, int &, parsed *);
 
 	//Sockets
 	void sbind();
@@ -45,10 +45,10 @@ class Server {
 	std::vector<User *>	getUsers();
 	void addUser(User *);
 	void removeUser(int &);
-    void setHost(int , std::string &);
-    void setNick(int , std::string &);
-    void setUsername(int , std::string &);
-    void setRealname(int , std::string &);
+	void setHost(int , std::string &);
+	void setNick(int , std::string &);
+	void setUsername(int , std::string &);
+	void setRealname(int , std::string &);
 	std::string	&getHost(int);
 	std::string	&getNick(int);
 	std::string	&getUsername(int);
@@ -60,6 +60,8 @@ class Server {
 	void setUserAwayMessage(int index, std::string &message);
 	bool isUserAway(int index);
 	std::string &getUserAwayMessage(int index);
+	std::string &getUserInvalidNick(int index);
+	void		setUserInvalidNick(int index, std::string &invalidNick);
 
 	//Channels
 	std::vector<Channel *>	getChannels();
@@ -68,7 +70,7 @@ class Server {
 	void removeChannel(int &);
 	std::vector<Channel *>::iterator findChannel(std::string &name);
 	void joinChannel(int index, std::string &channel);
-	bool isValidChannel(std::string &);
+	bool isExistingChannel(std::string &);
 	void delUserFromChannel(std::string &channelName, int);
 	bool isChannelEmpty(std::string &channelName);
 	void delChannel(std::string &channelName);
@@ -77,11 +79,12 @@ class Server {
 	void printChannels();
 	bool ischannelModeOn(channelMode mode, int index);
 	void assignchannelMode(channelMode mode, int index);
+	bool userIsinChannel(std::string &, int);
 
 	//Pfds
 	void addSockToPfds(int);
 	void removeSockFromPfds(int socket);
-	int  findClientSock(int socket);
+	int	 findClientSock(int socket);
 	int	 getPfdsSize();
 	int	 getPfdsSock(int &);
 
