@@ -22,7 +22,6 @@ std::string nickResponse(std::string &newNick, std::string &oldNick)
 	std::string response;
 
 	response += ":" + oldNick + "!ircserv NICK " + newNick + "\n";
-	POUT(response)
 	return (response);
 }
 
@@ -42,5 +41,14 @@ std::string privmsgResponse(Server &server, int index, std::string &destination,
 	std::string response;
 
 	response += ":" + server.getNick(index) + "!ircserv PRIVMSG " + destination + " :" + message + "\n";
+	return (response);
+}
+
+/* ----------------------------- Part functions ----------------------------- */
+
+std::string partResponse(Server &server, int index, std::string &channelName, std::string &reason) {
+	std::string response;
+
+	response = ":" + server.getNick(index) + " PART " + channelName + " " + reason + "\n";
 	return (response);
 }

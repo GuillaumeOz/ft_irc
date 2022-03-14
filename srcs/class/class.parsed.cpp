@@ -37,6 +37,26 @@ void	parsed::addRawString(std::string &string) {
 	rawCommand = string;
 };
 
+/* --------------------------------- getters -------------------------------- */
+
+std::string	parsed::getFullTwoPointsArgs() {
+	bool sum = {false};
+	int charSkip = 1;
+	std::string tmp("");
+
+	for (size_t i = 1; i < args.size(); i++) {
+		if ((*args[i])[0] == ':')
+			sum = true;
+		if (sum == true) {
+			tmp += (args[i]->c_str() + charSkip);
+			charSkip = 0;
+			if (i != args.size() - 1)
+				tmp += " ";
+		}
+	}
+	return (tmp);
+}
+
 /* ---------------------------- delete/deallocate --------------------------- */
 
 void	parsed::clearArgs() {

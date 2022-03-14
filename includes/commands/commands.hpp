@@ -1,7 +1,7 @@
 #ifndef COMMANDS_HPP
 # define COMMANDS_HPP
 
-// void	partCmd(Server &, int, std::string &);
+void	partCmd(Server &, int, parsed *);
 // void	listCmd(Server &, int , std::string &);
 // void	quitCmd(Server &, int, std::string &);
 // void	userCmd(Server &, int, std::string &);
@@ -20,5 +20,6 @@ std::string		newUserResponse(std::string &);
 std::string		nickResponse(std::string & , std::string &);
 std::string 	joinResponse(Server &, int, std::string &);
 std::string		privmsgResponse(Server &, int, std::string &, std::string &);
+std::string		partResponse(Server &, int, std::string &, std::string &);
 
 #endif
