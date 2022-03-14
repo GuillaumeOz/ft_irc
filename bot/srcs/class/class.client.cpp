@@ -20,11 +20,14 @@ int Client::connectSock() {
 	return (0);
 };
 
-void	Client::recvSock(std::string &string) {
-	char msg[1000];
-	recv(_config.socketClient, &msg, 1000, 0);
-	string = msg;
-	memset(msg, '\0', 1000);
+void	Client::recvSock(std::string *string) {
+	char	tmpBuff[1000];
+
+	do {
+		memset(tmpBuff, '\0', sizeof(tmpBuff));
+		recv(_config.socketClient, tmpBuff, sizeof(tmpBuff), 0);
+		*string += tmpBuff;
+	} while (strchr(tmpBuff, '\0') == NULL);
 };
 
 void Client::sendInfo() {
@@ -38,7 +41,9 @@ void Client::join() {
 }
 
 void Client::initCommands() {
-	_commands["!TEST"] = &testCmd; 
+	_commands["!ascii"] = &asciiCmd;
+	_commands["!creators"] = &creatorsCmd;
+	_commands["!help"] = &helpCmd;
 }
 
 void	Client::callCommand( Client &client, std::string &command, std::string &string) {

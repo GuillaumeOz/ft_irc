@@ -17,7 +17,7 @@ class Client {
 
 	void	initCommands();
 	int 	connectSock();
-	void	recvSock(std::string &string);
+	void	recvSock(std::string *string);
 	void	join();
 	void	closeClient() const;
 	void	sendInfo();
