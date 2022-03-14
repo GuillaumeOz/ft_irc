@@ -33,3 +33,13 @@ std::string	joinResponse(Server &server, int index, std::string &channelName) {
 	response += ":" + server.getNick(index) + " JOIN " + channelName + "\n";
 	return (response);
 }
+
+/* ----------------------------- Privmsg functions ----------------------------- */
+
+
+std::string privmsgResponse(Server &server, int index, std::string &destination, std::string &message) {
+	std::string response;
+
+	response += ":" + server.getNick(index) + "!ircserv PRIVMSG " + destination + " :" + message + "\n";
+	return (response);
+}
