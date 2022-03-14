@@ -1,7 +1,6 @@
 #include "ft_irc.hpp"
 
 void	quitCmd(Server &server, int index, parsed *parsedCommand) {
-	POUT("totem")
 	std::string reason = parsedCommand->getFullTwoPointsArgs();
 	POUT(reason)
 	std::vector<std::string> uchannel = server.getUsers()[index]->getUchannels();
