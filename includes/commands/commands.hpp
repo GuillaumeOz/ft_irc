@@ -10,7 +10,7 @@ void	awayCmd(Server &, int, parsed *);
 void	nickCmd(Server &, int, parsed *);
 void	joinCmd(Server &, int, parsed *);
 // void	topicCmd(Server &, int, std::string &);
-// void	timeCmd(Server &, int, std::string &);
+void	timeCmd(Server &, int, parsed *);
 void	noticeCmd(Server &, int, parsed *);
 
 /* -------------------------------- response -------------------------------- */

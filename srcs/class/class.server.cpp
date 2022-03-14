@@ -27,7 +27,7 @@ void	Server::initCommands() {
 	// _commands["TOPIC"] = &topicCmd;
 	_commands["AWAY"] = &awayCmd;
 	_commands["NICK"] = &nickCmd;
-	// _commands["TIME"] = &timeCmd;
+	_commands["TIME"] = &timeCmd;
 	_commands["NOTICE"] = &noticeCmd;
 }
 
