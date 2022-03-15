@@ -4,9 +4,7 @@ User::User(): _csize(sizeof(_addr)), _nick(), _username(), _realname(),  _regist
 
 User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _nick(nick), _username(username), _realname(), _registerState(false) {};
 
-User::~User() {
-	uclose();
-};
+User::~User() {};
 
 void    User::uaccept(int &sock) {
 	_sock = accept(sock, (struct sockaddr *)&(_addr), &(_csize));
@@ -131,4 +129,12 @@ bool 		User::isRegistered() {
 
 void 		User::uregister() {
 	_registerState = true;
+}
+
+std::string &User::getInvalidNick() {
+	return _invalidNick;
+}
+
+void		User::setInvalidNick(std::string &invalidNick) {
+	_invalidNick = invalidNick;
 }
