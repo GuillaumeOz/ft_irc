@@ -24,10 +24,8 @@ bool checkNickError(std::string &nick, int index, Server &server)
 void	joinBot(Server &server, int index) {
 	parsed *parsedCommand;
 	std::string joinBot("JOIN #bot\n");
-	POUT("totem")
 	parsedCommand = getParsedCommandLine(joinBot);
 	joinCmd(server, index, parsedCommand);
-	std::cout << "channel: " << *parsedCommand->channels[0] << std::endl;
 }
 
 void nickCmd(Server &server, int index, parsed *parsedCommand) {
@@ -47,6 +45,7 @@ void nickCmd(Server &server, int index, parsed *parsedCommand) {
 			server.setUserInvalidNick(index, *parsedCommand->args[0]);
 			return ;
 		}
+		server.setNick(index, (*parsedCommand->args[0]));
 		response = newUserResponse((*parsedCommand->args[0]));
 		joinBot(server, index);
 	}
@@ -54,9 +53,9 @@ void nickCmd(Server &server, int index, parsed *parsedCommand) {
 	{
 		if (checkNickError((*parsedCommand->args[0]), index, server) == true)
 			return ;
+		server.setNick(index, (*parsedCommand->args[0]));
 	 	response = nickResponse((*parsedCommand->args[0]), oldNick);
 	}
-	server.setNick(index, (*parsedCommand->args[0]));
 	server.ssend(response, index);
 }
 
