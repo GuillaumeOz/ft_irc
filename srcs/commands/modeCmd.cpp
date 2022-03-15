@@ -470,19 +470,19 @@ void	handleModeChannel(Server &server, int index, std::string &command, std::str
 	}
 }
 
-void	modeCmd(Server &server, int index, std::string &command) {
+void	modeCmd(Server &server, int index, parsed *parsedCommand) {
 	std::string	userName;
 	std::string	channelName;
 
-	if (isModeinLobby(command) == true) {
+	if (isModeinLobby(parsedCommand->rawCommand) == true) {
 		server.sendErrorServerUser("IRC ", NULL, NULL, ERR_NOSUCHNICK, index);
 		return ;
 	}
-	if (isModeNick(server, index, command, userName) == true) {
-		handleModeNick(server, index, command, userName);
+	if (isModeNick(server, index, parsedCommand->rawCommand, userName) == true) {
+		handleModeNick(server, index, parsedCommand->rawCommand, userName);
 	}
-	else if (isModeChannel(server, command, channelName) == true) {
-		handleModeChannel(server, index, command, channelName);
+	else if (isModeChannel(server, parsedCommand->rawCommand, channelName) == true) {
+		handleModeChannel(server, index, parsedCommand->rawCommand, channelName);
 	}
 	else
 		server.sendErrorServerUser("IRC ", NULL, NULL, ERR_NOSUCHNICK, index);

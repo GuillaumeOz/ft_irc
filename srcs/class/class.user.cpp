@@ -135,3 +135,11 @@ void		User::setAwayMessage(std::string &awayMessage) {
 bool		User::isAway() {
 	return (_awaymessage != "");
 }
+
+std::string &User::getInvalidNick() {
+	return _invalidNick;
+}
+
+void		User::setInvalidNick(std::string &invalidNick) {
+	_invalidNick = invalidNick;
+}
