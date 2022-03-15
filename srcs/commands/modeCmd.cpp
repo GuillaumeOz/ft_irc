@@ -330,7 +330,8 @@ bool	isUserInChannelMode(Server &server, std::string command, std::string &chann
 }
 
 void	changeUserInChannelMode(Server &server, std::string command, std::string &channelName, std::string &nickName, int index) {
-	size_t	findLen;
+	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
+	size_t								findLen;
 
 	if (isModeChanges(command, findLen) == true) {
 		char 			*mode = const_cast<char *>(command.c_str() + findLen);
@@ -349,14 +350,14 @@ void	changeUserInChannelMode(Server &server, std::string command, std::string &c
 				prefix = '-';
 			else if (isKnowUserModeInChannel((mode[i]), modeToAddDel) == true) {
 				if (prefix == '+') {
-					if (!(server.getUsers()[index]->isChannelUserModeOn(channelName, modeToAddDel))) {
-						server.getUsers()[index]->assignChannelUserMode(channelName, modeToAddDel);
+					if (!(*(*it)->findUser(nickName))->isChannelUserModeOn(channelName, modeToAddDel)) {
+						(*(*it)->findUser(nickName))->assignChannelUserMode(channelName, modeToAddDel);
 						displayUserInChannelMode(server, index, nickName, modeToAddDel, prefix);
 					}
 				}
 				else if (prefix == '-') {
-					if (server.getUsers()[index]->isChannelUserModeOn(channelName, modeToAddDel)) {
-						server.getUsers()[index]->removeChannelUserMode(channelName, modeToAddDel);
+					if ((*(*it)->findUser(nickName))->isChannelUserModeOn(channelName, modeToAddDel)) {
+						(*(*it)->findUser(nickName))->removeChannelUserMode(channelName, modeToAddDel);
 						displayUserInChannelMode(server, index, nickName, modeToAddDel, prefix);
 					}
 				}
@@ -460,8 +461,9 @@ void	handleModeChannel(Server &server, int index, std::string &command, std::str
 	}
 	else if (server.getUsers()[index]->isChannelUserModeOn(channelName, MODE_CHANNEL_USER_O) == true) {
 		std::string nickName;
-		if (isUserInChannelMode(server, command, channelName, nickName) == true)
+		if (isUserInChannelMode(server, command, channelName, nickName) == true) {
 			changeUserInChannelMode(server, command, channelName, nickName, index);
+		}
 		else
 			changeChannelMode(server, command, channelName, index);
 	}
