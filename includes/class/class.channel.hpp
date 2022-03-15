@@ -10,6 +10,7 @@ class Channel {
 		std::vector<User *>     _operators;
 		std::string             _name;
 		std::string             _topic;
+		std::string             _keyword;
 		int8_t					_channelMode;
 
 	public:
@@ -22,6 +23,8 @@ class Channel {
 		int8_t							getChannelMode();
 		std::vector<User *>				getUsers();
 		std::vector<User *>::iterator	getUsersEnd();
+		std::string						&getKeyword();
+		void							setKeyword(std::string newKeyword);
 		void							setChannelTopic(std::string newTopic);
 		std::vector<User *>::iterator	findUser(std::string &name);
 		void							addUser(User *user);

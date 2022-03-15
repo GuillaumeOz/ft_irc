@@ -22,6 +22,14 @@ std::vector<User *>::iterator Channel::getUsersEnd() {
 	return (_users.end());
 }
 
+std::string		&Channel::getKeyword() {
+	return (_keyword);
+}
+
+void			Channel::setKeyword(std::string newKeyword) {
+	_keyword = newKeyword;
+}
+
 void			Channel::setChannelTopic(std::string newTopic) {
 	_topic = newTopic;
 };

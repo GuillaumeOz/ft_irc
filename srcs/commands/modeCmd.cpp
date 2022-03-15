@@ -58,14 +58,45 @@ void	displayNickMode(Server &server, int index, std::string &nick, int8_t nickMo
 		mode = "r";
 	}
 	if (mode != "0") {
-		std::string initChanelModeRespose = getCmdString(server, index, nick, (prefix + mode), "MODE");
-		server.ssend(initChanelModeRespose, index);
+		std::string initChanelModeResponse = getCmdString(server, index, nick, (prefix + mode), "MODE");
+		server.ssend(initChanelModeResponse, index);
 		displayNickMode(server, index, nick, nickMode, prefix);
 	}
 }
 
-void	displayChannelMode(Server &server, int index, std::string &channelName, int8_t channelMode, char prefix) {
+void	parseChannelKeyword(Server &server, std::string &channelName, std::string command, std::string &keyword, char prefix) {
+	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
+	std::string delimiter = " ";
+	size_t		pos = 0;
+
+	while ((pos = command.find(delimiter)) != std::string::npos) {
+		command.erase(0, pos + delimiter.length());
+	}
+	command = eraseCarriageReturn(command);
+	command = eraseLineBreak(command);
+	if (prefix == '+') {
+		if ((*it)->getKeyword().empty() == true) {
+			(*it)->setKeyword(command);
+			keyword = command;
+		}
+	}
+	else if (prefix == '-') {
+		if ((*it)->getKeyword().compare(command) == 0) {
+			(*it)->getKeyword().clear();
+		}
+	}
+}
+
+void	addKeywordToResponse(std::string &response, std::string keyword) {
+	response += ' ';
+	response += keyword;
+	response = eraseLineBreak(response);
+	response += '\n';
+}
+
+void	displayChannelMode(Server &server, std::string command, int index, std::string &channelName, int8_t channelMode, char prefix) {
 	std::string mode = "0";
+	std::string	keyword;
 	if (channelMode & MODE_CHANNEL_I) {
 		channelMode ^= MODE_CHANNEL_I;
 		mode = "i";
@@ -88,6 +119,7 @@ void	displayChannelMode(Server &server, int index, std::string &channelName, int
 	}
 	else if (channelMode & MODE_CHANNEL_K) {
 		channelMode ^= MODE_CHANNEL_K;
+		parseChannelKeyword(server, channelName, command, keyword, prefix);
 		mode = "k";
 	}
 	else if (channelMode & MODE_CHANNEL_L) {
@@ -95,9 +127,11 @@ void	displayChannelMode(Server &server, int index, std::string &channelName, int
 		mode = "l";
 	}
 	if (mode != "0") {
-		std::string initChanelModeRespose = getCmdString(server, index, channelName, (prefix + mode), "MODE");
-		server.ssend(initChanelModeRespose, index);
-		displayChannelMode(server, index, channelName, channelMode, prefix);
+		std::string initChanelModeResponse = getCmdString(server, index, channelName, (prefix + mode), "MODE");
+		if (keyword.empty() == false)
+			addKeywordToResponse(initChanelModeResponse, keyword);
+		server.ssend(initChanelModeResponse, index);
+		displayChannelMode(server, command, index, channelName, channelMode, prefix);
 	}
 }
 
@@ -125,8 +159,6 @@ bool	isModeNick(Server &server, int index, std::string command, std::string &nic
 	nickName = eraseCarriageReturn(nickName);
 	nickName = eraseLineBreak(nickName);
 	nickName = eraseSelectedChar(nickName, ' ');
-	POUT("NICKNAME")
-	POUT(nickName)
 	if (nickName.compare(server.getNick(index)) == 0)
 		return (true);
 	return (false);
@@ -141,8 +173,6 @@ bool	isModeChannel(Server &server, std::string command, std::string &channelName
 	channelName = eraseCarriageReturn(channelName);
 	channelName = eraseLineBreak(channelName);
 	channelName = eraseSelectedChar(channelName, ' ');
-	POUT("CHANNEL")
-	POUT(channelName)
 	if (server.findChannel(channelName) != server.channels.end())
 		return (true);
 	return (false);
@@ -239,10 +269,8 @@ void	changeNickMode(Server &server, std::string command, std::string &nickName, 
 }
 
 void	handleModeNick(Server &server, int index, std::string &command, std::string &nickName) {
-	POUT("C LE USER")
 	size_t findLen;
 
-    //add  502    ERR_USERSDONTMATCH ":Cannot change mode for other users" ??
 	if (isModeOnlyNick(command, server.getNick(index)) == true) {
 		std::string composedNickMode = composeNickMode(server.getUsers()[index]->getUserMode());
 		server.ssend(composedNickMode, index);
@@ -278,8 +306,8 @@ void	displayUserInChannelMode(Server &server, int index, std::string &nick, int8
 		mode = "v";
 	}
 	if (mode != "0") {
-		std::string initChanelModeRespose = getCmdString(server, index, nick, (prefix + mode), "MODE");
-		server.ssend(initChanelModeRespose, index);
+		std::string initChanelModeResponse = getCmdString(server, index, nick, (prefix + mode), "MODE");
+		server.ssend(initChanelModeResponse, index);
 		displayUserInChannelMode(server, index, nick, nickMode, prefix);
 	}
 }
@@ -296,12 +324,9 @@ bool	isUserInChannelMode(Server &server, std::string command, std::string &chann
 	command = eraseLineBreak(command);
 	if ((*it)->findUser(command) != (*it)->getUsersEnd()) {
 		nickName = command;
-		POUT("LAICI:LALALLSCK:ASMCKLAS")
-		POUT(nickName)
 		return (true);
 	}
 	return (false);
-// 		ERR_USERNOTINCHANNEL   "<nick> <channel> :They aren't on that channel"
 }
 
 void	changeUserInChannelMode(Server &server, std::string command, std::string &channelName, std::string &nickName, int index) {
@@ -381,18 +406,14 @@ void	changeChannelMode(Server &server, std::string command, std::string &channel
 	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
 	size_t	findLen;
 
-	POUT("ICICICIC")
 	if (isModeChanges(command, findLen) == true) {
 		char 		*mode = const_cast<char *>(command.c_str() + findLen);
 		char		prefix;
 		channelMode	modeToAddDel;
-		POUT("LALALAL")
 
 		for (int i = 0; mode[i] != '\0'; i++) {
 			modeToAddDel = NO_CHANNEL_MODE;
 
-			POUT("mode")
-			POUT(mode)
 			if (isspace(mode[i])) {
 				return ;
 			}
@@ -404,13 +425,13 @@ void	changeChannelMode(Server &server, std::string command, std::string &channel
 				if (prefix == '+') {
 					if (!((*it)->getChannelMode() & modeToAddDel)) {
 						(*it)->assignMode(modeToAddDel);
-						displayChannelMode(server, index, channelName, modeToAddDel, prefix);
+						displayChannelMode(server, command, index, channelName, modeToAddDel, prefix);
 					}
 				}
 				else if (prefix == '-') {
 					if ((*it)->getChannelMode() & modeToAddDel) {
 						(*it)->removeMode(modeToAddDel);
-						displayChannelMode(server, index, channelName, modeToAddDel, prefix);
+						displayChannelMode(server, command, index, channelName, modeToAddDel, prefix);
 					}
 				}
 			}
@@ -423,19 +444,14 @@ void	changeChannelMode(Server &server, std::string command, std::string &channel
 	}
 }
 
-// default +nt  
-// MODE_CHANNEL_USER_O
-// guillaumeoz_ sets mode -n #test2   ---> channel
-// guillaumeoz_ sets mode +i guillaumeoz_ ---> nick
 void	handleModeChannel(Server &server, int index, std::string &command, std::string &channelName) {
-	POUT("C LE CHANNEL")
 	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
 	size_t								channelIndex = server.findChannelIndex(channelName);
 
 	if (server.ischannelModeOn(static_cast<channelMode>(MODE_CHANNEL_T | MODE_CHANNEL_N), channelIndex) == false) {
 		server.getUsers()[index]->assignChannelUserMode(channelName, MODE_CHANNEL_USER_O);
 		(*it)->assignMode(static_cast<channelMode>(MODE_CHANNEL_T | MODE_CHANNEL_N));
-		displayChannelMode(server, index, channelName, (*it)->getChannelMode(), '+');
+		displayChannelMode(server, command, index, channelName, (*it)->getChannelMode(), '+');
 		return ;
 	}
 	if (isModeOnlyChannel(command, channelName) == true) {
@@ -448,7 +464,6 @@ void	handleModeChannel(Server &server, int index, std::string &command, std::str
 			changeUserInChannelMode(server, command, channelName, nickName, index);
 		else
 			changeChannelMode(server, command, channelName, index);
-		// 		ERR_KEYSET			"<channel> :Channel key already set"
 	}
 	else {
 		server.sendErrorServerUser(channelName.c_str(), NULL, NULL, ERR_CHANOPRIVSNEEDED, index);
@@ -456,10 +471,6 @@ void	handleModeChannel(Server &server, int index, std::string &command, std::str
 }
 
 void	modeCmd(Server &server, int index, std::string &command) {
-POUT("***************BEGIN***************")
-	POUT("command")
-	POUT(command)
-
 	std::string	userName;
 	std::string	channelName;
 
@@ -475,19 +486,4 @@ POUT("***************BEGIN***************")
 	}
 	else
 		server.sendErrorServerUser("IRC ", NULL, NULL, ERR_NOSUCHNICK, index);
-
-POUT("****************END****************")
 }
-
-// SERVER ERROR:
-
-// 		ERR_NEEDMOREPARAMS    "<command> :Not enough parameters"          
-// 		ERR_NOCHANMODES      	"<channel> :Channel doesn't support modes"      
-// 		ERR_UNKNOWNMODE			"<char> :is unknown mode char to me for <channel>"
-
-// 		RPL_CHANNELMODEIS
-// 		RPL_BANLIST                     RPL_ENDOFBANLIST
-// 		RPL_EXCEPTLIST                  RPL_ENDOFEXCEPTLIST
-// 		RPL_INVITELIST                  RPL_ENDOFINVITELIST
-// 		RPL_UNIQOPIS
-
