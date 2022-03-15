@@ -6,8 +6,8 @@ std::string		getCmdString(Server &server, int index,
 std::string		eraseLineBreak(std::string &);
 std::string		eraseCarriageReturn(std::string &);
 void 			parseClientInformations(std::string &, int, Server &);
-size_t			getTokenPos(std::string &, std::string);
-bool			isToken(std::string &string, std::string token);
-
+void			parseCommands(std::vector<parsed *> &parsedCommands, std::string string);
+void			printParsedCommand(parsed *parsedCommand);
+void			printParsedCommands(std::vector<parsed *> &parsedCommands);
 
 #endif

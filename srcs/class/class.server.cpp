@@ -1,11 +1,11 @@
 #include "ft_irc.hpp"
 
-Server::Server(int port): _config(port), _error() {
+Server::Server(int port): _config(port), _error(), _loop(true) {
 	addSockToPfds(_config.sock);
 	initCommands();
 };
 
-Server::Server(int port, Error error, std::string pass): _config(port), _error(error), _pass(pass) {
+Server::Server(int port, Error error, std::string pass): _config(port), _error(error), _pass(pass), _loop(true) {
 	addSockToPfds(_config.sock);
 	initCommands();
 };
@@ -36,6 +36,7 @@ void 	Server::sregister(int index) {
 }
 
 void	Server::initCommands() {
+	_commands["PASS"] = &passCmd;
 	_commands["JOIN"] = &joinCmd;
 	_commands["PART"] = &partCmd;
 	_commands["PRIVMSG"] = &privmsgCmd;
@@ -49,12 +50,17 @@ void	Server::initCommands() {
 	_commands["NOTICE"] = &noticeCmd;
 }
 
-void	Server::callCommand(std::string &command, Server &server, int &index, std::string &string) {
-	if (server.isRegistered(index)) {
-		std::transform(command.begin(), command.end(),command.begin(), toupper);
-		if (_commands.find(command) != _commands.end())
-			_commands.find(command)->second(server, index, string);
+void	Server::callCommand(Server &server, int &index, parsed *parsedCommand) {
+	std::string notRegistered = "Your are not registered to our server please try to connect with the right password\n";
+	if (!server.isRegistered(index) && parsedCommand->command.compare("PASS") != 0) {
+		server.ssend(notRegistered, index);
+		server.closeUser(index);
+		server.setLoop(false);
+		return ;
 	}
+	if ((server.isRegistered(index) && _commands.find(parsedCommand->command) != _commands.end()) ||
+		parsedCommand->command.compare("PASS") == 0)
+			_commands.find(parsedCommand->command)->second(server, index, parsedCommand);
 }
 
 void	Server::slisten(int num) {
@@ -63,9 +69,10 @@ void	Server::slisten(int num) {
 }
 
 void	Server::closeUser(int pfds_index) {
+	POUT(_users[pfds_index]->getNick())
 	_users[pfds_index]->uclose();
-	removeSockFromPfds(pfds_index);
-	removeUser(_pfds[pfds_index].fd);
+	removeUser(_pfds[pfds_index + 1].fd);
+	removeSockFromPfds(pfds_index + 1);
 };
 
 void	Server::closeServer() {
@@ -131,7 +138,7 @@ void	Server::removeChannel(int &index) {
 	channels.erase(channels.begin() + index);
 };
 
-bool	Server::isValidChannel(std::string &name) {
+bool	Server::isExistingChannel(std::string &name) {
 	for (size_t i = 0; i < channels.size(); i++) {
 		if (channels[i]->getChannelName() == name)
 			return (true);
@@ -176,7 +183,7 @@ void	Server::addUser(User *user) {
 
 void	Server::removeUser(int &socket) {
 	int index = findClientSock(socket);
-	if (index > 0) {
+	if (index >= 0) {
 		delete _users[index];
 		_users.erase(_users.begin() + index);
 	}
@@ -319,4 +326,29 @@ bool		Server::isUserAway(int index) {
 
 std::string &Server::getUserAwayMessage(int index) {
 	return (_users[index]->getAwayMessage());
+}
+
+std::string &Server::getUserInvalidNick(int index) {
+	return (_users[index]->getInvalidNick());
+}
+
+void		Server::setUserInvalidNick(int index, std::string &invalidNick) {
+	_users[index]->setInvalidNick(invalidNick);
+}
+
+bool 		Server::userIsinChannel(std::string &channelName, int index) {
+	std::vector<std::string> uchannels = _users[index]->getUchannels();
+	for (size_t i = 0; i < uchannels.size(); i++) {
+		if (channelName == uchannels[i])
+			return (true);
+	}
+	return (false);
+}
+
+void	Server::setLoop(bool newState) {
+	_loop =  newState;
+}
+
+bool	Server::getLoop() {
+	return (_loop);
 }

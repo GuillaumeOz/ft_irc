@@ -1,25 +1,15 @@
 #include "ft_irc.hpp"
 
-std::string		getFirstWord(std::string string) {
-	size_t i = string.find_first_of(" \n\r");
-	if (i != std::string::npos) {
-		std::string tmp;
-
-		tmp.insert(tmp.begin(), string.begin(), string.begin() + i);
-		return (tmp);
+void	handleActions(std::vector<parsed*> parsedCommands, int index, Server &server) {
+	for (size_t i = 0; i < parsedCommands.size() && (server.getLoop() == true); i++) {
+		server.callCommand(server, index, parsedCommands[i]);
 	}
-	return (string);
-}
-
-void	handleActions(std::string &string, int index, Server &server) {
-	std::string token;
-
-	token = getFirstWord(string);
-	server.callCommand(token, server, index, string);
+	server.setLoop(true);
 }
 
 void	usersActionsLoop(Server &server) {
-	std::string string;
+	std::string				string;
+	std::vector<parsed*>	parsedCommands;
 	int res = {0};
 
 	for (int i = 1; i < server.getPfdsSize(); i++) {
@@ -28,10 +18,12 @@ void	usersActionsLoop(Server &server) {
 			std::cout << string << std::endl;
 		}
 		if (res > 0) {
-			parseClientInformations(string, (i - 1), server);
-			handleActions(string, (i - 1), server);
+			parseCommands(parsedCommands, string);
+			// printParsedCommands(parsedCommands);
+			handleActions(parsedCommands, (i - 1), server);
 			string.clear();
 		}
+		parsedCommands.clear();
 	}
 }
 
