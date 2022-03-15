@@ -42,7 +42,6 @@ void nickCmd(Server &server, int index, parsed *parsedCommand) {
 	}
 	else
 	{
-		POUT("totem")
 		if (checkNickError((*parsedCommand->args[0]), index, server) == true)
 			return ;
 	 	response = nickResponse((*parsedCommand->args[0]), oldNick);

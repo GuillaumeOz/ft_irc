@@ -43,6 +43,7 @@ i - marks a users as invisible;
 w - user receives wallops;
 r - restricted user connection;
 o - operator flag;
+add x flag ? 
 
 
 CHANNEL MODES :
@@ -68,3 +69,18 @@ for channels :
     # if a user has been banned, he can be reinvited by an operator and rejoin. Cannot speak on the channel unless he is an operator or has voice privilege.
     # I - set/remove an invitation mask to automatically override the invite-only flag - users whose addresses match the mask can join the channel without invitation.
 
+# // SERVER ERROR:
+
+#   ERR_USERSDONTMATCH ":Cannot change mode for other users" ??
+#   ERR_USERNOTINCHANNEL   "<nick> <channel> :They aren't on that channel"
+#   ERR_KEYSET			"<channel> :Channel key already set"
+
+#   ERR_NEEDMOREPARAMS    "<command> :Not enough parameters"          
+#   ERR_NOCHANMODES      	"<channel> :Channel doesn't support modes"      
+#   ERR_UNKNOWNMODE			"<char> :is unknown mode char to me for <channel>"
+
+#   RPL_CHANNELMODEIS
+#   RPL_BANLIST                     RPL_ENDOFBANLIST
+#   RPL_EXCEPTLIST                  RPL_ENDOFEXCEPTLIST
+#   RPL_INVITELIST                  RPL_ENDOFINVITELIST
+#   RPL_UNIQOPIS

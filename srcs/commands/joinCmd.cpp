@@ -29,7 +29,6 @@ void	joinCmd(Server &server, int index, parsed *parsedCommand) {
 		server.joinChannel(index, channelName);
 	} else {
 		server.addChannel(channelName, channelTopic, index);
-		server.getUsers()[index]->assignChannelUserMode(channelName, MODE_CHANNEL_USER_O);
 	}
 	server.addChannelToUser(index, channelName);
 	server.sendToAllUsersInChannel(channelName, response);

@@ -79,6 +79,7 @@ class Server {
 	void addChannelToUser(int index, std::string channelName);
 	void removeChannel(int &);
 	std::vector<Channel *>::iterator findChannel(std::string &name);
+	size_t	findChannelIndex(std::string &channelName);
 	void joinChannel(int index, std::string &channel);
 	bool isExistingChannel(std::string &);
 	void delUserFromChannel(std::string &channelName, int);
@@ -86,6 +87,8 @@ class Server {
 	void delChannel(std::string &channelName);
 	void sendToAllUsersInChannel(std::string &channelName, std::string &response);
 	void sendToOtherUsersInChannel(std::string &channelName, std::string &response, int index);
+	void sendToMyselfInChannel(std::string &channelName, std::string &response, int index);
+
 	void printChannels();
 	bool ischannelModeOn(channelMode mode, int index);
 	void assignchannelMode(channelMode mode, int index);

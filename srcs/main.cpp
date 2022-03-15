@@ -12,8 +12,10 @@ void	usersActionsLoop(Server &server) {
 	std::vector<parsed*>	parsedCommands;
 	int res = {0};
 
-	for (int i = 1; i < server.getPfdsSize(); i++) {
-		if (server.spollinCondition(i)) {
+	for (int i = 1; i < server.getPfdsSize(); i++)
+	{
+		if (server.spollinCondition(i))
+		{
 			res = server.srecv(&string, (i - 1));
 			std::cout << string << std::endl;
 		}
@@ -27,7 +29,8 @@ void	usersActionsLoop(Server &server) {
 	}
 }
 
-int	main(int ac, char **av) {
+int main(int ac, char **av)
+{
 	Error error;
 
 	if (ac != 3)
@@ -37,7 +40,8 @@ int	main(int ac, char **av) {
 	server.sbind();
 	server.slisten(10);
 	int i = {0};
-	while (true) {
+	while (true)
+	{
 		server.spoll();
 		if (server.spollinCondition(i))
 			server.saccept();

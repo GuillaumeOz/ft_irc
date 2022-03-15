@@ -1,8 +1,8 @@
 #include "ft_irc.hpp"
 
-User::User(): _csize(sizeof(_addr)), _nick(), _username(), _realname(),  _registerState(false), _awaymessage("") {};
+User::User(): _csize(sizeof(_addr)), _nick(), _username(), _realname(),  _registerState(false), _userMode(NO_USER_MODE), _awaymessage("") {};
 
-User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _nick(nick), _username(username), _realname(), _registerState(false) {};
+User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _nick(nick), _username(username), _realname(), _registerState(false), _userMode(NO_USER_MODE) {};
 
 User::~User() {};
 
@@ -42,6 +42,10 @@ int		User::getSocket() {
 std::vector<std::string>	User::getUchannels() {
 
 	return (_uchannels);
+}
+
+int8_t	User::getUserMode() {
+	return (_userMode);
 }
 
 void	User::setHost(std::string &string) {
@@ -95,6 +99,10 @@ void	User::assignMode(userMode mode) {
 	_userMode |= mode;
 }
 
+void	User::removeMode(userMode mode) {
+	_userMode ^= mode;
+}
+
 bool	User::isModeOn(userMode mode) {
 	if (_userMode & mode)
 		return (true);
@@ -103,6 +111,9 @@ bool	User::isModeOn(userMode mode) {
 
 void	User::assignChannelUserMode(std::string &channel, channelUserMode mode) {
 	_channelUserMode[channel] |= mode;
+}
+void	User::removeChannelUserMode(std::string &channel, channelUserMode mode) {
+	_channelUserMode[channel] ^= mode;
 }
 
 bool	User::isChannelUserModeOn(std::string &channel, channelUserMode mode) {

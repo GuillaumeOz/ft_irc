@@ -1,6 +1,6 @@
 #include "ft_irc.hpp"
 
-std::string		getCmdString(Server &server, int index, std::string &channelName, std::string &reason, std::string &cmd) {
+std::string		getCmdString(Server &server, int index, std::string channelName, std::string reason, std::string cmd) {
 	std::string ret;
 
 	ret += ":";

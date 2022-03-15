@@ -47,6 +47,7 @@ void	Server::initCommands() {
 	_commands["AWAY"] = &awayCmd;
 	_commands["NICK"] = &nickCmd;
 	_commands["TIME"] = &timeCmd;
+	_commands["MODE"] = &modeCmd;
 	_commands["NOTICE"] = &noticeCmd;
 }
 
@@ -124,7 +125,6 @@ void Server::addChannelToUser(int index, std::string channelName) {
 	_users[index]->joinChannel(channelName);
 }
 
-
 void	Server::joinChannel(int index, std::string &channelName) {
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
 		if ((*it)->getChannelName() == channelName)//add double join channel protection
@@ -144,7 +144,7 @@ bool	Server::isExistingChannel(std::string &name) {
 			return (true);
 	}
 	return (false);
-}
+};
 
 void	Server::delUserFromChannel(std::string &channelName, int index) {
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
@@ -269,6 +269,14 @@ std::vector<Channel *>::iterator Server::findChannel(std::string &channelName) {
 	return (channels.end());
 };
 
+size_t Server::findChannelIndex(std::string &channelName) {
+	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
+		if ((*it)->getChannelName() == channelName)
+			return (it - channels.begin());
+	}
+	return (std::string::npos);
+};
+
 void		Server::sendToAllUsersInChannel(std::string &channelName, std::string &response) {
 	std::vector<Channel *>::iterator	it = findChannel(channelName);
 
@@ -282,6 +290,14 @@ void		Server::sendToOtherUsersInChannel(std::string &channelName, std::string &r
 
 	if (it != channels.end()) {
 		(*it)->sendToAllOtherUsers(response, _users[index]->getSocket());
+	}
+};
+
+void		Server::sendToMyselfInChannel(std::string &channelName, std::string &response, int index) {
+	std::vector<Channel *>::iterator	it = findChannel(channelName);
+
+	if (it != channels.end()) {
+		(*it)->sendToMyself(response, _users[index]->getSocket());
 	}
 };
 

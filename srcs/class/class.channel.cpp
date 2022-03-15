@@ -1,8 +1,6 @@
 #include "ft_irc.hpp"
 
 Channel::Channel(std::string &name, std::string &topic, User *first) : _name(name), _topic(topic), _channelMode(0) {
-	assignMode(MODE_CHANNEL_N);
-	assignMode(MODE_CHANNEL_T);
 	_users.push_back(first);
 };
 
@@ -16,12 +14,32 @@ std::string   &Channel::getChannelTopic() {
 	return _topic;
 };
 
+std::vector<User *>   Channel::getUsers() {
+	return (_users);
+};
+
+std::vector<User *>::iterator Channel::getUsersEnd() {
+	return (_users.end());
+}
+
+std::string		&Channel::getKeyword() {
+	return (_keyword);
+}
+
+void			Channel::setKeyword(std::string newKeyword) {
+	_keyword = newKeyword;
+}
+
 void			Channel::setChannelTopic(std::string newTopic) {
 	_topic = newTopic;
 };
 
 size_t			Channel::getNumberofUsers() {
 	return (_users.size());
+}
+
+int8_t			Channel::getChannelMode() {
+	return (_channelMode);
 }
 
 std::vector<User *>::iterator Channel::findUser(std::string &name) {
@@ -63,12 +81,25 @@ void				Channel::sendToAllOtherUsers(std::string &response, int socket) {
 	}
 }
 
+void				Channel::sendToMyself(std::string &response, int socket) {
+	std::vector<User *>::iterator it = _users.begin();
+	while ( it != _users.end()) {
+			if ((*it)->getSocket() == socket) 
+				(*it)->usend(response);
+		it++;
+	}
+}
+
 bool				Channel::isEmpty() {
 	return (_users.empty());
 };
 
 void				Channel::assignMode(enum channelMode mode) {
 	_channelMode |= mode;
+}
+
+void				Channel::removeMode(enum channelMode mode) {
+	_channelMode ^= mode;
 }
 
 bool				Channel::isModeOn(enum channelMode mode) {
