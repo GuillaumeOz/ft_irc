@@ -31,13 +31,14 @@ void	Client::recvSock(std::string *string) {
 };
 
 void Client::sendInfo() {
-	std::string nick("NICK bot\r\nUSER bot bot 127.0.0.1 :bot\r");
+	std::string nick("NICK bot\r\nUSER bot bot 127.0.0.1 :bot\r\n");
 	send(_config.socketClient, nick.c_str(), nick.length(), 0);
 }
 
 void Client::join() {
-	std::string string("JOIN #bot\r");
+	std::string string("JOIN #bot\r\n");
 	send(_config.socketClient, string.c_str(), string.length(), 0);
+	std::cout << "joining with message: " << string << ".\n";
 }
 
 void Client::initCommands() {

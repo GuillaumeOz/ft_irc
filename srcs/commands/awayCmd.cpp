@@ -1,14 +1,27 @@
 #include "ft_irc.hpp"
 
-std::string getAwayMessage(std::string &command) {
-    std::string tmp;
-	tmp.insert(tmp.begin(), command.begin() + command.find_first_of(":") + 1, command.end());
-    return (tmp);
+std::string		getClientAwayMessage(parsed *parsedCommand) {
+	std::string 	awayMessage;
+
+	for (size_t i = 0; i < parsedCommand->args.size(); i++) {
+		if (i == 0)
+			awayMessage += parsedCommand->args[i]->c_str() + 1;
+		else {
+			awayMessage += " ";
+			awayMessage += parsedCommand->args[i]->c_str();
+		}
+	}
+	return (awayMessage);
 }
 
-void    awayCmd(Server &server, int index, std::string &command) {
-    std::string awayMessage = getAwayMessage(command);
-    server.setUserAwayMessage(index, awayMessage);
-}
+void	awayCmd(Server &server, int index, parsed *parsedCommand) {
+	std::string awayMessage;
+	std::string response;
 
-//AWAY :I am now away
+	if (parsedCommand->twoPointsArgs.size() == 0)
+		awayMessage = "I am busy\n";
+	else
+		awayMessage = getClientAwayMessage(parsedCommand);
+	response = awayResponse();
+	server.ssend(response, index);
+}

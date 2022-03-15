@@ -17,6 +17,7 @@ class User {
 	int8_t							_userMode;
 	std::map<std::string, int8_t>	_channelUserMode;
 	std::string						_awaymessage;
+	std::string						_invalidNick;
 
 	public:
 	User();
@@ -46,6 +47,8 @@ class User {
 	std::string					&getAwayMessage();
 	void						setAwayMessage(std::string &awayMessage);
 	bool						isAway();
+	std::string					&getInvalidNick();
+	void						setInvalidNick(std::string &);
 
 };
 
