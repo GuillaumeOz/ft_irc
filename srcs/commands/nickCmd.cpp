@@ -1,6 +1,6 @@
 #include "ft_irc.hpp"
 
-void	setRandomNick(std::string nick, int index, Server &server) {
+void			setRandomNick(std::string nick, int index, Server &server) {
 	std::string 		newNick;
 	std::stringstream	itoa;
 	std::string			response;
@@ -14,11 +14,12 @@ void	setRandomNick(std::string nick, int index, Server &server) {
 			goto GENNICK;
 	}
 	server.setNick(index, (newNick));
+	std::cout << "Server: Nick " << nick << " is already taken, the new user will now be known as " << newNick << "." << std::endl << std::endl;
 	response = nickResponse(newNick, nick);
 	server.ssend(response, index);
 }
 
-bool checkNickError(std::string &nick, int index, Server &server)
+bool 			checkNickError(std::string &nick, int index, Server &server)
 {
 	if (nick.size() > 9) {
 		server.sendErrorServerUser(nick.c_str(), NULL, NULL, ERR_ERRONEUSNICKNAME, index);
@@ -28,20 +29,19 @@ bool checkNickError(std::string &nick, int index, Server &server)
 	for (size_t i = 0; i < server.getUsers().size(); i++)
 	{
 		if (server.getNick(i).compare(nick) == 0) {
-			server.sendErrorServerUser(nick.c_str(), NULL, NULL, ERR_NICKNAMEINUSE, index);
+			server.sendErrorUser(nick.c_str(), NULL, NULL, ERR_NICKNAMEINUSE, index);
 			setRandomNick(nick, index, server);
 			return (true);
 		}
 	}
 	if (server.isUserModeOn(MODE_USER_R, index) == true) {
 	    server.sendErrorServerUser(NULL, NULL, NULL, ERR_RESTRICTED, index);
-		POUT("nick error")
 	    return (true);
 	}
 	return (false);
 }
 
-void nickCmd(Server &server, int index, parsed *parsedCommand) {
+void 			nickCmd(Server &server, int index, parsed *parsedCommand) {
 	std::string response;
 	static bool pending = {false};
 	std::string oldNick = server.getNick(index);

@@ -22,7 +22,7 @@ void	joinCmd(Server &server, int index, parsed *parsedCommand) {
 	if (!isValidJoinCmd(server, parsedCommand))
 		return ;
 	std::string channelName = (*parsedCommand->args[0]);
-	if (server.userIsinChannel(channelName, index))
+	if (server.isUserInChannel(channelName, index))
 		return ;
 	response = joinResponse(server, index, channelName);
 	if (server.isExistingChannel(channelName) == true) {

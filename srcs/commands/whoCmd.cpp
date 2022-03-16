@@ -1,12 +1,12 @@
 #include "ft_irc.hpp"
 
-bool	isWhoParams(parsed *parsedCommand) {
+bool					isWhoParams(parsed *parsedCommand) {
 	if (parsedCommand->args.size() != 0)
 		return (true);
 	return (false);
 }
 
-bool	isOperParam(parsed *parsedCommand) {
+bool					isOperParam(parsed *parsedCommand) {
 	if (parsedCommand->args.size() > 1) {
 		if (parsedCommand->args[1]->compare("o") == 0)
 			return (true);
@@ -24,12 +24,11 @@ findSubStringState		whichSubString(parsed *parsedCommand) {
 	return (NONE);
 }
 
-bool		isValidSubStr(parsed *parsedCommand, Server &server, int index, findSubStringState subStrFlag) {
+bool					isValidSubStr(parsed *parsedCommand, Server &server, int index, findSubStringState subStrFlag) {
 	std::string nick = server.getNick(index);
 
 	if (isWhoParams(parsedCommand)) {
 		std::string subString = *parsedCommand->args[0];
-		POUT(subString[subString.length() - 1])
 		if (subStrFlag == START && strncmp(subString.c_str() + 1, nick.c_str(), subString.length() - 2) == 0)
 			return (true);
 		if (subStrFlag == END && strncmp(subString.c_str(), (nick.c_str() + (nick.length() - subString.length() + 1)), subString.length() - 2) == 0)
@@ -40,7 +39,7 @@ bool		isValidSubStr(parsed *parsedCommand, Server &server, int index, findSubStr
 	return (false);
 }
 
-void		addUsersToList(Server &server, std::stringstream &userList, parsed *parsedCommand) {
+void					addUsersToList(Server &server, std::stringstream &userList, parsed *parsedCommand) {
 	std::stringstream		tmp;
 	findSubStringState		subStrFlag = whichSubString(parsedCommand);
 	int						userCount =  server.userCount();
@@ -58,7 +57,7 @@ void		addUsersToList(Server &server, std::stringstream &userList, parsed *parsed
 	userList << tmp.str();
 }
 
-std::string getUsersList(Server &server, parsed *parsedCommand) {
+std::string 			getUsersList(Server &server, parsed *parsedCommand) {
 	std::stringstream userList;
 
 	userList << std::setw(15) << std::left << "host" << std::right << std::setw(15) << "username" << std::right << std::setw(15) << "realename" << std::setw(15) << "nickname\n";
@@ -69,10 +68,9 @@ std::string getUsersList(Server &server, parsed *parsedCommand) {
 	return (userList.str());
 }
 
-void	whoCmd(Server &server, int index, parsed *parsedCommand) {
+void					whoCmd(Server &server, int index, parsed *parsedCommand) {
 	std::string userList;
 
 	userList = getUsersList(server, parsedCommand);
-	POUT(userList);
 	server.ssend(userList, index);
 }

@@ -6,16 +6,24 @@ class User;
 class Channel {
 
 	private:
-		std::vector<User *>     _users;
-		std::vector<User *>     _operators;
-		std::string             _name;
-		std::string             _topic;
-		std::string             _keyword;
-		int8_t					_channelMode;
+
+/* ---------------------------------- data ---------------------------------- */
+
+		std::vector<User *>     	_users;
+		std::vector<User *>     	_operators;
+		std::string             	_name;
+		std::string             	_topic;
+		std::string             	_keyword;
+		int8_t						_channelMode;
 
 	public:
-		Channel(std::string &name, std::string &topic, User *first);
+
+/* ------------------------- constructors/destructos ------------------------ */
+		
+		Channel(std::string &, std::string &, User *);
 		~Channel();
+
+/* --------------------------------- getters -------------------------------- */
 
 		std::string						&getChannelName();
 		std::string						&getChannelTopic();
@@ -24,19 +32,31 @@ class Channel {
 		std::vector<User *>				getUsers();
 		std::vector<User *>::iterator	getUsersEnd();
 		std::string						&getKeyword();
-		void							setKeyword(std::string newKeyword);
-		void							setChannelTopic(std::string newTopic);
-		std::vector<User *>::iterator	findUser(std::string &name);
-		void							addUser(User *user);
+		std::vector<User *>::iterator	findUser(std::string &);
+
+/* --------------------------------- setters -------------------------------- */
+
+		void							setKeyword(std::string);
+		void							setChannelTopic(std::string);
+
+/* ---------------------------- user manipulation --------------------------- */
+
+		void							addUser(User *);
 		void							removeUser(User *);
-		void							sendToAllUsers(std::string &response);
-		void							sendToAllOtherUsers(std::string &response, int socket);
-		void							sendToMyself(std::string &response, int socket);
-		bool							isEmpty();
-		bool							isModeOn(channelMode);
 		void							assignMode(channelMode);
 		void							removeMode(channelMode);
-		// bool							isInChannel(std::string &);
+
+/* ---------------------------- sending functions --------------------------- */
+
+		void							sendToAllUsers(std::string &);
+		void							sendToAllOtherUsers(std::string &, int );
+		void							sendToMyself(std::string &, int );
+
+/* ---------------------------- checker functions --------------------------- */
+
+		bool							isEmpty();
+		bool							isModeOn(channelMode);
+
 };
 
 #endif

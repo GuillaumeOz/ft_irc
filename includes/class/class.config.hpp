@@ -5,10 +5,14 @@ class Config {
 
     public:
 
-	int					sock;
-	struct sockaddr_in 	addr;
+/* ---------------------------------- data ---------------------------------- */
 
-	Config(int port);
+	int						sock;
+	struct sockaddr_in 		addr;
+
+/* ------------------------ constructors/destructors ------------------------ */
+
+	Config(int);
 	~Config();
 
 };
