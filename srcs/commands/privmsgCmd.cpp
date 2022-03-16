@@ -34,6 +34,23 @@ void	versionCmd(Server &server, int index) {
 	server.ssend(version, index);
 }
 
+bool	checkModeError(Server &server, int user_index, int channel_index, std::string channelName) {
+	std::string  channelModes = server.getChannelModes(channel_index);
+	if (channelModes.find("m") != std::string::npos) {
+		if (server.isChannelUserModeOn(user_index, channelName, MODE_CHANNEL_USER_O) == false && server.isChannelUserModeOn(user_index, channelName, MODE_CHANNEL_USER_V) == false) {
+			server.sendErrorServerUser(server.getNick(user_index).c_str(), NULL, NULL, ERR_CANNOTSENDTOCHAN, user_index);
+			return (true);
+		}
+	}
+	if (channelModes.find("n") != std::string::npos) {
+		if (server.userIsinChannel(channelName, user_index) == false) {
+			server.sendErrorServerUser(server.getNick(user_index).c_str(), NULL, NULL, ERR_CANNOTSENDTOCHAN, user_index);
+			return (true);
+		}
+	}
+	return (false);
+}
+
 void privmsgCmd(Server &server, int index, parsed *parsedCommand) {
 	std::string message = parsedCommand->getFullTwoPointsArgs();
 	std::string response;
@@ -42,10 +59,14 @@ void privmsgCmd(Server &server, int index, parsed *parsedCommand) {
 			versionCmd(server, index);
 	}
 	if (parsedCommand->channels.size() > 0) {
-			std::string channelName = (*parsedCommand->channels[0]);
-			response = privmsgResponse(server, index, channelName, message);
-			server.sendToOtherUsersInChannel(channelName, response, index);
-	} else {
+		std::string channelName = (*parsedCommand->channels[0]);
+		int channel_index = server.findChannelIndex(channelName);
+		if (checkModeError(server, index, channel_index, channelName) == true)
+			return ;
+		response = privmsgResponse(server, index, channelName, message);
+		server.sendToOtherUsersInChannel(channelName, response, index);
+	}
+	else {
 		std::string user = (*parsedCommand->args[0]);
 		response = privmsgResponse(server, index, user, message);
 		int user_index = server.findUserIndex(user);
@@ -54,8 +75,7 @@ void privmsgCmd(Server &server, int index, parsed *parsedCommand) {
 			return ;
 		}
 		else {
-			userMode mode = MODE_USER_A;
-			if (server.isUserModeOn(mode, user_index)) {
+			if (server.isUserModeOn(MODE_USER_A, user_index)) {
 				std::string awayMessage = server.getUserAwayMessage(user_index);
 				std::string awayResponse = getAwayResponse(user, awayMessage);
 				server.ssend(awayResponse, index);

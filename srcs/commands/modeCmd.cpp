@@ -449,7 +449,7 @@ void	handleModeChannel(Server &server, int index, std::string &command, std::str
 	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
 	size_t								channelIndex = server.findChannelIndex(channelName);
 
-	if (server.ischannelModeOn(static_cast<channelMode>(MODE_CHANNEL_T | MODE_CHANNEL_N), channelIndex) == false) {
+	if (server.isChannelModeOn(static_cast<channelMode>(MODE_CHANNEL_T | MODE_CHANNEL_N), channelIndex) == false) {
 		server.getUsers()[index]->assignChannelUserMode(channelName, MODE_CHANNEL_USER_O);
 		(*it)->assignMode(static_cast<channelMode>(MODE_CHANNEL_T | MODE_CHANNEL_N));
 		displayChannelMode(server, command, index, channelName, (*it)->getChannelMode(), '+');
