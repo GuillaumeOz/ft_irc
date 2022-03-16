@@ -62,7 +62,7 @@ std::string getUsersList(Server &server, parsed *parsedCommand) {
 	std::stringstream userList;
 
 	userList << std::setw(15) << std::left << "host" << std::right << std::setw(15) << "username" << std::right << std::setw(15) << "realename" << std::setw(15) << "nickname\n";
-	for (int i = 0; i < 50 ; i++) { userList << "-"; }
+	for (int i = 0; i < 60 ; i++) { userList << "-"; }
 		userList << "\n";
 	addUsersToList(server, userList, parsedCommand);
 	userList << "End of LIST\n\n";

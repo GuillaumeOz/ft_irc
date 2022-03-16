@@ -22,6 +22,9 @@ void	awayCmd(Server &server, int index, parsed *parsedCommand) {
 		awayMessage = "I am busy\n";
 	else
 		awayMessage = getClientAwayMessage(parsedCommand);
+	server.setUserAwayMessage(index, awayMessage);
+	userMode mode = MODE_USER_A;
+	server.assignUserMode(mode, index);
 	response = awayResponse();
 	server.ssend(response, index);
 }

@@ -11,7 +11,7 @@ Error::Error(): type(NO_ERROR) {
 	errorMessages[ERR_TOOMANYCHANNELS] = "place1 :You have joined too many channels.\n";
 	errorMessages[ERR_NEEDMOREPARAMS] = "place1 :Not enough parameter.\n";
 	errorMessages[ERR_NICKNAMEINUSE] = "place1 :Nickname is already in use.\n";
-	errorMessages[ERR_RESTRICTED] = ":Your connection is restricted!.\n";
+	errorMessages[ERR_RESTRICTED] = "Your connection is restricted!\n";
 	errorMessages[ERR_CHANNELISFULL] = "place1 :Cannot join channel (+l).\n";
 	errorMessages[ERR_UNKNOWNMODE] = "place1 :is unknown mode char to me for place2.\n";
 	errorMessages[ERR_INVITEONLYCHAN] = "place1 :Cannot join channel (+i).\n";
@@ -65,6 +65,7 @@ void	Error::setErrorType(errorType &value) {
 
 std::string	Error::getMessageWithReplaceToken(const char *arg1, const char *arg2, const char *arg3, errorType &value) {
 	std::string tmp = errorMessages.find(value)->second;
+	POUT(tmp)
 	if (arg1 != NULL)
 		tmp.replace(tmp.find("place1"), 6, arg1);
 	if (arg2 != NULL)
