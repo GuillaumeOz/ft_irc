@@ -9,17 +9,27 @@ class Server {
 
 	Config															_config;
 	Error															_error;
+	std::string														_pass;
 	std::vector<struct pollfd>										_pfds;
 	std::string														_password;
 	std::vector<User *>												_users;
 	std::map<std::string, void (*)(Server &, int , parsed *)> 		_commands;
+	bool															_loop;
 
 	public:
 	std::vector<Channel *>											channels;
 
 	Server(int port);
-	Server(int port, Error error);
+	Server(int port, Error error, std::string pass);
 	~Server();
+
+	//Password
+	void printPass();
+	bool isValidPass(std::string &);
+	bool isRegistered(int);
+	void sregister(int);
+	void setLoop(bool);
+	bool getLoop();
 
 	//Commands
 	void initCommands();
@@ -55,6 +65,7 @@ class Server {
 	std::string	&getRealname(int);
 	void delChannelFromUser(std::string &channelName, int user_index);
 	bool isUserModeOn(userMode mode, int index);
+	bool isChannelUserModeOn(int, std::string &, channelUserMode);
 	void assignUserMode(userMode mode, int index);
 	int findUserIndex(std::string &nick);
 	void setUserAwayMessage(int index, std::string &message);
@@ -62,6 +73,7 @@ class Server {
 	std::string &getUserAwayMessage(int index);
 	std::string &getUserInvalidNick(int index);
 	void		setUserInvalidNick(int index, std::string &invalidNick);
+	int			userCount();
 
 	//Channels
 	std::vector<Channel *>	getChannels();
@@ -69,6 +81,7 @@ class Server {
 	void addChannelToUser(int index, std::string channelName);
 	void removeChannel(int &);
 	std::vector<Channel *>::iterator findChannel(std::string &name);
+	size_t	findChannelIndex(std::string &channelName);
 	void joinChannel(int index, std::string &channel);
 	bool isExistingChannel(std::string &);
 	void delUserFromChannel(std::string &channelName, int);
@@ -76,9 +89,11 @@ class Server {
 	void delChannel(std::string &channelName);
 	void sendToAllUsersInChannel(std::string &channelName, std::string &response);
 	void sendToOtherUsersInChannel(std::string &channelName, std::string &response, int index);
+	void sendToMyselfInChannel(std::string &channelName, std::string &response, int index);
+	std::string getChannelModes(int channel_index);
 	void printChannels();
-	bool ischannelModeOn(channelMode mode, int index);
-	void assignchannelMode(channelMode mode, int index);
+	bool isChannelModeOn(channelMode mode, int index);
+	void assignChannelMode(channelMode mode, int index);
 	bool userIsinChannel(std::string &, int);
 
 	//Pfds

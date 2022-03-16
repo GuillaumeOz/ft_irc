@@ -1,12 +1,10 @@
 #include "ft_irc.hpp"
 
-User::User(): _csize(sizeof(_addr)), _nick(), _username(), _realname(),  _awaymessage("") {};
+User::User(): _csize(sizeof(_addr)), _nick(), _username(), _realname(),  _registerState(false), _userMode(NO_USER_MODE), _awaymessage("") {};
 
-User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _nick(nick), _username(username), _realname() {};
+User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _nick(nick), _username(username), _realname(), _registerState(false), _userMode(NO_USER_MODE) {};
 
-User::~User() {
-	uclose();
-};
+User::~User() {};
 
 void    User::uaccept(int &sock) {
 	_sock = accept(sock, (struct sockaddr *)&(_addr), &(_csize));
@@ -25,7 +23,7 @@ int	User::urecv(std::string *string) {
 		memset(tmpBuff, '\0', sizeof(tmpBuff));
 		nbBytes = recv(_sock, tmpBuff, sizeof(tmpBuff), 0);
 		*string += tmpBuff;
-	} while (strchr(tmpBuff, '\0') == NULL);
+	} while (strchr(tmpBuff, '\n') == NULL);
 	return (nbBytes);
 };
 
@@ -44,6 +42,10 @@ int		User::getSocket() {
 std::vector<std::string>	User::getUchannels() {
 
 	return (_uchannels);
+}
+
+int8_t	User::getUserMode() {
+	return (_userMode);
 }
 
 void	User::setHost(std::string &string) {
@@ -97,6 +99,10 @@ void	User::assignMode(userMode mode) {
 	_userMode |= mode;
 }
 
+void	User::removeMode(userMode mode) {
+	_userMode ^= mode;
+}
+
 bool	User::isModeOn(userMode mode) {
 	if (_userMode & mode)
 		return (true);
@@ -105,6 +111,9 @@ bool	User::isModeOn(userMode mode) {
 
 void	User::assignChannelUserMode(std::string &channel, channelUserMode mode) {
 	_channelUserMode[channel] |= mode;
+}
+void	User::removeChannelUserMode(std::string &channel, channelUserMode mode) {
+	_channelUserMode[channel] ^= mode;
 }
 
 bool	User::isChannelUserModeOn(std::string &channel, channelUserMode mode) {
@@ -123,6 +132,14 @@ void		User::setAwayMessage(std::string &awayMessage) {
 
 bool		User::isAway() {
 	return (_awaymessage != "");
+}
+
+bool 		User::isRegistered() {
+	return (_registerState);
+}
+
+void 		User::uregister() {
+	_registerState = true;
 }
 
 std::string &User::getInvalidNick() {

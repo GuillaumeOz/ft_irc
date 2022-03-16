@@ -29,8 +29,7 @@ void	topicCmd(Server &server, int index, parsed *parsedCommand) {
 	std::vector<Channel *>::iterator	it;
 	if (parsedCommand->twoPointsArgs.size() == 0) {
 		it = server.findChannel(channelName);
-		std::string cmd = "PRIVMSG";
-		std::string displayTopic = getCmdString(server, index, channelName, (*it)->getChannelTopic(), cmd);
+		std::string displayTopic = getCmdString(server, index, channelName, (*it)->getChannelTopic(), "PRIVMSG");
 		server.ssend(displayTopic, index);
 		return ;
 	}

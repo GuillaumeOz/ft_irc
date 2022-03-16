@@ -1,11 +1,11 @@
 #include "ft_irc.hpp"
 
-Server::Server(int port): _config(port), _error() {
+Server::Server(int port): _config(port), _error(), _loop(true) {
 	addSockToPfds(_config.sock);
 	initCommands();
 };
 
-Server::Server(int port, Error error): _config(port), _error(error) {
+Server::Server(int port, Error error, std::string pass): _config(port), _error(error), _pass(pass), _loop(true) {
 	addSockToPfds(_config.sock);
 	initCommands();
 };
@@ -17,7 +17,26 @@ void	Server::sbind()  {
 	std::cout << "[Bind] : " << _config.sock << "." << std::endl;
 }
 
+void	Server::printPass() {
+	POUT(_pass);
+}
+
+bool Server::isValidPass(std::string &string) {
+	if (_pass.compare(string) == 0)
+		return (true);
+	return (false);
+}
+
+bool 	Server::isRegistered(int index) {
+	return (_users[index]->isRegistered());
+}
+
+void 	Server::sregister(int index) {
+	_users[index]->uregister();
+}
+
 void	Server::initCommands() {
+	_commands["PASS"] = &passCmd;
 	_commands["JOIN"] = &joinCmd;
 	_commands["PART"] = &partCmd;
 	_commands["PRIVMSG"] = &privmsgCmd;
@@ -28,12 +47,22 @@ void	Server::initCommands() {
 	_commands["AWAY"] = &awayCmd;
 	_commands["NICK"] = &nickCmd;
 	_commands["TIME"] = &timeCmd;
+	_commands["MODE"] = &modeCmd;
 	_commands["NOTICE"] = &noticeCmd;
+	_commands["WHO"] = &whoCmd;
 }
 
 void	Server::callCommand(Server &server, int &index, parsed *parsedCommand) {
-	if (_commands.find(parsedCommand->command) != _commands.end())
-		_commands.find(parsedCommand->command)->second(server, index, parsedCommand);
+	std::string notRegistered = "Your are not registered to our server please try to connect with the right password\n";
+	if (!server.isRegistered(index) && parsedCommand->command.compare("PASS") != 0) {
+		server.ssend(notRegistered, index);
+		server.closeUser(index);
+		server.setLoop(false);
+		return ;
+	}
+	if ((server.isRegistered(index) && _commands.find(parsedCommand->command) != _commands.end()) ||
+		parsedCommand->command.compare("PASS") == 0)
+			_commands.find(parsedCommand->command)->second(server, index, parsedCommand);
 }
 
 void	Server::slisten(int num) {
@@ -43,8 +72,8 @@ void	Server::slisten(int num) {
 
 void	Server::closeUser(int pfds_index) {
 	_users[pfds_index]->uclose();
-	removeSockFromPfds(pfds_index);
-	removeUser(_pfds[pfds_index].fd);
+	removeUser(_pfds[pfds_index + 1].fd);
+	removeSockFromPfds(pfds_index + 1);
 };
 
 void	Server::closeServer() {
@@ -96,7 +125,6 @@ void Server::addChannelToUser(int index, std::string channelName) {
 	_users[index]->joinChannel(channelName);
 }
 
-
 void	Server::joinChannel(int index, std::string &channelName) {
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
 		if ((*it)->getChannelName() == channelName)//add double join channel protection
@@ -116,7 +144,7 @@ bool	Server::isExistingChannel(std::string &name) {
 			return (true);
 	}
 	return (false);
-}
+};
 
 void	Server::delUserFromChannel(std::string &channelName, int index) {
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
@@ -155,7 +183,7 @@ void	Server::addUser(User *user) {
 
 void	Server::removeUser(int &socket) {
 	int index = findClientSock(socket);
-	if (index > 0) {
+	if (index >= 0) {
 		delete _users[index];
 		_users.erase(_users.begin() + index);
 	}
@@ -241,6 +269,14 @@ std::vector<Channel *>::iterator Server::findChannel(std::string &channelName) {
 	return (channels.end());
 };
 
+size_t Server::findChannelIndex(std::string &channelName) {
+	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
+		if ((*it)->getChannelName() == channelName)
+			return (it - channels.begin());
+	}
+	return (std::string::npos);
+};
+
 void		Server::sendToAllUsersInChannel(std::string &channelName, std::string &response) {
 	std::vector<Channel *>::iterator	it = findChannel(channelName);
 
@@ -254,6 +290,14 @@ void		Server::sendToOtherUsersInChannel(std::string &channelName, std::string &r
 
 	if (it != channels.end()) {
 		(*it)->sendToAllOtherUsers(response, _users[index]->getSocket());
+	}
+};
+
+void		Server::sendToMyselfInChannel(std::string &channelName, std::string &response, int index) {
+	std::vector<Channel *>::iterator	it = findChannel(channelName);
+
+	if (it != channels.end()) {
+		(*it)->sendToMyself(response, _users[index]->getSocket());
 	}
 };
 
@@ -271,12 +315,16 @@ void		Server::assignUserMode(userMode mode, int index) {
 	return (_users[index]->assignMode(mode));
 }
 
-bool		Server::ischannelModeOn(channelMode mode, int index) {
+bool		Server::isChannelModeOn(channelMode mode, int index) {
 	return (channels[index]->isModeOn(mode));
 }
 
-void		Server::assignchannelMode(channelMode mode, int index) {
+void		Server::assignChannelMode(channelMode mode, int index) {
 	return (channels[index]->assignMode(mode));
+}
+
+bool		Server::isChannelUserModeOn(int index, std::string &channelName, channelUserMode mode) {
+	return (_users[index]->isChannelUserModeOn(channelName, mode));
 }
 
 int			Server::findUserIndex(std::string &nick) {
@@ -315,4 +363,43 @@ bool 		Server::userIsinChannel(std::string &channelName, int index) {
 			return (true);
 	}
 	return (false);
+}
+
+void	Server::setLoop(bool newState) {
+	_loop =  newState;
+}
+
+bool	Server::getLoop() {
+	return (_loop);
+}
+
+int		Server::userCount() {
+	return (_users.size());
+}
+
+std::string	Server::getChannelModes(int channel_index) {
+	std::string channelModes("");
+	int8_t channelMode = channels[channel_index]->getChannelMode();
+	if (channelMode & MODE_CHANNEL_I) {
+		channelModes += "i";
+	}
+	if (channelMode & MODE_CHANNEL_M) {
+		channelModes += "m";
+	}
+	if (channelMode & MODE_CHANNEL_N) {
+		channelModes += "n";
+	}
+	if (channelMode & MODE_CHANNEL_P) {
+		channelModes += "p";
+	}
+	if (channelMode & MODE_CHANNEL_T) {
+		channelModes += "t";
+	}
+	if (channelMode & MODE_CHANNEL_K) {
+		channelModes += "k";
+	}
+	if (channelMode & MODE_CHANNEL_L) {
+		channelModes += "l";
+	}
+	return (channelModes);
 }

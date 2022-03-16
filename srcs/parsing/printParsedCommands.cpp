@@ -24,20 +24,24 @@ void	printParsedCommandschannels(parsed *parsedCommands) {
 		POUT("-")
 }
 
+void	printParsedCommand(parsed *parsedCommand) {
+	POUT("Raw string : ")
+	POUT(parsedCommand->rawCommand.c_str())
+	POUT("Command : ")
+	POUT(parsedCommand->command.c_str())
+	POUT("Args : ")
+	printParsedCommandsArgs(parsedCommand);
+	POUT("Channels : ")
+	printParsedCommandschannels(parsedCommand);
+	POUT("Two points args : ")
+	printParsedCommandsTwoPoints(parsedCommand);
+	POUT("\n")
+}
+
 void	printParsedCommands(std::vector<parsed *> &parsedCommands) {
 	for (size_t i = 0; i < parsedCommands.size(); i++) {
 		std::cout << "line : " << std::flush;
 		POUT(i)
-		POUT("Raw string : ")
-		POUT(parsedCommands[i]->rawCommand)
-		POUT("Command : ")
-		POUT(parsedCommands[i]->command)
-		POUT("Args : ")
-		printParsedCommandsArgs(parsedCommands[i]);
-		POUT("Channels : ")
-		printParsedCommandschannels(parsedCommands[i]);
-		POUT("Two points args : ")
-		printParsedCommandsTwoPoints(parsedCommands[i]);
-		POUT("\n")
+		printParsedCommand(parsedCommands[i]);
 	}
 }

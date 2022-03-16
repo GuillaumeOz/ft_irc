@@ -13,6 +13,7 @@ class User {
 	std::string						_nick;
 	std::string						_username;
 	std::string						_realname;
+	bool							_registerState;
 	std::vector<std::string>		_uchannels;
 	int8_t							_userMode;
 	std::map<std::string, int8_t>	_channelUserMode;
@@ -30,6 +31,7 @@ class User {
 	void						setSocket(int &);
 	int							getSocket();
 	std::vector<std::string>	getUchannels();
+	int8_t						getUserMode();
 	void						setHost(std::string &);
 	void						setNick(std::string &);
 	void						setUsername(std::string &);
@@ -41,12 +43,16 @@ class User {
 	std::string 				&getRealname();
 	void						joinChannel(std::string &channelName);
 	void						assignMode(userMode);
+	void						removeMode(userMode);
 	bool						isModeOn(userMode);
 	bool						isChannelUserModeOn(std::string &, channelUserMode);
 	void						assignChannelUserMode(std::string &, channelUserMode);
+	void						removeChannelUserMode(std::string &, channelUserMode);
 	std::string					&getAwayMessage();
 	void						setAwayMessage(std::string &awayMessage);
 	bool						isAway();
+	bool 						isRegistered();
+	void 						uregister();
 	std::string					&getInvalidNick();
 	void						setInvalidNick(std::string &);
 

@@ -14,10 +14,12 @@
 #include <iostream>
 #include <unistd.h>
 #include <time.h>
+#include <signal.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <cctype>
 #include <sstream>
 #include <vector>
 #include <algorithm>
@@ -40,9 +42,7 @@ enum userMode {
 	NO_USER_MODE = 0,
 	MODE_USER_A = (1 << 0),
 	MODE_USER_I = (1 << 1),
-	MODE_USER_W = (1 << 2),
-	MODE_USER_R = (1 << 3),
-	MODE_USER_O = (1 << 4)
+	MODE_USER_R = (1 << 2),
 };
 
 enum channelUserMode {
@@ -61,6 +61,12 @@ enum channelMode {
 	MODE_CHANNEL_T = (1 << 4),
 	MODE_CHANNEL_K = (1 << 5),
 	MODE_CHANNEL_L = (1 << 6)
+};
+
+enum findSubStringState {
+	NONE,
+	START,
+	END
 };
 
 /* ----------------------------- Project headers ----------------------------- */
