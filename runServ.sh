@@ -18,9 +18,9 @@ elif [ $ac -eq 3 ]
 then
 	if [ "$3" = "bot" ]
 	then
-		x-terminal-emulator -T "Server IRC" -e bash -c "make; ./bin/ircserv $1 $2 | cat - e" &
-		sleep 3
-		x-terminal-emulator -T "Bot Irc" -e bash -c "cd ./bot && make; ./bin/bot_client"
+		make ; cd ./bot && make; cd ../
+		x-terminal-emulator -T "Server IRC" -e bash -c " ./bin/ircserv $1 $2 | cat - e" &
+		x-terminal-emulator -T "Bot Irc" -e bash -c " cd ./bot; ./bin/bot_client"
 	else
 		echo "Wrong arguments... Try with ./script.sh [server port] [password] [bot]"
 	fi
