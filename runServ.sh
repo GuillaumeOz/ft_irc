@@ -20,7 +20,7 @@ then
 	then
 		make ; cd ./bot && make; cd ../
 		x-terminal-emulator -T "Server IRC" -e bash -c " ./bin/ircserv $1 $2 | cat - e" &
-		x-terminal-emulator -T "Bot Irc" -e bash -c " cd ./bot; ./bin/bot_client"
+		x-terminal-emulator -T "Bot Irc" -e bash -c " cd ./bot; ./bin/bot_client $2"
 	else
 		echo "Wrong arguments... Try with ./script.sh [server port] [password] [bot]"
 	fi

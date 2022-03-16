@@ -49,12 +49,14 @@ std::string	eraseCarriageReturn(std::string &string) {
 	return (string);
 }
 
-int	main() {
+int	main(int ac, char **av) {
 	Client			client;
 	std::string		msg;
 	std::string		command;
 	pthread_t 		thread_id;
 
+	if (ac == 2)
+		client.setPassword(av[1]);
 	if (client.connectSock() != -1)
 		g_quit = false;
 	if (!g_quit) {

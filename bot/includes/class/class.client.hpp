@@ -6,7 +6,8 @@ class Config;
 class Client {
 
  private:
-	Config 											_config;
+	Config 														_config;
+	std::string													_password;
 	std::map<std::string, void (*)(Client &, std::string &)> 	_commands;
 
  public:
@@ -20,6 +21,7 @@ class Client {
 	void	recvSock(std::string *string);
 	void	join();
 	void	closeClient() const;
+	void	setPassword(char *);
 	void	sendInfo();
 	void	callCommand(Client &, std::string &, std::string &);
 	void	bsend(std::string &response);

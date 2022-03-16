@@ -1,10 +1,10 @@
 #include "bot.hpp"
 
-Client::Client(): _config() {
+Client::Client(): _config(), _password("") {
 	initCommands();
 };
 
-Client::Client(int socket, in_addr_t addr, short family, unsigned short port): _config(socket, addr, family, port) {};
+Client::Client(int socket, in_addr_t addr, short family, unsigned short port): _config(socket, addr, family, port), _password("") {};
 
 Client::~Client() {};
 
@@ -30,9 +30,15 @@ void	Client::recvSock(std::string *string) {
 	} while (strchr(tmpBuff, '\0') == NULL);
 };
 
+void	Client::setPassword(char *str) {
+	_password = str;
+};
+
 void Client::sendInfo() {
+	std::string infos = "PASS " + _password + "\r\n";
 	std::string nick("NICK bot\r\nUSER bot bot 127.0.0.1 :bot\r\n");
-	send(_config.socketClient, nick.c_str(), nick.length(), 0);
+	infos += nick;
+	send(_config.socketClient, infos.c_str(), infos.length(), 0);
 }
 
 void Client::join() {
