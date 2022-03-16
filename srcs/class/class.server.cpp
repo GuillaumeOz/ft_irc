@@ -315,7 +315,7 @@ void		Server::assignUserMode(userMode mode, int index) {
 	return (_users[index]->assignMode(mode));
 }
 
-bool		Server::ischannelModeOn(channelMode mode, int index) {
+bool		Server::isChannelModeOn(channelMode mode, int index) {
 	return (channels[index]->isModeOn(mode));
 }
 

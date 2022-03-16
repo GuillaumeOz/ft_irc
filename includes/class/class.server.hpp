@@ -90,7 +90,7 @@ class Server {
 	void sendToMyselfInChannel(std::string &channelName, std::string &response, int index);
 
 	void printChannels();
-	bool ischannelModeOn(channelMode mode, int index);
+	bool isChannelModeOn(channelMode mode, int index);
 	void assignchannelMode(channelMode mode, int index);
 	bool userIsinChannel(std::string &, int);
 
