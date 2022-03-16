@@ -23,7 +23,7 @@ int	User::urecv(std::string *string) {
 		memset(tmpBuff, '\0', sizeof(tmpBuff));
 		nbBytes = recv(_sock, tmpBuff, sizeof(tmpBuff), 0);
 		*string += tmpBuff;
-	} while (strchr(tmpBuff, '\0') == NULL);
+	} while (strchr(tmpBuff, '\n') == NULL);
 	return (nbBytes);
 };
 
