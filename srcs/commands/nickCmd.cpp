@@ -2,9 +2,9 @@
 
 bool checkNickError(std::string &nick, int index, Server &server)
 {
-	(void)index;
 	if (nick.size() > 9) {
 		server.sendErrorServerUser(nick.c_str(), NULL, NULL, ERR_ERRONEUSNICKNAME, index);
+		server.setUserInvalidNick(index, nick);
 		return (true);
 	}
 	for (size_t i = 0; i < server.getUsers().size(); i++)
