@@ -8,6 +8,7 @@ std::string		eraseLineBreak(std::string &);
 std::string		eraseCarriageReturn(std::string &);
 void 			parseClientInformations(std::string &, int, Server &);
 void			parseCommands(std::vector<parsed *> &parsedCommands, std::string string);
+void			printParsedCommand(parsed *parsedCommand);
 void			printParsedCommands(std::vector<parsed *> &parsedCommands);
 
 #endif

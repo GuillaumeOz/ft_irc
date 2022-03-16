@@ -9,17 +9,27 @@ class Server {
 
 	Config															_config;
 	Error															_error;
+	std::string														_pass;
 	std::vector<struct pollfd>										_pfds;
 	std::string														_password;
 	std::vector<User *>												_users;
 	std::map<std::string, void (*)(Server &, int , parsed *)> 		_commands;
+	bool															_loop;
 
 	public:
 	std::vector<Channel *>											channels;
 
 	Server(int port);
-	Server(int port, Error error);
+	Server(int port, Error error, std::string pass);
 	~Server();
+
+	//Password
+	void printPass();
+	bool isValidPass(std::string &);
+	bool isRegistered(int);
+	void sregister(int);
+	void setLoop(bool);
+	bool getLoop();
 
 	//Commands
 	void initCommands();

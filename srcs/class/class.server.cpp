@@ -1,11 +1,11 @@
 #include "ft_irc.hpp"
 
-Server::Server(int port): _config(port), _error() {
+Server::Server(int port): _config(port), _error(), _loop(true) {
 	addSockToPfds(_config.sock);
 	initCommands();
 };
 
-Server::Server(int port, Error error): _config(port), _error(error) {
+Server::Server(int port, Error error, std::string pass): _config(port), _error(error), _pass(pass), _loop(true) {
 	addSockToPfds(_config.sock);
 	initCommands();
 };
@@ -17,7 +17,26 @@ void	Server::sbind()  {
 	std::cout << "[Bind] : " << _config.sock << "." << std::endl;
 }
 
+void	Server::printPass() {
+	POUT(_pass);
+}
+
+bool Server::isValidPass(std::string &string) {
+	if (_pass.compare(string) == 0)
+		return (true);
+	return (false);
+}
+
+bool 	Server::isRegistered(int index) {
+	return (_users[index]->isRegistered());
+}
+
+void 	Server::sregister(int index) {
+	_users[index]->uregister();
+}
+
 void	Server::initCommands() {
+	_commands["PASS"] = &passCmd;
 	_commands["JOIN"] = &joinCmd;
 	_commands["PART"] = &partCmd;
 	_commands["PRIVMSG"] = &privmsgCmd;
@@ -33,8 +52,16 @@ void	Server::initCommands() {
 }
 
 void	Server::callCommand(Server &server, int &index, parsed *parsedCommand) {
-	if (_commands.find(parsedCommand->command) != _commands.end())
-		_commands.find(parsedCommand->command)->second(server, index, parsedCommand);
+	std::string notRegistered = "Your are not registered to our server please try to connect with the right password\n";
+	if (!server.isRegistered(index) && parsedCommand->command.compare("PASS") != 0) {
+		server.ssend(notRegistered, index);
+		server.closeUser(index);
+		server.setLoop(false);
+		return ;
+	}
+	if ((server.isRegistered(index) && _commands.find(parsedCommand->command) != _commands.end()) ||
+		parsedCommand->command.compare("PASS") == 0)
+			_commands.find(parsedCommand->command)->second(server, index, parsedCommand);
 }
 
 void	Server::slisten(int num) {
@@ -43,9 +70,10 @@ void	Server::slisten(int num) {
 }
 
 void	Server::closeUser(int pfds_index) {
+	POUT(_users[pfds_index]->getNick())
 	_users[pfds_index]->uclose();
-	removeSockFromPfds(pfds_index);
-	removeUser(_pfds[pfds_index].fd);
+	removeUser(_pfds[pfds_index + 1].fd);
+	removeSockFromPfds(pfds_index + 1);
 };
 
 void	Server::closeServer() {
@@ -155,7 +183,7 @@ void	Server::addUser(User *user) {
 
 void	Server::removeUser(int &socket) {
 	int index = findClientSock(socket);
-	if (index > 0) {
+	if (index >= 0) {
 		delete _users[index];
 		_users.erase(_users.begin() + index);
 	}
@@ -331,4 +359,12 @@ bool 		Server::userIsinChannel(std::string &channelName, int index) {
 			return (true);
 	}
 	return (false);
+}
+
+void	Server::setLoop(bool newState) {
+	_loop =  newState;
+}
+
+bool	Server::getLoop() {
+	return (_loop);
 }

@@ -13,6 +13,7 @@ class User {
 	std::string						_nick;
 	std::string						_username;
 	std::string						_realname;
+	bool							_registerState;
 	std::vector<std::string>		_uchannels;
 	int8_t							_userMode;
 	std::map<std::string, int8_t>	_channelUserMode;
@@ -50,6 +51,8 @@ class User {
 	std::string					&getAwayMessage();
 	void						setAwayMessage(std::string &awayMessage);
 	bool						isAway();
+	bool 						isRegistered();
+	void 						uregister();
 	std::string					&getInvalidNick();
 	void						setInvalidNick(std::string &);
 

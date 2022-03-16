@@ -1,9 +1,10 @@
 #include "ft_irc.hpp"
 
 void	handleActions(std::vector<parsed*> parsedCommands, int index, Server &server) {
-	for (size_t i = 0; i < parsedCommands.size(); i++) {
+	for (size_t i = 0; i < parsedCommands.size() && (server.getLoop() == true); i++) {
 		server.callCommand(server, index, parsedCommands[i]);
 	}
+	server.setLoop(true);
 }
 
 void	usersActionsLoop(Server &server) {
@@ -32,10 +33,10 @@ int main(int ac, char **av)
 {
 	Error error;
 
-	if (ac != 2)
+	if (ac != 3)
 		error.type = ARGUMENT;
 	error.displayError();
-	Server server(atoi(av[1]), error);
+	Server server(atoi(av[1]), error, std::string(av[2]));
 	server.sbind();
 	server.slisten(10);
 	int i = {0};

@@ -1,12 +1,10 @@
 #include "ft_irc.hpp"
 
-User::User(): _csize(sizeof(_addr)), _nick(), _username(), _realname(), _userMode(NO_USER_MODE), _awaymessage("") {};
+User::User(): _csize(sizeof(_addr)), _nick(), _username(), _realname(),  _registerState(false), _userMode(NO_USER_MODE), _awaymessage("") {};
 
-User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _nick(nick), _username(username), _realname(), _userMode(NO_USER_MODE) {};
+User::User(std::string &username, std::string &nick): _csize(sizeof(_addr)), _nick(nick), _username(username), _realname(), _registerState(false), _userMode(NO_USER_MODE) {};
 
-User::~User() {
-	uclose();
-};
+User::~User() {};
 
 void    User::uaccept(int &sock) {
 	_sock = accept(sock, (struct sockaddr *)&(_addr), &(_csize));
@@ -134,6 +132,14 @@ void		User::setAwayMessage(std::string &awayMessage) {
 
 bool		User::isAway() {
 	return (_awaymessage != "");
+}
+
+bool 		User::isRegistered() {
+	return (_registerState);
+}
+
+void 		User::uregister() {
+	_registerState = true;
 }
 
 std::string &User::getInvalidNick() {
