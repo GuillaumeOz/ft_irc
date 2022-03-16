@@ -1,5 +1,23 @@
 #include "ft_irc.hpp"
 
+void	setRandomNick(std::string nick, int index, Server &server) {
+	std::string 		newNick;
+	std::stringstream	itoa;
+	std::string			response;
+	srand (time(NULL));
+
+	GENNICK:
+	itoa << rand() % 100;
+	newNick = "Guest" + itoa.str();
+	for (size_t i = 0; i < server.getUsers().size(); i++) {
+		if (server.getNick(i).compare(newNick) == 0)
+			goto GENNICK;
+	}
+	server.setNick(index, (newNick));
+	response = nickResponse(newNick, nick);
+	server.ssend(response, index);
+}
+
 bool checkNickError(std::string &nick, int index, Server &server)
 {
 	if (nick.size() > 9) {
@@ -11,6 +29,7 @@ bool checkNickError(std::string &nick, int index, Server &server)
 	{
 		if (server.getNick(i).compare(nick) == 0) {
 			server.sendErrorServerUser(nick.c_str(), NULL, NULL, ERR_NICKNAMEINUSE, index);
+			setRandomNick(nick, index, server);
 			return (true);
 		}
 	}
