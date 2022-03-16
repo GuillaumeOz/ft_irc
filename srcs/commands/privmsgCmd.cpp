@@ -11,7 +11,7 @@ std::string getAwayResponse(std::string user, std::string message)
 {
 	std::string tmp;
 	tmp += "[" + user + "] is away (";
-	message.insert(message.length() - 1, ")\n");
+	message.insert(message.length(), ")\n");
 	tmp.insert(tmp.length(), message.c_str());
 	return (tmp);
 }
@@ -54,7 +54,8 @@ void privmsgCmd(Server &server, int index, parsed *parsedCommand) {
 			return ;
 		}
 		else {
-			if (server.isUserAway(user_index) == true) {
+			userMode mode = MODE_USER_A;
+			if (server.isUserModeOn(mode, user_index)) {
 				std::string awayMessage = server.getUserAwayMessage(user_index);
 				std::string awayResponse = getAwayResponse(user, awayMessage);
 				server.ssend(awayResponse, index);

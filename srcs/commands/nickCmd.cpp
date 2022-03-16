@@ -33,10 +33,11 @@ bool checkNickError(std::string &nick, int index, Server &server)
 			return (true);
 		}
 	}
-	// if (server.getUsers()[index]->isModeOn(MODE_USER_R) == true) {
-	//     server.sendErrorServer(nick.c_str(), NULL, NULL, ERR_RESTRICTED, index);
-	//     return (true);
-	// }
+	if (server.isUserModeOn(MODE_USER_R, index) == true) {
+	    server.sendErrorServerUser(NULL, NULL, NULL, ERR_RESTRICTED, index);
+		POUT("nick error")
+	    return (true);
+	}
 	return (false);
 }
 

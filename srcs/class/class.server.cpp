@@ -70,7 +70,6 @@ void	Server::slisten(int num) {
 }
 
 void	Server::closeUser(int pfds_index) {
-	POUT(_users[pfds_index]->getNick())
 	_users[pfds_index]->uclose();
 	removeUser(_pfds[pfds_index + 1].fd);
 	removeSockFromPfds(pfds_index + 1);
