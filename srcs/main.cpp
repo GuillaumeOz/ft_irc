@@ -1,5 +1,7 @@
 #include "ft_irc.hpp"
 
+bool		g_quit = true;
+
 void	handleActions(std::vector<parsed*> parsedCommands, int index, Server &server) {
 	for (size_t i = 0; i < parsedCommands.size() && (server.getLoop() == true); i++) {
 		server.callCommand(server, index, parsedCommands[i]);
@@ -29,6 +31,11 @@ void	usersActionsLoop(Server &server) {
 	}
 }
 
+void	quit(int code) {
+	(void)code;
+	g_quit = false;
+}
+
 int main(int ac, char **av)
 {
 	Error error;
@@ -42,6 +49,9 @@ int main(int ac, char **av)
 	int i = {0};
 	while (true)
 	{
+		signal(SIGINT, &quit);
+		if (!g_quit)
+			break;
 		server.spoll();
 		if (server.spollinCondition(i))
 			server.saccept();
