@@ -70,7 +70,6 @@ void	Server::slisten(int num) {
 }
 
 void	Server::closeUser(int pfds_index) {
-	POUT(_users[pfds_index]->getNick())
 	_users[pfds_index]->uclose();
 	removeUser(_pfds[pfds_index + 1].fd);
 	removeSockFromPfds(pfds_index + 1);
@@ -315,12 +314,16 @@ void		Server::assignUserMode(userMode mode, int index) {
 	return (_users[index]->assignMode(mode));
 }
 
-bool		Server::ischannelModeOn(channelMode mode, int index) {
+bool		Server::isChannelModeOn(channelMode mode, int index) {
 	return (channels[index]->isModeOn(mode));
 }
 
-void		Server::assignchannelMode(channelMode mode, int index) {
+void		Server::assignChannelMode(channelMode mode, int index) {
 	return (channels[index]->assignMode(mode));
+}
+
+bool		Server::isChannelUserModeOn(int index, std::string &channelName, channelUserMode mode) {
+	return (_users[index]->isChannelUserModeOn(channelName, mode));
 }
 
 int			Server::findUserIndex(std::string &nick) {
@@ -367,4 +370,31 @@ void	Server::setLoop(bool newState) {
 
 bool	Server::getLoop() {
 	return (_loop);
+}
+
+std::string	Server::getChannelModes(int channel_index) {
+	std::string channelModes("");
+	int8_t channelMode = channels[channel_index]->getChannelMode();
+	if (channelMode & MODE_CHANNEL_I) {
+		channelModes += "i";
+	}
+	if (channelMode & MODE_CHANNEL_M) {
+		channelModes += "m";
+	}
+	if (channelMode & MODE_CHANNEL_N) {
+		channelModes += "n";
+	}
+	if (channelMode & MODE_CHANNEL_P) {
+		channelModes += "p";
+	}
+	if (channelMode & MODE_CHANNEL_T) {
+		channelModes += "t";
+	}
+	if (channelMode & MODE_CHANNEL_K) {
+		channelModes += "k";
+	}
+	if (channelMode & MODE_CHANNEL_L) {
+		channelModes += "l";
+	}
+	return (channelModes);
 }
