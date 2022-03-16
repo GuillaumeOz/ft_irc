@@ -72,6 +72,7 @@ class Server {
 	std::string &getUserAwayMessage(int index);
 	std::string &getUserInvalidNick(int index);
 	void		setUserInvalidNick(int index, std::string &invalidNick);
+	int			userCount();
 
 	//Channels
 	std::vector<Channel *>	getChannels();

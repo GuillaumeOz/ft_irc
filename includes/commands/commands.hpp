@@ -13,7 +13,8 @@ void	joinCmd(Server &, int, parsed *);
 void	topicCmd(Server &, int, parsed *);
 void	timeCmd(Server &, int, parsed *);
 void	noticeCmd(Server &, int, parsed *);
-void    modeCmd(Server &, int, parsed *);
+void	modeCmd(Server &, int, parsed *);
+void	whoCmd(Server &, int, parsed *);
 
 /* -------------------------------- response -------------------------------- */
 
