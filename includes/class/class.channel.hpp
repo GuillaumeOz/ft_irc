@@ -12,6 +12,7 @@ class Channel {
 		std::string             _topic;
 		std::string             _keyword;
 		int8_t					_channelMode;
+		size_t						_userLimit;
 
 	public:
 		Channel(std::string &name, std::string &topic, User *first);
@@ -36,6 +37,8 @@ class Channel {
 		bool							isModeOn(channelMode);
 		void							assignMode(channelMode);
 		void							removeMode(channelMode);
+		void							setUserLimit(int);
+		size_t								getUserLimit();
 		// bool							isInChannel(std::string &);
 };
 

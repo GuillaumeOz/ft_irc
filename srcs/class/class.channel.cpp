@@ -1,6 +1,6 @@
 #include "ft_irc.hpp"
 
-Channel::Channel(std::string &name, std::string &topic, User *first) : _name(name), _topic(topic), _channelMode(0) {
+Channel::Channel(std::string &name, std::string &topic, User *first) : _name(name), _topic(topic), _channelMode(0), _userLimit(0) {
 	_users.push_back(first);
 };
 
@@ -107,3 +107,11 @@ bool				Channel::isModeOn(enum channelMode mode) {
 		return (true);
 	return (false);
 };
+
+void				Channel::setUserLimit(int limit) {
+	_userLimit = limit;
+}
+
+size_t					Channel::getUserLimit() {
+	return _userLimit;
+}

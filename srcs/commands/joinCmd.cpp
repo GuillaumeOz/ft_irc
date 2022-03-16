@@ -26,6 +26,13 @@ void	joinCmd(Server &server, int index, parsed *parsedCommand) {
 		return ;
 	response = joinResponse(server, index, channelName);
 	if (server.isExistingChannel(channelName) == true) {
+		int channel_index = server.findChannelIndex(channelName);
+		if (server.ischannelModeOn(MODE_CHANNEL_L, channel_index)) {
+			if (server.channels[channel_index]->getNumberofUsers() == server.channels[channel_index]->getUserLimit()) {
+				server.sendErrorServerUser(server.getNick(index).c_str(), NULL, NULL, ERR_CHANNELISFULL, index);
+				return ;
+			}
+		}
 		server.joinChannel(index, channelName);
 	} else {
 		server.addChannel(channelName, channelTopic, index);
