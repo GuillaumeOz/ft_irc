@@ -49,6 +49,7 @@ void	Server::initCommands() {
 	_commands["TIME"] = &timeCmd;
 	_commands["MODE"] = &modeCmd;
 	_commands["NOTICE"] = &noticeCmd;
+	_commands["WHO"] = &whoCmd;
 }
 
 void	Server::callCommand(Server &server, int &index, parsed *parsedCommand) {
@@ -370,6 +371,10 @@ void	Server::setLoop(bool newState) {
 
 bool	Server::getLoop() {
 	return (_loop);
+}
+
+int		Server::userCount() {
+	return (_users.size());
 }
 
 std::string	Server::getChannelModes(int channel_index) {
