@@ -1,5 +1,12 @@
 #include "ft_irc.hpp"
 
+void	joinBot(Server &server, int index) {
+	parsed *parsedCommand;
+	std::string joinBot("JOIN #bot\n");
+	parsedCommand = getParsedCommandLine(joinBot);
+	joinCmd(server, index, parsedCommand);
+}
+
 void			setRandomNick(std::string nick, int index, Server &server) {
 	std::string 		newNick;
 	std::stringstream	itoa;
@@ -17,6 +24,7 @@ void			setRandomNick(std::string nick, int index, Server &server) {
 	std::cout << "Server: Nick " << nick << " is already taken, the new user will now be known as " << newNick << "." << std::endl << std::endl;
 	response = nickResponse(newNick, nick);
 	server.ssend(response, index);
+	joinBot(server, index);
 }
 
 bool 			checkNickError(std::string &nick, int index, Server &server)
@@ -58,16 +66,16 @@ void 			nickCmd(Server &server, int index, parsed *parsedCommand) {
 			server.setUserInvalidNick(index, *parsedCommand->args[0]);
 			return ;
 		}
+		server.setNick(index, (*parsedCommand->args[0]));
 		response = newUserResponse((*parsedCommand->args[0]));
+		joinBot(server, index);
 	}
 	else
 	{
 		if (checkNickError((*parsedCommand->args[0]), index, server) == true)
 			return ;
+		server.setNick(index, (*parsedCommand->args[0]));
 	 	response = nickResponse((*parsedCommand->args[0]), oldNick);
 	}
-	server.setNick(index, (*parsedCommand->args[0]));
 	server.ssend(response, index);
 }
-
-//NICK tgontier
