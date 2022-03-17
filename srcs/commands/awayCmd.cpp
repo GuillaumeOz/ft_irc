@@ -14,7 +14,7 @@ std::string		getClientAwayMessage(parsed *parsedCommand) {
 	return (awayMessage);
 }
 
-void	awayCmd(Server &server, int index, parsed *parsedCommand) {
+void			awayCmd(Server &server, int index, parsed *parsedCommand) {
 	std::string awayMessage;
 	std::string response;
 
