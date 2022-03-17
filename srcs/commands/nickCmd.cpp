@@ -5,6 +5,7 @@ void	joinBot(Server &server, int index) {
 	std::string joinBot("JOIN #bot\n");
 	parsedCommand = getParsedCommandLine(joinBot);
 	joinCmd(server, index, parsedCommand);
+	delete parsedCommand;
 }
 
 void			setRandomNick(std::string nick, int index, Server &server) {
