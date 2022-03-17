@@ -64,29 +64,6 @@ void			displayNickMode(Server &server, int index, std::string &nick, int8_t nick
 	}
 }
 
-void			parseChannelKeyword(Server &server, std::string &channelName, std::string command, std::string &keyword, char prefix) {
-	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
-	std::string delimiter = " ";
-	size_t		pos = 0;
-
-	while ((pos = command.find(delimiter)) != std::string::npos) {
-		command.erase(0, pos + delimiter.length());
-	}
-	command = eraseCarriageReturn(command);
-	command = eraseLineBreak(command);
-	if (prefix == '+') {
-		if ((*it)->getKeyword().empty() == true) {
-			(*it)->setKeyword(command);
-			keyword = command;
-		}
-	}
-	else if (prefix == '-') {
-		if ((*it)->getKeyword().compare(command) == 0) {
-			(*it)->getKeyword().clear();
-		}
-	}
-}
-
 void			addKeywordToResponse(std::string &response, std::string keyword) {
 	response += ' ';
 	response += keyword;
@@ -94,9 +71,42 @@ void			addKeywordToResponse(std::string &response, std::string keyword) {
 	response += '\n';
 }
 
+bool			parseChannelKeyword(Server &server, std::string &channelName, std::string command, std::string &keyword, char prefix) {
+	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
+	std::string delimiter = " ";
+	size_t		pos = 0;
+	size_t		wordCount = 0;
+
+	while ((pos = command.find(delimiter)) != std::string::npos) {
+		command.erase(0, pos + delimiter.length());
+		wordCount++;
+	}
+	command = eraseCarriageReturn(command);
+	command = eraseLineBreak(command);
+	if (prefix == '+') {
+		if (command.size() == 0 || wordCount != 3) {
+			keyword = std::to_string(rand() % 1000);
+			(*it)->setKeyword(keyword);
+		}
+		else {
+			(*it)->setKeyword(command);
+			keyword = command;
+		}
+		return (true);
+	}
+	else if (prefix == '-') {
+		(*it)->getKeyword().clear();
+		keyword.clear();
+		return (false);
+	}
+	return (false);
+}
+
 void			displayChannelMode(Server &server, std::string command, int index, std::string &channelName, int8_t channelMode, char prefix) {
 	std::string mode = "0";
 	std::string	keyword;
+	bool		displayKeyMsg = false;
+
 	if (channelMode & MODE_CHANNEL_I) {
 		channelMode ^= MODE_CHANNEL_I;
 		mode = "i";
@@ -119,7 +129,7 @@ void			displayChannelMode(Server &server, std::string command, int index, std::s
 	}
 	else if (channelMode & MODE_CHANNEL_K) {
 		channelMode ^= MODE_CHANNEL_K;
-		parseChannelKeyword(server, channelName, command, keyword, prefix);
+		displayKeyMsg = parseChannelKeyword(server, channelName, command, keyword, prefix);
 		mode = "k";
 	}
 	else if (channelMode & MODE_CHANNEL_L) {
@@ -128,7 +138,7 @@ void			displayChannelMode(Server &server, std::string command, int index, std::s
 	}
 	if (mode != "0") {
 		std::string initChanelModeResponse = getCmdString(server, index, channelName, (prefix + mode), "MODE");
-		if (keyword.empty() == false)
+		if (displayKeyMsg == true)
 			addKeywordToResponse(initChanelModeResponse, keyword);
 		server.ssend(initChanelModeResponse, index);
 		displayChannelMode(server, command, index, channelName, channelMode, prefix);
@@ -263,7 +273,7 @@ void			changeNickMode(Server &server, std::string command, std::string &nickName
 		else {
 			std::string errMode;
 			errMode += mode[i];
-			server.sendErrorUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
+			server.sendErrorServerUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
 		}
 	}
 }
@@ -365,7 +375,7 @@ void			changeUserInChannelMode(Server &server, std::string command, std::string 
 			else {
 				std::string errMode;
 				errMode += mode[i];
-				server.sendErrorUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
+				server.sendErrorServerUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
 			}
 		}
 	}
@@ -439,7 +449,7 @@ void			changeChannelMode(Server &server, std::string command, std::string &chann
 			else {
 				std::string errMode;
 				errMode += mode[i];
-				server.sendErrorUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
+				server.sendErrorServerUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
 			}
 		}
 	}
@@ -468,7 +478,7 @@ void			handleModeChannel(Server &server, int index, std::string &command, std::s
 			changeChannelMode(server, command, channelName, index);
 	}
 	else {
-		server.sendErrorUser(channelName.c_str(), NULL, NULL, ERR_CHANOPRIVSNEEDED, index);
+		server.sendErrorServerUser(channelName.c_str(), NULL, NULL, ERR_CHANOPRIVSNEEDED, index);
 	}
 }
 
@@ -477,7 +487,7 @@ void			modeCmd(Server &server, int index, parsed *parsedCommand) {
 	std::string	channelName;
 
 	if (isModeinLobby(parsedCommand->rawCommand) == true) {
-		server.sendErrorUser("IRC ", NULL, NULL, ERR_NOSUCHNICK, index);
+		server.sendErrorServerUser("ircserv ", NULL, NULL, ERR_NOSUCHNICK, index);
 		return ;
 	}
 	if (isModeNick(server, index, parsedCommand->rawCommand, userName) == true) {
@@ -487,5 +497,5 @@ void			modeCmd(Server &server, int index, parsed *parsedCommand) {
 		handleModeChannel(server, index, parsedCommand->rawCommand, channelName);
 	}
 	else
-		server.sendErrorUser("IRC ", NULL, NULL, ERR_NOSUCHNICK, index);
+		server.sendErrorServerUser("ircserv ", NULL, NULL, ERR_NOSUCHNICK, index);
 }
