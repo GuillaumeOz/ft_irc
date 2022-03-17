@@ -71,35 +71,37 @@ void			addKeywordToResponse(std::string &response, std::string keyword) {
 	response += '\n';
 }
 
-bool			parseChannelKeyword(Server &server, std::string &channelName, std::string command, std::string &keyword, char prefix) {
-	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
-	std::string delimiter = " ";
-	size_t		pos = 0;
-	size_t		wordCount = 0;
+bool            parseChannelKeyword(Server &server, std::string &channelName, std::string command, std::string &keyword, char prefix) {
+    std::vector<Channel *>::iterator    it = server.findChannel(channelName);
+    std::string delimiter = " ";
+    std::stringstream    itoa;
+    size_t        pos = 0;
+    size_t        wordCount = 0;
 
-	while ((pos = command.find(delimiter)) != std::string::npos) {
-		command.erase(0, pos + delimiter.length());
-		wordCount++;
-	}
-	command = eraseCarriageReturn(command);
-	command = eraseLineBreak(command);
-	if (prefix == '+') {
-		if (command.size() == 0 || wordCount != 3) {
-			keyword = std::to_string(rand() % 1000);
-			(*it)->setKeyword(keyword);
-		}
-		else {
-			(*it)->setKeyword(command);
-			keyword = command;
-		}
-		return (true);
-	}
-	else if (prefix == '-') {
-		(*it)->getKeyword().clear();
-		keyword.clear();
-		return (false);
-	}
-	return (false);
+    while ((pos = command.find(delimiter)) != std::string::npos) {
+        command.erase(0, pos + delimiter.length());
+        wordCount++;
+    }
+    command = eraseCarriageReturn(command);
+    command = eraseLineBreak(command);
+    if (prefix == '+') {
+        if (command.size() == 0 || wordCount != 3) {
+            itoa << (rand() % 1000);
+            keyword = itoa.str();
+            (*it)->setKeyword(keyword);
+        }
+        else {
+            (*it)->setKeyword(command);
+            keyword = command;
+        }
+        return (true);
+    }
+    else if (prefix == '-') {
+        (*it)->getKeyword().clear();
+        keyword.clear();
+        return (false);
+    }
+    return (false);
 }
 
 void	displayChannelMode(Server &server, parsed *parsedCommand, int index, std::string &channelName, int8_t channelMode, char prefix) {
