@@ -1,13 +1,13 @@
 #include "bot.hpp"
 
-bool	g_quit = {true};
+bool				g_quit = {true};
 
-void	quitBot(int code) {
+void				quitBot(int code) {
 	(void)code;
 	g_quit = true;
 }
 
-void	*sendQuit(void *rawDataClient) {
+void				*sendQuit(void *rawDataClient) {
 	Client *client = reinterpret_cast<Client *>(rawDataClient);
 	std::string quit = "QUIT :Quitte\n";
 	while (!g_quit) ;
@@ -15,7 +15,7 @@ void	*sendQuit(void *rawDataClient) {
 	return (client);
 }
 
-std::string	getMsg(std::string &string) {
+std::string			getMsg(std::string &string) {
 	size_t i = string.find("PRIVMSG");
 
 	if (i != std::string::npos) {
@@ -30,17 +30,16 @@ std::string	getMsg(std::string &string) {
 	return (string);
 }
 
-std::string getCommand(std::string &string) {
+std::string 		getCommand(std::string &string) {
     std::string		msg = getMsg(string);
 
     if (msg.compare(string) == 0) {
-        std::cout << "Not a PRIVMSG, ignoring it." << std::endl;
         return (msg);
     }
     return (msg);
 }
 
-std::string	eraseCarriageReturn(std::string &string) {
+std::string			eraseCarriageReturn(std::string &string) {
 	while (string.find("\r") != std::string::npos)
 		string.erase(string.begin() + string.find("\r"));
 	size_t n = string.find("\n");
@@ -49,7 +48,7 @@ std::string	eraseCarriageReturn(std::string &string) {
 	return (string);
 }
 
-int	main(int ac, char **av) {
+int					main(int ac, char **av) {
 	Client			client;
 	std::string		msg;
 	std::string		command;
@@ -69,7 +68,7 @@ int	main(int ac, char **av) {
 		signal(SIGINT, &quitBot);
 		client.recvSock(&msg);
 		eraseCarriageReturn(msg);
-        std::cout << "message received by bot: " << msg << std::endl;
+        std::cout << std::endl << "Bot: The bot has received: " << msg << std::endl;
 		command = getCommand(msg);
 		client.callCommand(client, command, msg);
 		msg.clear();
