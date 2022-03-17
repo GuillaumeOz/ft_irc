@@ -1,10 +1,10 @@
 #include "ft_irc.hpp"
 
-bool	isListlParams(parsed *parsedCommand) {
+bool				isListlParams(parsed *parsedCommand) {
 	return (parsedCommand->args.size() != 0);
 }
 
-bool	isChannelParamUsed(parsed *parsedCommand) {
+bool				isChannelParamUsed(parsed *parsedCommand) {
 	for (size_t i = 0; i < parsedCommand->args.size(); i++) {
 		if (parsedCommand->args[i]->compare("channel") == 0)
 			return (true);
@@ -12,18 +12,18 @@ bool	isChannelParamUsed(parsed *parsedCommand) {
 	return (false);
 }
 
-bool	isChannelParam(parsed *parsedCommand) {
+bool				isChannelParam(parsed *parsedCommand) {
 	return (parsedCommand->channels.size() != 0);
 }
 
-void		addNbOfUserAndTopic(std::string &string, std::vector<Channel *>::iterator it) {
+void				addNbOfUserAndTopic(std::string &string, std::vector<Channel *>::iterator it) {
 	std::stringstream tmp;
 
 	tmp << std::setw(30) << std::right << (*it)->getNumberofUsers() << std::setw(20) << (*it)->getChannelTopic();
 	string += tmp.str();
 }
 
-void		addChannelsToChannelList(Server &server, bool channelsOnly, std::stringstream &channelList) {
+void				addChannelsToChannelList(Server &server, bool channelsOnly, std::stringstream &channelList) {
 	std::string tmp;
 
 	for (std::vector<Channel *>::iterator it = server.channels.begin(); it != server.channels.end(); it++) {
@@ -40,7 +40,7 @@ void		addChannelsToChannelList(Server &server, bool channelsOnly, std::stringstr
 	}
 }
 
-void		addListedChannelsToChannelList(Server &server, bool channelsOnly, std::stringstream &channelList, parsed *parsedCommand) {
+void				addListedChannelsToChannelList(Server &server, bool channelsOnly, std::stringstream &channelList, parsed *parsedCommand) {
 	std::string tmp;
 
 	for (size_t i = 0; i < parsedCommand->channels.size(); i++) {
@@ -61,7 +61,7 @@ void		addListedChannelsToChannelList(Server &server, bool channelsOnly, std::str
 	}
 }
 
-std::string getChannelsList(Server &server, parsed *parsedCommand) {
+std::string 		getChannelsList(Server &server, parsed *parsedCommand) {
 	std::stringstream channelList;
 	bool		channelsOnly = false;
 
@@ -84,10 +84,9 @@ std::string getChannelsList(Server &server, parsed *parsedCommand) {
 	return (channelList.str());
 }
 
-void	listCmd(Server &server, int index, parsed *parsedCommand) {
+void				listCmd(Server &server, int index, parsed *parsedCommand) {
 	std::string channelList;
 
 	channelList = getChannelsList(server, parsedCommand);
-	POUT(channelList);
 	server.ssend(channelList, index);
 }

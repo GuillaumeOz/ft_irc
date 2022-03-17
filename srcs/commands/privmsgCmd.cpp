@@ -1,13 +1,13 @@
 #include "ft_irc.hpp"
 
-bool toChannel(std::string &command)
+bool			toChannel(std::string &command)
 {
 	if (command.find_first_of("#") == std::string::npos)
 		return (false);
 	return (true);
 }
 
-std::string getAwayResponse(std::string user, std::string message)
+std::string 	getAwayResponse(std::string user, std::string message)
 {
 	std::string tmp;
 	tmp += "[" + user + "] is away (";
@@ -16,7 +16,7 @@ std::string getAwayResponse(std::string user, std::string message)
 	return (tmp);
 }
 
-bool isVersion(std::string &command)
+bool 			isVersion(std::string &command)
 {
 	std::string test;
 	test += "PRIVMSG ircserv :";
@@ -29,12 +29,12 @@ bool isVersion(std::string &command)
 	return (false);
 }
 
-void	versionCmd(Server &server, int index) {
+void			versionCmd(Server &server, int index) {
 	std::string version = "Version: 108.114.99\n";
 	server.ssend(version, index);
 }
 
-bool	checkModeError(Server &server, int user_index, int channel_index, std::string channelName) {
+bool			checkModeError(Server &server, int user_index, int channel_index, std::string channelName) {
 	std::string  channelModes = server.getChannelModes(channel_index);
 	if (channelModes.find("m") != std::string::npos) {
 		if (server.isChannelUserModeOn(user_index, channelName, MODE_CHANNEL_USER_O) == false && server.isChannelUserModeOn(user_index, channelName, MODE_CHANNEL_USER_V) == false) {
@@ -43,7 +43,7 @@ bool	checkModeError(Server &server, int user_index, int channel_index, std::stri
 		}
 	}
 	if (channelModes.find("n") != std::string::npos) {
-		if (server.userIsinChannel(channelName, user_index) == false) {
+		if (server.isUserInChannel(channelName, user_index) == false) {
 			server.sendErrorServerUser(server.getNick(user_index).c_str(), NULL, NULL, ERR_CANNOTSENDTOCHAN, user_index);
 			return (true);
 		}
@@ -51,7 +51,7 @@ bool	checkModeError(Server &server, int user_index, int channel_index, std::stri
 	return (false);
 }
 
-void privmsgCmd(Server &server, int index, parsed *parsedCommand) {
+void 			privmsgCmd(Server &server, int index, parsed *parsedCommand) {
 	std::string message = parsedCommand->getFullTwoPointsArgs();
 	std::string response;
 

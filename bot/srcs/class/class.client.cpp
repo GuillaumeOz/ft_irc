@@ -48,7 +48,6 @@ void Client::join() {
 }
 
 void Client::initCommands() {
-	_commands["!api"] = &apiCmd;
 	_commands["!ascii"] = &asciiCmd;
 	_commands["!creators"] = &creatorsCmd;
 	_commands["!help"] = &helpCmd;

@@ -17,7 +17,6 @@ void	usersActionsLoop(Server &server) {
 		if (server.spollinCondition(i))
 		{
 			res = server.srecv(&string, (i - 1));
-			std::cout << string << std::endl;
 		}
 		if (res > 0) {
 			parseCommands(parsedCommands, string);
@@ -29,7 +28,7 @@ void	usersActionsLoop(Server &server) {
 	}
 }
 
-int main(int ac, char **av)
+int 	main(int ac, char **av)
 {
 	Error error;
 
@@ -38,7 +37,7 @@ int main(int ac, char **av)
 	error.displayError();
 	Server server(atoi(av[1]), error, std::string(av[2]));
 	server.sbind();
-	server.slisten(10);
+	server.slisten(100);
 	int i = {0};
 	while (true)
 	{

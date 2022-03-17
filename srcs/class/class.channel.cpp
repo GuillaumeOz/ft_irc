@@ -1,48 +1,64 @@
 #include "ft_irc.hpp"
 
+/* ------------------------ constructors/destructors ------------------------ */
+
 Channel::Channel(std::string &name, std::string &topic, User *first) : _name(name), _topic(topic), _channelMode(0) {
 	_users.push_back(first);
 };
 
 Channel::~Channel() {};
 
-std::string   &Channel::getChannelName() {
+/* --------------------------------- getters -------------------------------- */
+
+std::string   						&Channel::getChannelName() {
 	return _name;
 };
 
-std::string   &Channel::getChannelTopic() {
+std::string   						&Channel::getChannelTopic() {
 	return _topic;
 };
 
-std::vector<User *>   Channel::getUsers() {
+std::vector<User *>   				Channel::getUsers() {
 	return (_users);
 };
 
-std::vector<User *>::iterator Channel::getUsersEnd() {
+std::vector<User *>::iterator 		Channel::getUsersEnd() {
 	return (_users.end());
-}
+};
 
-std::string		&Channel::getKeyword() {
+std::string							&Channel::getKeyword() {
 	return (_keyword);
-}
+};
 
-void			Channel::setKeyword(std::string newKeyword) {
+size_t								Channel::getNumberofUsers() {
+	return (_users.size());
+};
+
+int8_t								Channel::getChannelMode() {
+	return (_channelMode);
+};
+
+bool				Channel::isEmpty() {
+	return (_users.empty());
+};
+
+/* --------------------------------- setters -------------------------------- */
+
+void								Channel::setKeyword(std::string newKeyword) {
 	_keyword = newKeyword;
-}
+};
 
-void			Channel::setChannelTopic(std::string newTopic) {
+void								Channel::setChannelTopic(std::string newTopic) {
 	_topic = newTopic;
 };
 
-size_t			Channel::getNumberofUsers() {
-	return (_users.size());
-}
+void        				        Channel::addUser(User *user) {
+	_users.push_back(user);
+};
 
-int8_t			Channel::getChannelMode() {
-	return (_channelMode);
-}
+/* ---------------------------- user manipulation --------------------------- */
 
-std::vector<User *>::iterator Channel::findUser(std::string &name) {
+std::vector<User *>::iterator 		Channel::findUser(std::string &name) {
 	for (std::vector<User *>::iterator it = _users.begin(); it != _users.end(); it++) {
 		if ((*it)->getNick() == name)
 			return (it);
@@ -50,11 +66,7 @@ std::vector<User *>::iterator Channel::findUser(std::string &name) {
 	return (_users.end());
 };
 
-void                Channel::addUser(User *user) {
-	_users.push_back(user);
-};
-
-void                Channel::removeUser(User *user) {
+void                				Channel::removeUser(User *user) {
 	for (std::vector<User *>::iterator it = _users.begin(); it != _users.end(); it++) {
 		if ((*it)->getNick() == user->getNick()) {
 			_users.erase(it);
@@ -63,7 +75,9 @@ void                Channel::removeUser(User *user) {
 	}
 };
 
-void				Channel::sendToAllUsers(std::string &response) {
+/* ---------------------------- sending functions --------------------------- */
+
+void								Channel::sendToAllUsers(std::string &response) {
 	std::vector<User *>::iterator it = _users.begin();
 
 	while ( it != _users.end()) {
@@ -72,37 +86,35 @@ void				Channel::sendToAllUsers(std::string &response) {
 	}
 };
 
-void				Channel::sendToAllOtherUsers(std::string &response, int socket) {
+void								Channel::sendToAllOtherUsers(std::string &response, int socket) {
 	std::vector<User *>::iterator it = _users.begin();
 	while ( it != _users.end()) {
 			if ((*it)->getSocket() != socket) 
 				(*it)->usend(response);
 		it++;
 	}
-}
+};
 
-void				Channel::sendToMyself(std::string &response, int socket) {
+void								Channel::sendToMyself(std::string &response, int socket) {
 	std::vector<User *>::iterator it = _users.begin();
 	while ( it != _users.end()) {
 			if ((*it)->getSocket() == socket) 
 				(*it)->usend(response);
 		it++;
 	}
-}
-
-bool				Channel::isEmpty() {
-	return (_users.empty());
 };
 
-void				Channel::assignMode(enum channelMode mode) {
+/* ----------------------------- mode functions ----------------------------- */
+
+void								Channel::assignMode(enum channelMode mode) {
 	_channelMode |= mode;
-}
+};
 
-void				Channel::removeMode(enum channelMode mode) {
+void								Channel::removeMode(enum channelMode mode) {
 	_channelMode ^= mode;
-}
+};
 
-bool				Channel::isModeOn(enum channelMode mode) {
+bool								Channel::isModeOn(enum channelMode mode) {
 	if (_channelMode & mode)
 		return (true);
 	return (false);

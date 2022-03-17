@@ -55,7 +55,7 @@ std::string	parsed::getFullTwoPointsArgs() {
 		}
 	}
 	return (tmp);
-}
+};
 
 /* ---------------------------- delete/deallocate --------------------------- */
 
@@ -69,13 +69,13 @@ void	parsed::clearChannels() {
 	for(size_t i = 0; i < channels.size(); i++) {
 		delete channels[i];
 	}
-}
+};
 
 void	parsed::clearTwoPointsArgs() {
 	for(size_t i = 0; i < twoPointsArgs.size(); i++) {
 		delete twoPointsArgs[i];
 	}
-}
+};
 
 void	parsed::clear() {
 	clearArgs();

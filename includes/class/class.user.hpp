@@ -6,55 +6,75 @@ class Server;
 class User {
 
 	private:
-	int								_sock;
-	sockaddr_in						_addr;
-	socklen_t						_csize;
-	std::string						_host;
-	std::string						_nick;
-	std::string						_username;
-	std::string						_realname;
-	bool							_registerState;
-	std::vector<std::string>		_uchannels;
-	int8_t							_userMode;
-	std::map<std::string, int8_t>	_channelUserMode;
-	std::string						_awaymessage;
-	std::string						_invalidNick;
+
+/* ---------------------------------- data ---------------------------------- */
+
+	int									_sock;
+	bool								_registerState;
+	sockaddr_in							_addr;
+	socklen_t							_csize;
+	std::string							_host;
+	std::string							_nick;
+	std::string							_username;
+	std::string							_realname;
+	std::string							_awaymessage;
+	std::string							_invalidNick;
+	std::vector<std::string>			_uchannels;
+	std::map<std::string, int8_t>		_channelUserMode;
+	int8_t								_userMode;
 
 	public:
+
+/* ------------------------ constructors/destructors ------------------------ */
+
 	User();
-	User(std::string &username, std::string &nick);
+	User(std::string &, std::string &);
 	~User();
-	void						uaccept(int &);
-	void						usend(std::string &);
-	void						uclose();
-	int							urecv(std::string *);
-	void						setSocket(int &);
-	int							getSocket();
+
+/* --------------------------------- getters -------------------------------- */
+
 	std::vector<std::string>	getUchannels();
-	int8_t						getUserMode();
-	void						setHost(std::string &);
-	void						setNick(std::string &);
-	void						setUsername(std::string &);
-	void						setRealname(std::string &);
-	void						leaveChannel(std::string &);
 	std::string					&getHost();
 	std::string					&getNick();
 	std::string 				&getUsername();
 	std::string 				&getRealname();
-	void						joinChannel(std::string &channelName);
-	void						assignMode(userMode);
-	void						removeMode(userMode);
-	bool						isModeOn(userMode);
-	bool						isChannelUserModeOn(std::string &, channelUserMode);
-	void						assignChannelUserMode(std::string &, channelUserMode);
-	void						removeChannelUserMode(std::string &, channelUserMode);
 	std::string					&getAwayMessage();
-	void						setAwayMessage(std::string &awayMessage);
-	bool						isAway();
+	std::string					&getInvalidNick();
+	int							getSocket();
+
+/* --------------------------------- setters -------------------------------- */
+
+	void						setSocket(int &);
+	void						setHost(std::string &);
+	void						setNick(std::string &);
+	void						setUsername(std::string &);
+	void						setRealname(std::string &);
+	void						setAwayMessage(std::string &);
+	void						setInvalidNick(std::string &);
+
+/* --------------------------- socket manipulation -------------------------- */
+
+	void						uaccept(int &);
+	void						usend(std::string &);
+	void						uclose();
+	int							urecv(std::string *);
+
+/* ---------------------------- user manipulation --------------------------- */
+
 	bool 						isRegistered();
 	void 						uregister();
-	std::string					&getInvalidNick();
-	void						setInvalidNick(std::string &);
+	void						leaveChannel(std::string &);
+	void						joinChannel(std::string &);
+
+/* ---------------------------------- modes --------------------------------- */
+
+	void						assignMode(userMode);
+	void						assignChannelUserMode(std::string &, channelUserMode);
+	void						removeMode(userMode);
+	void						removeChannelUserMode(std::string &, channelUserMode);
+	bool						isModeOn(userMode);
+	bool						isChannelUserModeOn(std::string &, channelUserMode);
+	int8_t						getUserMode();
 
 };
 

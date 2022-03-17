@@ -1,6 +1,6 @@
 #include "ft_irc.hpp"
 
-void noticeCmd(Server &server, int index, parsed *parsedCommand) {
+void 	noticeCmd(Server &server, int index, parsed *parsedCommand) {
 	std::string message = parsedCommand->getFullTwoPointsArgs();
 	std::string response;
 	std::string user = *parsedCommand->args[0];
