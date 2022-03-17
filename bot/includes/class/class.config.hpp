@@ -5,8 +5,12 @@ class Config {
 
  public:
 
+ /* ---------------------------------- data ---------------------------------- */
+
 	int						socketClient;
 	sockaddr_in				addrClient;
+
+/* ------------------------ constructors/destructors ------------------------ */
 
 	Config() {
 		socketClient = socket(IP_TYPE, PROTOCOLE, 0);
