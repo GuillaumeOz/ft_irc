@@ -38,13 +38,13 @@ bool			checkModeError(Server &server, int user_index, int channel_index, std::st
 	std::string  channelModes = server.getChannelModes(channel_index);
 	if (channelModes.find("m") != std::string::npos) {
 		if (server.isChannelUserModeOn(user_index, channelName, MODE_CHANNEL_USER_O) == false && server.isChannelUserModeOn(user_index, channelName, MODE_CHANNEL_USER_V) == false) {
-			server.sendErrorServerUser(server.getNick(user_index).c_str(), NULL, NULL, ERR_CANNOTSENDTOCHAN, user_index);
+			server.sendErrorUser(server.getNick(user_index).c_str(), NULL, NULL, ERR_CANNOTSENDTOCHAN, user_index);
 			return (true);
 		}
 	}
 	if (channelModes.find("n") != std::string::npos) {
 		if (server.isUserInChannel(channelName, user_index) == false) {
-			server.sendErrorServerUser(server.getNick(user_index).c_str(), NULL, NULL, ERR_CANNOTSENDTOCHAN, user_index);
+			server.sendErrorUser(server.getNick(user_index).c_str(), NULL, NULL, ERR_CANNOTSENDTOCHAN, user_index);
 			return (true);
 		}
 	}
@@ -71,7 +71,7 @@ void 			privmsgCmd(Server &server, int index, parsed *parsedCommand) {
 		response = privmsgResponse(server, index, user, message);
 		int user_index = server.findUserIndex(user);
 		if (user_index == -1) {
-			server.sendErrorServerUser(user.c_str(), NULL, NULL, ERR_NOSUCHNICK, index);
+			server.sendErrorUser(user.c_str(), NULL, NULL, ERR_NOSUCHNICK, index);
 			return ;
 		}
 		else {

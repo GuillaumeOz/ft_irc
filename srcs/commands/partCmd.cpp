@@ -12,5 +12,5 @@ void 	partCmd(Server &server, int index, parsed *parsedCommand) {
 			server.delChannel(channelName);
 	}
 	else
-		server.sendErrorServer(channelName.c_str(), NULL, NULL, ERR_NOSUCHCHANNEL);
+		server.sendErrorUser(channelName.c_str(), NULL, NULL, ERR_NOSUCHCHANNEL, index);
 }
