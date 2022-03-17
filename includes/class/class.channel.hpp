@@ -6,15 +6,13 @@ class User;
 class Channel {
 
 	private:
-
-/* ---------------------------------- data ---------------------------------- */
-
-		std::vector<User *>     	_users;
-		std::vector<User *>     	_operators;
-		std::string             	_name;
-		std::string             	_topic;
-		std::string             	_keyword;
-		int8_t						_channelMode;
+		std::vector<User *>     _users;
+		std::vector<User *>     _operators;
+		std::string             _name;
+		std::string             _topic;
+		std::string             _keyword;
+		int8_t					_channelMode;
+		size_t						_userLimit;
 
 	public:
 
@@ -45,6 +43,8 @@ class Channel {
 		void							removeUser(User *);
 		void							assignMode(channelMode);
 		void							removeMode(channelMode);
+		void							setUserLimit(int);
+		size_t							getUserLimit();
 
 /* ---------------------------- sending functions --------------------------- */
 
