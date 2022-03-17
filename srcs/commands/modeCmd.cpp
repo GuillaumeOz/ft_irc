@@ -64,7 +64,7 @@ void	displayNickMode(Server &server, int index, std::string &nick, int8_t nickMo
 	}
 }
 
-void	parseChannelKeyword(Server &server, std::string &channelName, std::string command, std::string &keyword, char prefix) {
+bool	parseChannelKeyword(Server &server, std::string &channelName, std::string command, std::string &keyword, char prefix) {
 	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
 	std::string delimiter = " ";
 	size_t		pos = 0;
@@ -74,17 +74,24 @@ void	parseChannelKeyword(Server &server, std::string &channelName, std::string c
 	}
 	command = eraseCarriageReturn(command);
 	command = eraseLineBreak(command);
+	POUT("COMMAND")
+	POUT(command)
+	if (command.size() == 0)
+		return (false);
 	if (prefix == '+') {
 		if ((*it)->getKeyword().empty() == true) {
 			(*it)->setKeyword(command);
 			keyword = command;
+			return (true);
 		}
 	}
 	else if (prefix == '-') {
 		if ((*it)->getKeyword().compare(command) == 0) {
 			(*it)->getKeyword().clear();
+			return (true);
 		}
 	}
+	return (false);
 }
 
 void	addKeywordToResponse(std::string &response, std::string keyword) {
@@ -119,7 +126,10 @@ void	displayChannelMode(Server &server, std::string command, int index, std::str
 	}
 	else if (channelMode & MODE_CHANNEL_K) {
 		channelMode ^= MODE_CHANNEL_K;
-		parseChannelKeyword(server, channelName, command, keyword, prefix);
+		bool	keyChange;
+		keyChange = parseChannelKeyword(server, channelName, command, keyword, prefix);
+		if (keyChange == false)
+			return ;
 		mode = "k";
 	}
 	else if (channelMode & MODE_CHANNEL_L) {
