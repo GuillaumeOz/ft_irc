@@ -14,7 +14,7 @@ void	topicChangeContent(Server &server, int index, std::string topic, std::strin
 void	topicCmd(Server &server, int index, parsed *parsedCommand) {
 
 	if (parsedCommand->channels.size() == 0) {
-		server.sendErrorServerUser("IRC ", NULL, NULL, ERR_NOSUCHCHANNEL, index);
+		server.sendErrorUser("IRC ", NULL, NULL, ERR_NOSUCHCHANNEL, index);
 		return ;
 	}
 
@@ -22,7 +22,7 @@ void	topicCmd(Server &server, int index, parsed *parsedCommand) {
 	channelName = *parsedCommand->channels[0];
 
 	if (server.findChannel(channelName) == server.channels.end()) {
-		server.sendErrorServerUser("IRC ", NULL, NULL, ERR_NOTONCHANNEL, index);
+		server.sendErrorUser("IRC ", NULL, NULL, ERR_NOTONCHANNEL, index);
 		return ;
 	}
 
@@ -40,7 +40,7 @@ void	topicCmd(Server &server, int index, parsed *parsedCommand) {
 			topicChangeContent(server, index, parsedCommand->getFullTwoPointsArgs(), channelName);
 		}
 		else {
-			server.sendErrorServerUser(channelName.c_str(), NULL, NULL, ERR_CHANOPRIVSNEEDED, index);
+			server.sendErrorUser(channelName.c_str(), NULL, NULL, ERR_CHANOPRIVSNEEDED, index);
 		}
 	}
 	else if ((*it)->isModeOn(MODE_CHANNEL_T) == false) {

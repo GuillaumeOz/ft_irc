@@ -483,12 +483,9 @@ void			handleModeChannel(Server &server, int index, std::string &command, std::s
 }
 
 void			modeCmd(Server &server, int index, parsed *parsedCommand) {
-	POUT("********************BEGIN********************")
 	std::string	userName;
 	std::string	channelName;
 
-	POUT("command")
-	POUT(parsedCommand->rawCommand)
 	if (isModeinLobby(parsedCommand->rawCommand) == true) {
 		server.sendErrorServerUser("ircserv ", NULL, NULL, ERR_NOSUCHNICK, index);
 		return ;
@@ -501,5 +498,4 @@ void			modeCmd(Server &server, int index, parsed *parsedCommand) {
 	}
 	else
 		server.sendErrorServerUser("ircserv ", NULL, NULL, ERR_NOSUCHNICK, index);
-	POUT("********************END********************")
 }

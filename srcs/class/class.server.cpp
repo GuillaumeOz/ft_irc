@@ -36,33 +36,6 @@ size_t 								Server::findChannelIndex(std::string &channelName) {
 	return (std::string::npos);
 };
 
-std::string							Server::getChannelModes(int channel_index) {
-	std::string channelModes("");
-	int8_t channelMode = channels[channel_index]->getChannelMode();
-	if (channelMode & MODE_CHANNEL_I) {
-		channelModes += "i";
-	}
-	if (channelMode & MODE_CHANNEL_M) {
-		channelModes += "m";
-	}
-	if (channelMode & MODE_CHANNEL_N) {
-		channelModes += "n";
-	}
-	if (channelMode & MODE_CHANNEL_P) {
-		channelModes += "p";
-	}
-	if (channelMode & MODE_CHANNEL_T) {
-		channelModes += "t";
-	}
-	if (channelMode & MODE_CHANNEL_K) {
-		channelModes += "k";
-	}
-	if (channelMode & MODE_CHANNEL_L) {
-		channelModes += "l";
-	}
-	return (channelModes);
-};
-
 /* ------------------------------ user getters ------------------------------ */
 
 std::vector<User *>		Server::getUsers() {
@@ -308,6 +281,7 @@ void			Server::removeSockFromPfds(int index) {
 void			Server::delChannel(std::string &channelName) {
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
 		if ((*it)->getChannelName() == channelName) {
+			delete *it;
 			channels.erase(it);
 			break ;
 		}
@@ -410,22 +384,49 @@ void		Server::closeServer() {
 
 /* ----------------------------- mode functions ----------------------------- */
 
-bool		Server::isChannelModeOn(channelMode mode, int index) {
+bool				Server::isChannelModeOn(channelMode mode, int index) {
 	return (channels[index]->isModeOn(mode));
 };
 
-bool		Server::isChannelUserModeOn(int index, std::string &channelName, channelUserMode mode) {
+bool				Server::isChannelUserModeOn(int index, std::string &channelName, channelUserMode mode) {
 	return (_users[index]->isChannelUserModeOn(channelName, mode));
 };
 
-void		Server::assignUserMode(userMode mode, int index) {
+void				Server::assignUserMode(userMode mode, int index) {
 	return (_users[index]->assignMode(mode));
 };
 
-void		Server::assignChannelMode(channelMode mode, int index) {
+void				Server::assignChannelMode(channelMode mode, int index) {
 	return (channels[index]->assignMode(mode));
 };
 
-bool		Server::isUserModeOn(userMode mode, int index) {
+bool				Server::isUserModeOn(userMode mode, int index) {
 	return (_users[index]->isModeOn(mode));
 }
+
+std::string			Server::getChannelModes(int channel_index) {
+	std::string channelModes("");
+	int8_t channelMode = channels[channel_index]->getChannelMode();
+	if (channelMode & MODE_CHANNEL_I) {
+		channelModes += "i";
+	}
+	if (channelMode & MODE_CHANNEL_M) {
+		channelModes += "m";
+	}
+	if (channelMode & MODE_CHANNEL_N) {
+		channelModes += "n";
+	}
+	if (channelMode & MODE_CHANNEL_P) {
+		channelModes += "p";
+	}
+	if (channelMode & MODE_CHANNEL_T) {
+		channelModes += "t";
+	}
+	if (channelMode & MODE_CHANNEL_K) {
+		channelModes += "k";
+	}
+	if (channelMode & MODE_CHANNEL_L) {
+		channelModes += "l";
+	}
+	return (channelModes);
+};

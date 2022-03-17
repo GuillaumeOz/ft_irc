@@ -7,6 +7,7 @@ void			parseCommands(std::vector<parsed *> &, std::string);
 void			printParsedCommand(parsed *);
 void			printParsedCommands(std::vector<parsed *> &);
 std::string		getCmdString(Server &, int, std::string , std::string , std::string);
+parsed			*getParsedCommandLine(std::string &commandLine);
 
 /* ------------------------ erase unwanted characters ----------------------- */
 
