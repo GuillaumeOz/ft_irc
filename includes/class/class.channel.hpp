@@ -15,8 +15,13 @@ class Channel {
 		size_t						_userLimit;
 
 	public:
-		Channel(std::string &name, std::string &topic, User *first);
+
+/* ------------------------- constructors/destructos ------------------------ */
+		
+		Channel(std::string &, std::string &, User *);
 		~Channel();
+
+/* --------------------------------- getters -------------------------------- */
 
 		std::string						&getChannelName();
 		std::string						&getChannelTopic();
@@ -25,21 +30,33 @@ class Channel {
 		std::vector<User *>				getUsers();
 		std::vector<User *>::iterator	getUsersEnd();
 		std::string						&getKeyword();
-		void							setKeyword(std::string newKeyword);
-		void							setChannelTopic(std::string newTopic);
-		std::vector<User *>::iterator	findUser(std::string &name);
-		void							addUser(User *user);
+		std::vector<User *>::iterator	findUser(std::string &);
+
+/* --------------------------------- setters -------------------------------- */
+
+		void							setKeyword(std::string);
+		void							setChannelTopic(std::string);
+
+/* ---------------------------- user manipulation --------------------------- */
+
+		void							addUser(User *);
 		void							removeUser(User *);
-		void							sendToAllUsers(std::string &response);
-		void							sendToAllOtherUsers(std::string &response, int socket);
-		void							sendToMyself(std::string &response, int socket);
-		bool							isEmpty();
-		bool							isModeOn(channelMode);
 		void							assignMode(channelMode);
 		void							removeMode(channelMode);
 		void							setUserLimit(int);
-		size_t								getUserLimit();
-		// bool							isInChannel(std::string &);
+		size_t							getUserLimit();
+
+/* ---------------------------- sending functions --------------------------- */
+
+		void							sendToAllUsers(std::string &);
+		void							sendToAllOtherUsers(std::string &, int );
+		void							sendToMyself(std::string &, int );
+
+/* ---------------------------- checker functions --------------------------- */
+
+		bool							isEmpty();
+		bool							isModeOn(channelMode);
+
 };
 
 #endif

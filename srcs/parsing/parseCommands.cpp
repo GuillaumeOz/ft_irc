@@ -1,6 +1,6 @@
 #include "ft_irc.hpp"
 
-std::vector<std::string> split(std::string string, std::string seperators)	{
+std::vector<std::string> 		split(std::string string, std::string seperators)	{
 	size_t i = 0, startIndex = 0, endIndex = 0;
 	std::vector<std::string> splittedString;
 
@@ -17,7 +17,7 @@ std::vector<std::string> split(std::string string, std::string seperators)	{
 	return (splittedString);
 }
 
-parsed	*getParsedCommandLine(std::string &commandLine) {
+parsed							*getParsedCommandLine(std::string &commandLine) {
 	parsed *parsedCommand = new parsed();
 	std::string seperators = " ,";
 	std::vector<std::string> splittedCommand = split(commandLine, seperators);
@@ -32,7 +32,7 @@ parsed	*getParsedCommandLine(std::string &commandLine) {
 	return (parsedCommand);
 }
 
-void	parseCommands(std::vector<parsed *> &parsedCommands, std::string string) {
+void							parseCommands(std::vector<parsed *> &parsedCommands, std::string string) {
 	std::string seperators = "\r\n";
 	std::vector<std::string> splittedCommand = split(string, seperators);
 

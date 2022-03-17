@@ -7,6 +7,8 @@ class Server {
 
 	private:
 
+/* ------------------------------ private data ------------------------------ */
+
 	Config															_config;
 	Error															_error;
 	std::string														_pass;
@@ -17,92 +19,121 @@ class Server {
 	bool															_loop;
 
 	public:
+
+/* ------------------------------- public data ------------------------------ */
+
 	std::vector<Channel *>											channels;
 
-	Server(int port);
-	Server(int port, Error error, std::string pass);
+/* ------------------------ constructors/destructors ------------------------ */
+
+	Server(int);
+	Server(int, Error, std::string);
 	~Server();
 
-	//Password
-	void printPass();
-	bool isValidPass(std::string &);
-	bool isRegistered(int);
-	void sregister(int);
-	void setLoop(bool);
-	bool getLoop();
+/* ----------------------------- server password ---------------------------- */
 
-	//Commands
-	void initCommands();
-	void callCommand(Server &, int &, parsed *);
+	void 						printPass();
+	bool 						isValidPass(std::string &);
+	bool 						isRegistered(int);
+	void 						sregister(int);
+	void 						setLoop(bool);
+	bool 						getLoop();
 
-	//Sockets
-	void sbind();
-	void slisten(int);
-	void saccept();
-	void ssend(std::string &, int);
-	void ssend(std::string &, User &);
-	int  srecv(std::string *, int);
-	void spoll();
-	bool spollinCondition(int &);
-	bool spolloutCondition(int &);
+/* ------------------------------- commands -------------------------------- */
 
-	//Error
-	void sendErrorServer(const char *, const char *, const char *, errorType);
-	void sendErrorUser(const char *, const char *, const char *, errorType, int);
-	void sendErrorServerUser(const char *, const char *, const char *, errorType, int);
+	void 						initCommands();
+	void 						callCommand(Server &, int &, parsed *);
 
-	//Users
-	std::vector<User *>	getUsers();
-	void addUser(User *);
-	void removeUser(int &);
-	void setHost(int , std::string &);
-	void setNick(int , std::string &);
-	void setUsername(int , std::string &);
-	void setRealname(int , std::string &);
-	std::string	&getHost(int);
-	std::string	&getNick(int);
-	std::string	&getUsername(int);
-	std::string	&getRealname(int);
-	void delChannelFromUser(std::string &channelName, int user_index);
-	bool isUserModeOn(userMode mode, int index);
-	void assignUserMode(userMode mode, int index);
-	int findUserIndex(std::string &nick);
-	void setUserAwayMessage(int index, std::string &message);
-	bool isUserAway(int index);
-	std::string &getUserAwayMessage(int index);
-	std::string &getUserInvalidNick(int index);
-	void		setUserInvalidNick(int index, std::string &invalidNick);
+/* ---------------------------- socket handling ---------------------------- */
 
-	//Channels
-	std::vector<Channel *>	getChannels();
-	void addChannel(std::string &name, std::string &topic, int index);
-	void addChannelToUser(int index, std::string channelName);
-	void removeChannel(int &);
-	std::vector<Channel *>::iterator findChannel(std::string &name);
-	size_t	findChannelIndex(std::string &channelName);
-	void joinChannel(int index, std::string &channel);
-	bool isExistingChannel(std::string &);
-	void delUserFromChannel(std::string &channelName, int);
-	bool isChannelEmpty(std::string &channelName);
-	void delChannel(std::string &channelName);
-	void sendToAllUsersInChannel(std::string &channelName, std::string &response);
-	void sendToOtherUsersInChannel(std::string &channelName, std::string &response, int index);
-	void sendToMyselfInChannel(std::string &channelName, std::string &response, int index);
+	void 						sbind();
+	void 						slisten(int);
+	void 						saccept();
+	void 						ssend(std::string &, int);
+	void 						ssend(std::string &, User &);
+	int  						srecv(std::string *, int);
+	void 						spoll();
+	bool 						spollinCondition(int &);
+	bool 						spolloutCondition(int &);
 
-	void printChannels();
-	bool isChannelModeOn(channelMode mode, int index);
-	void assignchannelMode(channelMode mode, int index);
-	bool userIsinChannel(std::string &, int);
+/* ---------------------------- error handling ----------------------------- */
 
-	//Pfds
-	void addSockToPfds(int);
-	void removeSockFromPfds(int socket);
-	int	 findClientSock(int socket);
-	int	 getPfdsSize();
-	int	 getPfdsSock(int &);
+	void 						sendErrorServer(const char *, const char *, const char *, errorType);
+	void 						sendErrorUser(const char *, const char *, const char *, errorType, int);
+	void 						sendErrorServerUser(const char *, const char *, const char *, errorType, int);
 
-	void closeServer();
-	void closeUser(int);
+/* ------------------------------ user getters ------------------------------ */
+
+	std::vector<User *>			getUsers();
+	std::string					&getHost(int);
+	std::string					&getNick(int);
+	std::string					&getUsername(int);
+	std::string					&getRealname(int);
+	std::string 				&getUserAwayMessage(int);
+	std::string 				&getUserInvalidNick(int);
+	int 						findUserIndex(std::string &);
+	int							userCount();
+	bool 						isUserModeOn(userMode, int);
+	bool 						isChannelUserModeOn(int, std::string &, channelUserMode);
+
+/* ------------------------------ user setters ------------------------------ */
+
+	void 						setHost(int , std::string &);
+	void 						setNick(int , std::string &);
+	void 						setUsername(int , std::string &);
+	void 						setRealname(int , std::string &);
+	void 						assignUserMode(userMode, int);
+	void						setUserInvalidNick(int, std::string &);
+	void 						setUserAwayMessage(int, std::string &);
+
+/* ---------------------------- user manipulation --------------------------- */
+
+	void 						addUser(User *);
+	void 						removeUser(int &);
+	void 						delChannelFromUser(std::string &, int);
+
+
+
+/* ----------------------------- channel getters ---------------------------- */
+
+	std::vector<Channel *>				getChannels();
+	std::string 						getChannelModes(int);
+	std::vector<Channel *>::iterator 	findChannel(std::string &);
+	size_t								findChannelIndex(std::string &);
+	bool 								isExistingChannel(std::string &);
+	bool 								isChannelEmpty(std::string &);
+	bool 								isChannelModeOn(channelMode, int);
+	bool 								isUserInChannel(std::string &, int);
+
+/* -------------------------- channel manipulation -------------------------- */
+
+	void 								addChannel(std::string &, std::string &, int);
+	void 								addChannelToUser(int, std::string );
+	void 								joinChannel(int, std::string &);
+	void 								assignChannelMode(channelMode, int);
+	void 								removeChannel(int &);
+	void 								delUserFromChannel(std::string &, int);
+	void 								delChannel(std::string &);
+
+/* ------------------------ channel sending/printing ------------------------ */
+
+	void 								sendToAllUsersInChannel(std::string &, std::string &);
+	void 								sendToOtherUsersInChannel(std::string &, std::string &, int);
+	void 								sendToMyselfInChannel(std::string &, std::string &, int);
+	void 								printChannels();
+
+/* ---------------------------- pfds manipulation --------------------------- */
+
+	void 								addSockToPfds(int);
+	void 								removeSockFromPfds(int);
+	int	 								findClientSock(int);
+	int	 								getPfdsSize();
+	int	 								getPfdsSock(int &);
+
+/* ---------------------------- closing functions --------------------------- */
+
+	void 								closeServer();
+	void 								closeUser(int);
 };
 
 

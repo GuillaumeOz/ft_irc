@@ -1,7 +1,6 @@
 #include "ft_irc.hpp"
 
-
-void partCmd(Server &server, int index, parsed *parsedCommand) {
+void 	partCmd(Server &server, int index, parsed *parsedCommand) {
 	std::string channelName = *parsedCommand->channels[0];
 	std::string reason = parsedCommand->getFullTwoPointsArgs();
 	std::string response = partResponse(server, index, channelName, reason);
@@ -13,5 +12,5 @@ void partCmd(Server &server, int index, parsed *parsedCommand) {
 			server.delChannel(channelName);
 	}
 	else
-		server.sendErrorServer(channelName.c_str(), NULL, NULL, ERR_NOSUCHCHANNEL);
+		server.sendErrorUser(channelName.c_str(), NULL, NULL, ERR_NOSUCHCHANNEL, index);
 }

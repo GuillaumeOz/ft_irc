@@ -1,5 +1,7 @@
 #include "ft_irc.hpp"
 
+/* ------------------------ constructors/destructors ------------------------ */
+
 Config::Config(int port) {
 	sock = socket(IP_TYPE, SOCKET_TYPE, 0);
 	int opt = 1;

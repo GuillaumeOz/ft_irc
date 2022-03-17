@@ -1,6 +1,6 @@
 #include "ft_irc.hpp"
 
-std::string	composeNickMode(int8_t nickMode) {
+std::string		composeNickMode(int8_t nickMode) {
 	std::string ret = "+";
 
 	if (nickMode & MODE_USER_A) {
@@ -15,7 +15,7 @@ std::string	composeNickMode(int8_t nickMode) {
 	return (ret + "\n");
 }
 
-std::string	composeChannelMode(int8_t channelMode, std::string &channelName) {
+std::string		composeChannelMode(int8_t channelMode, std::string &channelName) {
 	std::string ret = "+";
 
 	if (channelMode & MODE_CHANNEL_I) {
@@ -43,7 +43,7 @@ std::string	composeChannelMode(int8_t channelMode, std::string &channelName) {
 	return (ret);
 }
 
-void	displayNickMode(Server &server, int index, std::string &nick, int8_t nickMode, char prefix) {
+void			displayNickMode(Server &server, int index, std::string &nick, int8_t nickMode, char prefix) {
 	std::string mode = "0";
 	if (nickMode & MODE_USER_A) {
 		nickMode ^= MODE_USER_A;
@@ -64,7 +64,7 @@ void	displayNickMode(Server &server, int index, std::string &nick, int8_t nickMo
 	}
 }
 
-void	parseChannelKeyword(Server &server, std::string &channelName, std::string command, std::string &keyword, char prefix) {
+void			parseChannelKeyword(Server &server, std::string &channelName, std::string command, std::string &keyword, char prefix) {
 	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
 	std::string delimiter = " ";
 	size_t		pos = 0;
@@ -87,7 +87,7 @@ void	parseChannelKeyword(Server &server, std::string &channelName, std::string c
 	}
 }
 
-void	addKeywordToResponse(std::string &response, std::string keyword) {
+void			addKeywordToResponse(std::string &response, std::string keyword) {
 	response += ' ';
 	response += keyword;
 	response = eraseLineBreak(response);
@@ -139,7 +139,7 @@ void	displayChannelMode(Server &server, parsed *parsedCommand, int index, std::s
 	}
 }
 
-bool	isModeinLobby(std::string command) {
+bool			isModeinLobby(std::string command) {
 	std::string ret;
 	char *str = const_cast<char *>(command.c_str() + command.find(" "));
 	char *tmp;
@@ -154,7 +154,7 @@ bool	isModeinLobby(std::string command) {
 	return (false);
 }
 
-bool	isModeNick(Server &server, int index, std::string command, std::string &nickName) {
+bool			isModeNick(Server &server, int index, std::string command, std::string &nickName) {
 	char *str = const_cast<char *>(command.c_str() + command.find(" "));
 	char *tmp;
 
@@ -168,7 +168,7 @@ bool	isModeNick(Server &server, int index, std::string command, std::string &nic
 	return (false);
 }
 
-bool	isModeChannel(Server &server, std::string command, std::string &channelName) {
+bool			isModeChannel(Server &server, std::string command, std::string &channelName) {
 	char *str = const_cast<char *>(command.c_str() + command.find(" "));
 	char *tmp;
 
@@ -182,7 +182,7 @@ bool	isModeChannel(Server &server, std::string command, std::string &channelName
 	return (false);
 }
 
-bool	isModeOnlyNick(std::string command, std::string &userNick) {
+bool			isModeOnlyNick(std::string command, std::string &userNick) {
 	std::string ret;
 	char *str = const_cast<char *>(command.c_str() + command.find(" "));
 	char *tmp;
@@ -197,7 +197,7 @@ bool	isModeOnlyNick(std::string command, std::string &userNick) {
 	return (false);
 }
 
-bool	isModeChanges(std::string command, size_t &findLen) {
+bool			isModeChanges(std::string command, size_t &findLen) {
 	for (size_t i = 0; command[i] != '\0'; i++) {
 		if (command[i] == '+' || command[i] == '-') {
 			findLen = i;
@@ -207,7 +207,7 @@ bool	isModeChanges(std::string command, size_t &findLen) {
 	return (false);
 }
 
-bool	isKnowUserMode(char mode, userMode &modeToAdd) {
+bool			isKnowUserMode(char mode, userMode &modeToAdd) {
 	if (mode == 'a') {
 		modeToAdd = MODE_USER_A;
 		return (true);
@@ -223,7 +223,7 @@ bool	isKnowUserMode(char mode, userMode &modeToAdd) {
 	return (false);
 }
 
-bool	isKnowUserModeInChannel(char mode, channelUserMode &modeToAdd) {
+bool			isKnowUserModeInChannel(char mode, channelUserMode &modeToAdd) {
 	if (mode == 'o') {
 		modeToAdd = MODE_CHANNEL_USER_O;
 		return (true);
@@ -235,7 +235,7 @@ bool	isKnowUserModeInChannel(char mode, channelUserMode &modeToAdd) {
 	return (false);
 }
 
-void	changeNickMode(Server &server, std::string command, std::string &nickName, size_t findLen, int index) {
+void			changeNickMode(Server &server, std::string command, std::string &nickName, size_t findLen, int index) {
 	char 		*mode = const_cast<char *>(command.c_str() + findLen);
 	char		prefix;
 	userMode	modeToAddDel;
@@ -267,12 +267,12 @@ void	changeNickMode(Server &server, std::string command, std::string &nickName, 
 		else {
 			std::string errMode;
 			errMode += mode[i];
-			server.sendErrorServerUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
+			server.sendErrorUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
 		}
 	}
 }
 
-void	handleModeNick(Server &server, int index, std::string &command, std::string &nickName) {
+void			handleModeNick(Server &server, int index, std::string &command, std::string &nickName) {
 	size_t findLen;
 
 	if (isModeOnlyNick(command, server.getNick(index)) == true) {
@@ -284,7 +284,7 @@ void	handleModeNick(Server &server, int index, std::string &command, std::string
 	}
 }
 
-bool	isModeOnlyChannel(std::string command, std::string &channelName) {
+bool			isModeOnlyChannel(std::string command, std::string &channelName) {
 	std::string ret;
 	char *str = const_cast<char *>(command.c_str() + command.find(" "));
 	char *tmp;
@@ -299,7 +299,7 @@ bool	isModeOnlyChannel(std::string command, std::string &channelName) {
 	return (false);
 }
 
-void	displayUserInChannelMode(Server &server, int index, std::string &nick, int8_t nickMode, char prefix) {
+void			displayUserInChannelMode(Server &server, int index, std::string &nick, int8_t nickMode, char prefix) {
 	std::string mode = "0";
 	if (nickMode & MODE_CHANNEL_USER_O) {
 		nickMode ^= MODE_CHANNEL_USER_O;
@@ -316,7 +316,7 @@ void	displayUserInChannelMode(Server &server, int index, std::string &nick, int8
 	}
 }
 
-bool	isUserInChannelMode(Server &server, std::string command, std::string &channelName, std::string &nickName) {
+bool			isUserInChannelMode(Server &server, std::string command, std::string &channelName, std::string &nickName) {
 	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
 	std::string delimiter = " ";
 	size_t		pos = 0;
@@ -333,7 +333,7 @@ bool	isUserInChannelMode(Server &server, std::string command, std::string &chann
 	return (false);
 }
 
-void	changeUserInChannelMode(Server &server, std::string command, std::string &channelName, std::string &nickName, int index) {
+void			changeUserInChannelMode(Server &server, std::string command, std::string &channelName, std::string &nickName, int index) {
 	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
 	size_t								findLen;
 
@@ -369,13 +369,13 @@ void	changeUserInChannelMode(Server &server, std::string command, std::string &c
 			else {
 				std::string errMode;
 				errMode += mode[i];
-				server.sendErrorServerUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
+				server.sendErrorUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
 			}
 		}
 	}
 }
 
-bool	isKnowChannelMode(char mode, channelMode &modeToAdd) {
+bool			isKnowChannelMode(char mode, channelMode &modeToAdd) {
 	if (mode == 'i') {
 		modeToAdd = MODE_CHANNEL_I;
 		return (true);
@@ -468,7 +468,7 @@ void	changeChannelMode(Server &server, parsed *parsedCommand, std::string &chann
 			else {
 				std::string errMode;
 				errMode += mode[i];
-				server.sendErrorServerUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
+				server.sendErrorUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
 			}
 		}
 	}
@@ -478,7 +478,7 @@ void	handleModeChannel(Server &server, int index, parsed *parsedCommand, std::st
 	std::vector<Channel *>::iterator	it = server.findChannel(channelName);
 	size_t								channelIndex = server.findChannelIndex(channelName);
 
-	if (server.ischannelModeOn(static_cast<channelMode>(MODE_CHANNEL_T | MODE_CHANNEL_N), channelIndex) == false) {
+	if (server.isChannelModeOn(static_cast<channelMode>(MODE_CHANNEL_T | MODE_CHANNEL_N), channelIndex) == false) {
 		server.getUsers()[index]->assignChannelUserMode(channelName, MODE_CHANNEL_USER_O);
 		(*it)->assignMode(static_cast<channelMode>(MODE_CHANNEL_T | MODE_CHANNEL_N));
 		displayChannelMode(server, parsedCommand, index, channelName, (*it)->getChannelMode(), '+');
@@ -497,16 +497,16 @@ void	handleModeChannel(Server &server, int index, parsed *parsedCommand, std::st
 			changeChannelMode(server, parsedCommand, channelName, index);
 	}
 	else {
-		server.sendErrorServerUser(channelName.c_str(), NULL, NULL, ERR_CHANOPRIVSNEEDED, index);
+		server.sendErrorUser(channelName.c_str(), NULL, NULL, ERR_CHANOPRIVSNEEDED, index);
 	}
 }
 
-void	modeCmd(Server &server, int index, parsed *parsedCommand) {
+void			modeCmd(Server &server, int index, parsed *parsedCommand) {
 	std::string	userName;
 	std::string	channelName;
 
 	if (isModeinLobby(parsedCommand->rawCommand) == true) {
-		server.sendErrorServerUser("IRC ", NULL, NULL, ERR_NOSUCHNICK, index);
+		server.sendErrorUser("IRC ", NULL, NULL, ERR_NOSUCHNICK, index);
 		return ;
 	}
 	if (isModeNick(server, index, parsedCommand->rawCommand, userName) == true) {
@@ -516,5 +516,5 @@ void	modeCmd(Server &server, int index, parsed *parsedCommand) {
 		handleModeChannel(server, index, parsedCommand, channelName);
 	}
 	else
-		server.sendErrorServerUser("IRC ", NULL, NULL, ERR_NOSUCHNICK, index);
+		server.sendErrorUser("IRC ", NULL, NULL, ERR_NOSUCHNICK, index);
 }

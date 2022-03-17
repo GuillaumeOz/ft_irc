@@ -25,7 +25,7 @@ void	joinCmd(Server &server, int index, parsed *parsedCommand) {
 	std::string keyword = "";
 	if (parsedCommand->args.size() > 1)
 		keyword += (*parsedCommand->args[1]);
-	if (server.userIsinChannel(channelName, index))
+	if (server.isUserInChannel(channelName, index))
 		return ;
 	response = joinResponse(server, index, channelName);
 	if (server.isExistingChannel(channelName) == true) {
