@@ -34,11 +34,16 @@ void	topicCmd(Server &server, int index, parsed *parsedCommand) {
 		return ;
 	}
 
-	if (server.getUsers()[index]->isChannelUserModeOn(channelName, MODE_CHANNEL_USER_O) == true) {
-		topicChangeContent(server, index, parsedCommand->getFullTwoPointsArgs(), channelName);
+	it = server.findChannel(channelName);
+	if ((*it)->isModeOn(MODE_CHANNEL_T) == true) {
+		if (server.getUsers()[index]->isChannelUserModeOn(channelName, MODE_CHANNEL_USER_O) == true) {
+			topicChangeContent(server, index, parsedCommand->getFullTwoPointsArgs(), channelName);
+		}
+		else {
+			server.sendErrorUser(channelName.c_str(), NULL, NULL, ERR_CHANOPRIVSNEEDED, index);
+		}
 	}
-	else {
-		server.sendErrorUser("IRC ", NULL, NULL, ERR_CHANOPRIVSNEEDED, index);
-		return ;
+	else if ((*it)->isModeOn(MODE_CHANNEL_T) == false) {
+		topicChangeContent(server, index, parsedCommand->getFullTwoPointsArgs(), channelName);
 	}
 }
