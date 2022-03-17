@@ -5,7 +5,7 @@
 # #############################################################################
 
 # Project name
-NAME		=	ircserv
+NAME		=	bot_client
 
 CC			=	c++
 
@@ -27,7 +27,7 @@ OBJ			=	$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.opp))
 #
 # #############################################################################
 
-CFLAGS		=	-Wall -Wextra -Werror -std=c++98 
+CFLAGS		=	-Wall -Wextra -Werror -std=c++98 -g3 -fsanitize=address #-Wshadow -Wno-shadow
 
 IFLAGS		=	$(foreach dir, $(INC_DIR), -I $(dir))
 
@@ -45,7 +45,7 @@ TFLAGS		=	$(foreach dir, $(TEM_DIR), -I $(dir))
 $(NAME): $(OBJ)
 	@echo "-----\nCreating Binary File $(_YELLOW)$@$(_WHITE) ... \c"
 	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
-	@mv ircserv bin
+	@mv bot_client bin
 	@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 # Build obj binaries

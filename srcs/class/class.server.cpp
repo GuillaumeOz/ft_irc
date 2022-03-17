@@ -281,6 +281,7 @@ void			Server::removeSockFromPfds(int index) {
 void			Server::delChannel(std::string &channelName) {
 	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
 		if ((*it)->getChannelName() == channelName) {
+			delete *it;
 			channels.erase(it);
 			break ;
 		}

@@ -24,6 +24,9 @@ void	usersActionsLoop(Server &server) {
 			handleActions(parsedCommands, (i - 1), server);
 			string.clear();
 		}
+		for (size_t i = 0; i < parsedCommands.size(); i++) {
+			delete parsedCommands[i];
+		}
 		parsedCommands.clear();
 	}
 }
