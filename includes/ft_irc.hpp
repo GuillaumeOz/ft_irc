@@ -63,6 +63,12 @@ enum channelMode {
 	MODE_CHANNEL_L = (1 << 6)
 };
 
+enum findSubStringState {
+	NONE,
+	START,
+	END
+};
+
 /* ----------------------------- Project headers ----------------------------- */
 
 #include "class.parsed.hpp"

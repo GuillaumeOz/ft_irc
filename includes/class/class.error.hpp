@@ -6,7 +6,6 @@ class User;
 enum errorType {
 	ARGUMENT,
     UNAVAILABLE_PORT,
-
 	ERR_NOSUCHNICK,
 	ERR_NOSUCHSERVER,
 	ERR_NOSUCHCHANNEL,
@@ -51,22 +50,30 @@ enum errorType {
 class Error {
 
     public:
-	errorType	type;
-	std::map<errorType, std::string> errorMessages;
+
+/* ---------------------------------- data ---------------------------------- */
+
+	errorType							type;
+	std::map<errorType, std::string> 	errorMessages;
+
+/* ------------------------ constructors/destructors ------------------------ */
 
 	Error();
 	Error(Error &);
 	~Error();
 
-	void		displayError();
-	void		setErrorType(errorType &);
-	void		sendError(std::string , errorType());
+/* ----------------------------- getters/setters ---------------------------- */
 
-	std::string	getMessageWithReplaceToken(const char *, const char *, const char *, errorType &);
+	void					setErrorType(errorType &);
+	std::string				getMessageWithReplaceToken(const char *, const char *, const char *, errorType &);
 
-	void		sendErrorServer(const char *, const char *, const char *, errorType &);
-	void		sendErrorUser(const char *, const char *, const char *, errorType &, User *);
-	void		sendErrorServerUser(const char *, const char *, const char *, errorType &, User *);
+/* ----------------------- printing/sending functions ----------------------- */
+
+	void					displayError();
+	void					sendError(std::string , errorType());
+	void					sendErrorServer(const char *, const char *, const char *, errorType &);
+	void					sendErrorUser(const char *, const char *, const char *, errorType &, User *);
+	void					sendErrorServerUser(const char *, const char *, const char *, errorType &, User *);
 };
 
 #endif
