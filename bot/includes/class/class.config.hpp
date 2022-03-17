@@ -5,6 +5,8 @@ class Config {
 
  public:
 
+/* ---------------------------------- data ---------------------------------- */
+
 	int						socketClient;
 	sockaddr_in				addrClient;
 

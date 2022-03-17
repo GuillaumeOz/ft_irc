@@ -6,25 +6,39 @@ class Config;
 class Client {
 
  private:
+
+/* ---------------------------------- data ---------------------------------- */
+
 	Config 														_config;
 	std::string													_password;
 	std::map<std::string, void (*)(Client &, std::string &)> 	_commands;
 
  public:
 
+/* ------------------------ constructors/destructors ------------------------ */
+
 	Client();
 	Client(int socket,  in_addr_t addr, short family, unsigned short port);
 	~Client();
 
-	void	initCommands();
+
+/* --------------------------------- setters -------------------------------- */
+
+	void	setPassword(char *);
+
+/* --------------------------- socket manipulation -------------------------- */
+
 	int 	connectSock();
 	void	recvSock(std::string *string);
-	void	join();
 	void	closeClient() const;
-	void	setPassword(char *);
-	void	sendInfo();
-	void	callCommand(Client &, std::string &, std::string &);
 	void	bsend(std::string &response);
+
+/* --------------------------- commands functions --------------------------- */
+
+	void	initCommands();
+	void	callCommand(Client &, std::string &, std::string &);
+	void	sendInfo();
+	void	join();
 };
 
 #endif
