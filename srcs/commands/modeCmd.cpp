@@ -263,7 +263,7 @@ void			changeNickMode(Server &server, std::string command, std::string &nickName
 		else {
 			std::string errMode;
 			errMode += mode[i];
-			server.sendErrorServerUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
+			server.sendErrorUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
 		}
 	}
 }
@@ -365,7 +365,7 @@ void			changeUserInChannelMode(Server &server, std::string command, std::string 
 			else {
 				std::string errMode;
 				errMode += mode[i];
-				server.sendErrorServerUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
+				server.sendErrorUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
 			}
 		}
 	}
@@ -439,7 +439,7 @@ void			changeChannelMode(Server &server, std::string command, std::string &chann
 			else {
 				std::string errMode;
 				errMode += mode[i];
-				server.sendErrorServerUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
+				server.sendErrorUser(errMode.c_str(), NULL, NULL, ERR_UMODEUNKNOWNFLAG, index);
 			}
 		}
 	}
@@ -468,7 +468,7 @@ void			handleModeChannel(Server &server, int index, std::string &command, std::s
 			changeChannelMode(server, command, channelName, index);
 	}
 	else {
-		server.sendErrorServerUser(channelName.c_str(), NULL, NULL, ERR_CHANOPRIVSNEEDED, index);
+		server.sendErrorUser(channelName.c_str(), NULL, NULL, ERR_CHANOPRIVSNEEDED, index);
 	}
 }
 
@@ -477,7 +477,7 @@ void			modeCmd(Server &server, int index, parsed *parsedCommand) {
 	std::string	channelName;
 
 	if (isModeinLobby(parsedCommand->rawCommand) == true) {
-		server.sendErrorServerUser("IRC ", NULL, NULL, ERR_NOSUCHNICK, index);
+		server.sendErrorUser("IRC ", NULL, NULL, ERR_NOSUCHNICK, index);
 		return ;
 	}
 	if (isModeNick(server, index, parsedCommand->rawCommand, userName) == true) {
@@ -487,5 +487,5 @@ void			modeCmd(Server &server, int index, parsed *parsedCommand) {
 		handleModeChannel(server, index, parsedCommand->rawCommand, channelName);
 	}
 	else
-		server.sendErrorServerUser("IRC ", NULL, NULL, ERR_NOSUCHNICK, index);
+		server.sendErrorUser("IRC ", NULL, NULL, ERR_NOSUCHNICK, index);
 }

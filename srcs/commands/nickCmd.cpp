@@ -31,7 +31,7 @@ void			setRandomNick(std::string nick, int index, Server &server) {
 bool 			checkNickError(std::string &nick, int index, Server &server)
 {
 	if (nick.size() > 9) {
-		server.sendErrorServerUser(nick.c_str(), NULL, NULL, ERR_ERRONEUSNICKNAME, index);
+		server.sendErrorUser(nick.c_str(), NULL, NULL, ERR_ERRONEUSNICKNAME, index);
 		server.setUserInvalidNick(index, nick);
 		return (true);
 	}
@@ -44,7 +44,7 @@ bool 			checkNickError(std::string &nick, int index, Server &server)
 		}
 	}
 	if (server.isUserModeOn(MODE_USER_R, index) == true) {
-	    server.sendErrorServerUser(NULL, NULL, NULL, ERR_RESTRICTED, index);
+	    server.sendErrorUser(NULL, NULL, NULL, ERR_RESTRICTED, index);
 	    return (true);
 	}
 	return (false);
